@@ -22,6 +22,23 @@
   }
 
 
+
+  .wordle-tile { width:52px; height:52px; border:2px solid rgba(201,179,232,0.35); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; font-weight:700; letter-spacing:0; text-transform:uppercase; transition:background 0.3s, border-color 0.3s; color:var(--text); background:white; }
+  .wordle-tile.filled { border-color:rgba(201,179,232,0.7); animation:wPop 0.1s ease; }
+  .wordle-tile.correct { background:#6bbfb5; border-color:#6bbfb5; color:white; }
+  .wordle-tile.present { background:#f5c842; border-color:#f5c842; color:white; }
+  .wordle-tile.absent  { background:#b0b0b0; border-color:#b0b0b0; color:white; }
+  .wordle-tile.reveal  { animation:wFlip 0.5s ease forwards; }
+  .wordle-row { display:flex; gap:5px; }
+  .wkey { min-width:32px; height:46px; border-radius:6px; border:none; background:rgba(201,179,232,0.2); color:var(--text); font-size:0.78rem; font-weight:600; cursor:pointer; padding:0 6px; font-family:"DM Sans",sans-serif; transition:background 0.2s; }
+  .wkey:active { transform:scale(0.95); }
+  .wkey.correct { background:#6bbfb5; color:white; }
+  .wkey.present { background:#f5c842; color:white; }
+  .wkey.absent  { background:#b0b0b0; color:white; }
+  .wkey.wide { min-width:52px; font-size:0.7rem; }
+  @keyframes wPop  { 0%{transform:scale(1)} 50%{transform:scale(1.12)} 100%{transform:scale(1)} }
+  @keyframes wFlip { 0%{transform:rotateX(0)} 50%{transform:rotateX(-90deg)} 100%{transform:rotateX(0)} }
+  @keyframes wShake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-6px)} 40%,80%{transform:translateX(6px)} }
   .bday-stage { animation: bdayFadeUp 0.55s ease; }
   @keyframes bdayFadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
   @keyframes letterWobble { 0%,100% { transform:rotate(-4deg) scale(1); } 50% { transform:rotate(4deg) scale(1.05); } }
@@ -480,6 +497,7 @@
       <input type="number" id="j-wm" placeholder="mins" style="max-width:78px;"/>
       <button class="btn" onclick="logWorkout('j')">Log</button>
     </div>
+    <div style="font-size:0.72rem;color:var(--text-soft);margin:0.6rem 0 0.3rem;font-weight:500;">📋 Workout History</div>
     <div id="j-wlog"></div>
     <button onclick="resetDay('j')" style="background:none;border:1px solid rgba(201,179,232,0.3);border-radius:8px;padding:0.3rem 0.8rem;font-size:0.72rem;color:var(--text-soft);cursor:pointer;margin-top:0.5rem;width:100%;">↺ Reset Jai's Day</button>
     <hr style="border:none;border-top:1px solid rgba(201,179,232,0.2);margin:1rem 0;"/>
@@ -503,7 +521,8 @@
       <input type="number" id="s-wm" placeholder="mins" style="max-width:78px;"/>
       <button class="btn" onclick="logWorkout('s')">Log</button>
     </div>
-    <div id="s-wlog" style="margin-top:0.5rem;"></div>
+    <div style="font-size:0.72rem;color:var(--text-soft);margin:0.6rem 0 0.3rem;font-weight:500;">📋 Workout History</div>
+    <div id="s-wlog"></div>
     <button onclick="resetDay('s')" style="background:none;border:1px solid rgba(107,191,181,0.3);border-radius:8px;padding:0.3rem 0.8rem;font-size:0.72rem;color:var(--text-soft);cursor:pointer;margin-top:0.5rem;width:100%;">↺ Reset Shrey's Day</button>
   </div>
 </div>
@@ -672,6 +691,7 @@
     <button class="op-tab" onclick="switchOP(event,'music')">🎵 Music</button>
     <button class="op-tab" onclick="switchOP(event,'ratings')">⭐ Our Ratings</button>
     <button class="op-tab" onclick="switchOP(event,'books')">📚 Books</button>
+    <button class="op-tab" onclick="switchOP(event,'wordle')">🟩 Wordle</button>
   </div>
   <div class="op-sec active" id="op-watchlist">
     <div class="card">
@@ -718,6 +738,23 @@
       <div class="pill">⭐ Rate What We've Watched</div>
       <p style="font-size:0.79rem;color:var(--text-soft);margin-bottom:0.9rem;">Only items marked "Watched" show up here — rate away!</p>
       <div id="ratingsList"></div>
+    </div>
+  </div>
+
+  <div class="op-sec" id="op-wordle">
+    <div class="card">
+      <div class="pill">🟩 Daily Wordle</div>
+      <div style="text-align:center;margin-bottom:0.8rem;">
+        <div style="font-size:0.75rem;color:var(--text-soft);" id="wordleDate"></div>
+        <div id="wordleScores" style="display:flex;justify-content:center;gap:1.5rem;margin-top:0.5rem;font-size:0.8rem;"></div>
+      </div>
+      <div id="wordleBoard" style="display:flex;flex-direction:column;align-items:center;gap:5px;margin-bottom:1rem;"></div>
+      <div id="wordleKeyboard" style="display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:1rem;"></div>
+      <div id="wordleMsg" style="text-align:center;font-size:0.9rem;color:var(--text-soft);min-height:1.5rem;margin-bottom:0.5rem;"></div>
+      <div id="wordleReveal" style="display:none;text-align:center;">
+        <div style="font-size:0.75rem;color:var(--text-soft);margin-bottom:0.4rem;">Today's word was</div>
+        <div id="wordleAnswer" style="font-size:1.4rem;font-weight:600;letter-spacing:0.15em;color:var(--text);"></div>
+      </div>
     </div>
   </div>
   <div class="op-sec" id="op-books">
@@ -944,6 +981,7 @@ let state = {
 
 // Fitness & Our Place state
 let _fitness = { j:{cal:0,pro:0,carb:0,fat:0,workouts:[]}, s:{cal:0,pro:0,carb:0,fat:0,workouts:[]} };
+var _workoutHistory = { j:[], s:[] };
 let _op = {
   books: [],
   watchlist: [
@@ -1110,6 +1148,7 @@ function saveToLocal() {
       archive: state.archive
     }));
     localStorage.setItem('jas_fitness', JSON.stringify(_fitness));
+    localStorage.setItem('jas_wh', JSON.stringify(_workoutHistory));
     localStorage.setItem('jas_cycle', JSON.stringify(_cycle));
     localStorage.setItem('jas_op', JSON.stringify({watchlist:_op.watchlist, books:_op.books}));
     localStorage.setItem('jas_music', JSON.stringify(_music));
@@ -1121,6 +1160,8 @@ function loadFromLocal() {
     if (s) Object.assign(state, JSON.parse(s));
     var f = localStorage.getItem('jas_fitness');
     if (f) Object.assign(_fitness, JSON.parse(f));
+    var wh = localStorage.getItem('jas_wh');
+    if (wh) { var whd=JSON.parse(wh); _workoutHistory.j=whd.j||[]; _workoutHistory.s=whd.s||[]; }
     var c = localStorage.getItem('jas_cycle');
     if (c) Object.assign(_cycle, JSON.parse(c));
     var op = localStorage.getItem('jas_op');
@@ -1239,17 +1280,22 @@ function logMacros(p) {
   renderFitnessCards(); spawnHearts(); saveToLocal();
 }
 function logWorkout(p) {
-  const desc = document.getElementById(p+'-wd')?.value.trim();
-  if (!desc) return;
-  const type = document.getElementById(p+'-wt')?.value || 'other';
-  const mins = +document.getElementById(p+'-wm')?.value || 0;
-  _fitness[p].workouts.unshift({ desc, type, mins, time: new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) });
-  document.getElementById(p+'-wd').value = '';
-  document.getElementById(p+'-wm').value = '';
+  var descEl = document.getElementById(p+'-wd'); if (!descEl) return;
+  var desc = descEl.value.trim(); if (!desc) return;
+  var type = (document.getElementById(p+'-wt')||{}).value || 'other';
+  var mins = +(document.getElementById(p+'-wm')||{}).value || 0;
+  var entry = { desc:desc, type:type, mins:mins,
+    time: new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),
+    date: new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short'}) };
+  _fitness[p].workouts.unshift(entry);
+  _workoutHistory[p].unshift(entry);
+  if (_workoutHistory[p].length > 50) _workoutHistory[p].pop(); // keep last 50
+  descEl.value = '';
+  var mEl = document.getElementById(p+'-wm'); if(mEl) mEl.value = '';
   renderFitnessCards(); spawnHearts(); saveToLocal();
 }
 function resetDay(p) {
-  if (!confirm("Reset " + (p==="j"?"Jai's":"Shrey's") + " day?")) return;
+  if (!confirm('Reset ' + (p==='j'?"Jai's":"Shrey's") + ' daily macros? Workout history is kept.')) return;
   _fitness[p] = {cal:0,pro:0,carb:0,fat:0,workouts:[]};
   renderFitnessCards(); saveToLocal();
 }
@@ -1262,15 +1308,29 @@ function renderFitnessCards() {
     setEl(p+'-cal', f.cal); setEl(p+'-pro', f.pro+'g'); setEl(p+'-carb', f.carb+'g'); setEl(p+'-fat', f.fat+'g');
     setW(p+'-cal-b', f.cal/goals.cal*100); setW(p+'-pro-b', f.pro/goals.pro*100);
     setW(p+'-carb-b', f.carb/goals.carb*100); setW(p+'-fat-b', f.fat/goals.fat*100);
-    const logEl = document.getElementById(p+'-wlog');
+    var logEl = document.getElementById(p+'-wlog');
     if (logEl) {
       logEl.innerHTML = '';
-      f.workouts.slice(0,3).forEach(w => {
-        const d = document.createElement('div');
-        d.className = 'workout-entry';
-        d.innerHTML = `<span class="wtag wtag-${w.type}">${w.type}</span><span style="flex:1">${w.desc}</span>${w.mins?`<span style="font-size:0.7rem;color:var(--text-soft);">${w.mins}min</span>`:''}<span style="font-size:0.67rem;color:var(--text-soft);">${w.time}</span>`;
-        logEl.appendChild(d);
-      });
+      var history = _workoutHistory[p] || [];
+      if (!history.length) {
+        logEl.innerHTML = '<p style="font-size:0.78rem;color:var(--text-soft);text-align:center;padding:0.5rem;">No workouts logged yet 💪</p>';
+      } else {
+        history.slice(0,10).forEach(function(w) {
+          var d = document.createElement('div');
+          d.className = 'workout-entry';
+          d.innerHTML = '<span class="wtag wtag-' + w.type + '">' + w.type + '</span>'
+            + '<span style="flex:1">' + w.desc + '</span>'
+            + (w.mins ? '<span style="font-size:0.7rem;color:var(--text-soft);">' + w.mins + 'min</span>' : '')
+            + '<span style="font-size:0.67rem;color:var(--text-soft);">' + (w.date||'') + ' ' + (w.time||'') + '</span>';
+          logEl.appendChild(d);
+        });
+        if (history.length > 10) {
+          var more = document.createElement('p');
+          more.style.cssText = 'font-size:0.72rem;color:var(--text-soft);text-align:center;margin-top:0.4rem;';
+          more.textContent = '+ ' + (history.length - 10) + ' more sessions';
+          logEl.appendChild(more);
+        }
+      }
     }
   });
 }
@@ -1608,10 +1668,34 @@ var _cardPhotos = [null,null,null,null,null,null];
 var _cardPhotoSlot = 0;
 
 var _hundredThings = [
-  "add your 100 things here — each as a quoted string",
-  "her smile",
-  "the way she laughs",
-  // ... fill in all 100
+  "your smile",
+  "your hazel eyes",
+  "your dimples",
+  "your little forehead",
+  "your sleepy voice",
+  "when you ask for multiple kisses before we end the call",
+  "your angry face lol",
+  "the way you're always cold",
+  "how stubborn you are",
+  "your hard work",
+  "the little bit you eat",
+  "how you wanted to do medical examinations on me",
+  "your laugh",
+  "how you look when you're excited — bare hugging",
+  "the way everything is a lot easier when you're here",
+  "how I feel safe (except for the time in yr12)",
+  "the way you exist",
+  "your sense of humour",
+  "the way you pout when you don't get what you want",
+  "how you say you're fine and your face says something completely different",
+  "the random voice notes that are somehow always exactly what I needed",
+  "how you get fully invested in other people's drama",
+  "the way you hold on a little longer when we hug",
+  "how you somehow always know when I need you without me saying anything",
+  "the way your eyes go soft when you're being genuine",
+  "how you make even the most boring day feel like something",
+  "the face you make right before you start laughing",
+  "how you chose medicine because you actually care — that's so you"
 ];
 
 var _msg1 = "Happy birthday to the most beautiful girl I know";
@@ -1800,6 +1884,216 @@ function _loadBeautifulPhoto() {
     }
   } catch(e) {}
 }
+
+// ===== WORDLE =====
+var _WORDS = ["about","above","abuse","actor","acute","admit","adopt","adult","after","again","agent","agree","ahead","alarm","album","alert","alike","align","alive","alley","allow","alone","along","altar","alter","angel","anger","angle","angry","anime","ankle","annex","antic","apart","apple","apply","arena","argue","arise","armor","array","arrow","asked","atlas","attic","audio","audit","avoid","awake","award","aware","awful","badly","baker","bases","basic","basis","batch","beach","beard","beast","began","begin","being","below","bench","bible","birth","black","blade","blame","bland","blank","blast","blaze","bleak","blend","bless","blind","block","blood","bloom","blown","blues","blunt","blush","board","boast","bonus","boost","booth","bound","boxer","brace","brain","brake","brand","brave","bread","break","breed","brick","bride","brief","bring","broad","broke","brook","brown","brush","buddy","build","built","bulge","bunch","burst","buyer","cabin","camel","canal","candy","carry","catch","cause","cease","chain","chair","chaos","charm","chase","cheap","check","cheek","chess","chest","chief","child","china","chips","choir","civic","civil","claim","class","clean","clear","clerk","click","cliff","climb","cling","clock","clone","close","cloud","coach","coast","cobra","comet","comic","comma","coral","could","count","court","cover","crack","craft","crane","crash","crazy","cream","creek","crime","cross","crowd","crown","crude","crush","crypt","curve","cycle","daily","dance","dares","dated","death","debut","decay","delay","delta","dense","depot","depth","derby","devil","dirty","disco","ditch","diver","dodge","doing","doubt","dough","draft","drain","drama","drape","drawl","drawn","dream","dress","dried","drift","drill","drink","drive","drone","drove","drown","drugs","drunk","dryer","dumpy","dying","eager","eagle","early","earth","eaten","eight","elite","empty","enemy","enjoy","enter","entry","error","essay","event","every","exact","exile","exist","extra","fable","faced","faint","fairy","faith","false","fancy","fangs","fault","feast","feels","fence","ferry","fetch","fever","fewer","fiber","field","fiery","fight","final","fixed","flame","flare","flash","flask","fleet","flesh","float","flood","floor","flour","fluid","flush","focus","force","forge","forth","found","frame","frank","fraud","fresh","front","frost","froze","froze","fruit","fully","funny","giant","given","gland","glare","glass","globe","gloom","gloss","gloat","glove","going","grace","grade","grain","grand","grant","grasp","grass","grave","great","greed","green","greet","grief","grind","groan","groin","groom","group","grove","grown","gruesome","guard","guest","guide","guild","guile","guise","gusto","happy","harsh","haste","haven","heart","heavy","hence","herbs","heron","honor","horse","hotel","hound","house","hover","human","humid","hurry","ideal","image","imply","inbox","index","inner","input","irony","issue","jewel","joker","joust","juicy","jumpy","karma","kneel","knife","knock","knoll","known","label","lance","large","laser","later","laugh","layer","learn","lease","leave","legal","lemur","level","light","limit","linen","liner","liver","loose","lover","lower","lucky","lunar","lying","magic","major","maker","manor","maple","march","match","meant","mercy","merge","minor","minus","model","money","month","moral","moron","morph","motor","motto","mound","mount","mouse","moved","movie","muddy","music","naive","nasty","naval","nerve","never","night","noble","noise","north","noted","novel","nurse","nymph","occur","ocean","offer","often","olive","onset","order","other","outer","oxide","ozone","paint","panic","paper","party","paste","patch","pause","peace","pearl","pedal","penny","perch","peril","phase","phone","photo","piano","piece","pilot","pirate","pixel","pizza","place","plaid","plain","plane","plant","plate","plaza","plead","pluck","plumb","plume","plunk","plush","point","polar","porch","pound","power","press","price","pride","prime","print","prior","prize","probe","proof","prose","proud","prove","prowl","pulse","punch","pupil","purge","queen","query","quest","queue","quick","quiet","quota","quote","radar","radio","raise","rally","ranch","range","rapid","ratio","reach","react","realm","rebel","rebel","recap","refer","reign","relax","repay","repel","reply","rider","ridge","rifle","rigid","risky","rival","rivet","robin","robot","rocky","roman","rough","round","route","ruler","rumor","rusty","sadly","saint","salad","sauce","scalp","scamp","scant","scare","scent","scene","scope","score","sense","serve","seven","shade","shake","shall","shame","shape","share","sharp","sheer","sheet","shell","shift","shine","shirt","shock","shore","short","shout","sight","sigma","silly","since","sixth","sixty","skill","slate","slave","sleep","slice","slide","sling","slope","smart","smell","smile","smirk","smoke","snake","solar","solid","solve","sorry","south","space","spare","spark","speak","spell","spend","spill","spine","split","spoke","spoof","sport","spout","spray","spree","sprig","sprout","stack","staff","stage","stain","stair","stake","stall","stamp","stand","stark","start","state","staunch","stave","steal","steam","steel","steep","steer","stern","stick","stiff","still","stock","stomp","stone","stood","storm","story","stove","strap","straw","stray","strip","strum","stuck","study","stunt","style","sugar","suite","sunny","super","surge","swamp","swarm","swear","sweat","sweet","swept","swift","swipe","swirl","sword","swore","sworn","table","talon","taste","tatoo","tease","teeth","tempo","tense","tenth","terms","thank","their","theme","there","these","thick","thing","think","third","thorn","those","three","threw","throw","tiger","tight","timer","title","today","token","tooth","total","touch","tough","towel","tower","toxic","trace","track","trade","trail","train","trait","tramp","trash","trawl","tread","treat","trend","trick","tried","troop","trove","truck","truly","trump","trunk","trust","truth","tumor","tuner","tunic","tweak","twice","twist","tying","udder","ultra","uncut","under","unify","union","unlit","until","upper","upset","urban","using","usual","utter","valid","valor","valve","vapor","vault","vegan","verse","video","vigor","viral","virus","visor","visit","vista","vital","vivid","voice","voter","vow","vowel","waged","waltz","waste","watch","water","weary","weave","weedy","weird","whale","wheat","wheel","where","which","while","white","whole","whose","wider","wield","witty","woman","women","world","worse","worst","worth","would","wound","wrath","wrist","write","wrote","yacht","yearn","yield","young","yours","youth","zappy","zesty","zilch","zippy","zombi","zonal","lover","bliss","bound","crush","dates","dream","heart","sweet","roses","hugs"];
+
+function _wordleGetWord() {
+  // Deterministic daily word based on date
+  var d = new Date();
+  var seed = d.getFullYear() * 10000 + (d.getMonth()+1) * 100 + d.getDate();
+  return _WORDS[seed % _WORDS.length].toUpperCase();
+}
+
+var _wState = {
+  word: '', guesses: [], current: '', done: false,
+  scores: { jai: null, shrey: null }
+};
+
+function _wLoadState() {
+  try {
+    var today = new Date().toDateString();
+    var saved = localStorage.getItem('jas_wordle');
+    if (saved) {
+      var s = JSON.parse(saved);
+      if (s.date === today) {
+        _wState = s.state;
+        _wState.word = _wordleGetWord();
+        return;
+      }
+    }
+  } catch(e) {}
+  _wState = { word: _wordleGetWord(), guesses: [], current: '', done: false, scores: { jai: null, shrey: null } };
+}
+
+function _wSaveState() {
+  try {
+    localStorage.setItem('jas_wordle', JSON.stringify({ date: new Date().toDateString(), state: _wState }));
+  } catch(e) {}
+}
+
+function initWordle() {
+  _wLoadState();
+  _wRenderBoard();
+  _wRenderKeyboard();
+  _wRenderScores();
+  var dateEl = document.getElementById('wordleDate');
+  if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long' });
+  if (_wState.done) _wShowReveal();
+}
+
+function _wRenderBoard() {
+  var board = document.getElementById('wordleBoard'); if (!board) return;
+  board.innerHTML = '';
+  for (var r = 0; r < 6; r++) {
+    var row = document.createElement('div'); row.className = 'wordle-row'; row.id = 'wrow-' + r;
+    for (var c = 0; c < 5; c++) {
+      var tile = document.createElement('div');
+      tile.className = 'wordle-tile'; tile.id = 'wtile-' + r + '-' + c;
+      var guess = _wState.guesses[r];
+      if (guess) {
+        tile.textContent = guess.letters[c];
+        tile.classList.add(guess.result[c]);
+      }
+      row.appendChild(tile);
+    }
+    board.appendChild(row);
+  }
+  // Show current typing in next row
+  if (!_wState.done && _wState.guesses.length < 6) {
+    var curRow = _wState.guesses.length;
+    for (var i = 0; i < _wState.current.length; i++) {
+      var t = document.getElementById('wtile-' + curRow + '-' + i);
+      if (t) { t.textContent = _wState.current[i]; t.classList.add('filled'); }
+    }
+  }
+}
+
+function _wRenderKeyboard() {
+  var kb = document.getElementById('wordleKeyboard'); if (!kb) return;
+  kb.innerHTML = '';
+  var rows = [['Q','W','E','R','T','Y','U','I','O','P'], ['A','S','D','F','G','H','J','K','L'], ['ENTER','Z','X','C','V','B','N','M','⌫']];
+  var keyState = {};
+  _wState.guesses.forEach(function(g) {
+    g.letters.forEach(function(l, i) {
+      var r = g.result[i];
+      if (!keyState[l] || r === 'correct' || (r === 'present' && keyState[l] === 'absent')) keyState[l] = r;
+    });
+  });
+  rows.forEach(function(row) {
+    var r = document.createElement('div'); r.style.cssText = 'display:flex;gap:5px;';
+    row.forEach(function(k) {
+      var btn = document.createElement('button');
+      btn.className = 'wkey' + (k.length > 1 ? ' wide' : '');
+      btn.textContent = k;
+      if (keyState[k]) btn.classList.add(keyState[k]);
+      btn.onclick = function() { _wKey(k); };
+      r.appendChild(btn);
+    });
+    kb.appendChild(r);
+  });
+}
+
+function _wRenderScores() {
+  var el = document.getElementById('wordleScores'); if (!el) return;
+  el.innerHTML = '';
+  var s = _wState.scores;
+  ['jai','shrey'].forEach(function(p) {
+    var d = document.createElement('div');
+    d.style.cssText = 'text-align:center;';
+    d.innerHTML = '<div style="font-size:0.7rem;color:var(--text-soft);">' + (p==='jai'?'💜 Jai':'🌊 Shrey') + '</div>'
+      + '<div style="font-weight:600;">' + (s[p] ? s[p] + '/6' : '—') + '</div>';
+    el.appendChild(d);
+  });
+}
+
+function _wKey(k) {
+  if (_wState.done) return;
+  var msg = document.getElementById('wordleMsg');
+  if (k === '⌫' || k === 'BACKSPACE') {
+    _wState.current = _wState.current.slice(0, -1);
+  } else if (k === 'ENTER') {
+    if (_wState.current.length < 5) {
+      if (msg) { msg.textContent = 'Not enough letters!'; msg.style.animation='none'; void msg.offsetHeight; msg.style.animation='wShake 0.4s ease'; }
+      return;
+    }
+    _wSubmit();
+    return;
+  } else if (_wState.current.length < 5 && k.length === 1) {
+    _wState.current += k.toUpperCase();
+  }
+  _wRenderBoard();
+}
+
+function _wSubmit() {
+  var guess = _wState.current.toUpperCase();
+  var word = _wState.word;
+  var result = ['absent','absent','absent','absent','absent'];
+  var wordArr = word.split('');
+  var guessArr = guess.split('');
+  // First pass: correct
+  var used = [false,false,false,false,false];
+  guessArr.forEach(function(l,i) { if (l === wordArr[i]) { result[i] = 'correct'; used[i] = true; } });
+  // Second pass: present
+  guessArr.forEach(function(l,i) {
+    if (result[i] === 'correct') return;
+    for (var j = 0; j < 5; j++) {
+      if (!used[j] && wordArr[j] === l) { result[i] = 'present'; used[j] = true; break; }
+    }
+  });
+
+  var rowIdx = _wState.guesses.length;
+  _wState.guesses.push({ letters: guessArr, result: result });
+  _wState.current = '';
+
+  // Animate reveal
+  var delay = 0;
+  for (var c = 0; c < 5; c++) {
+    (function(col, res) {
+      setTimeout(function() {
+        var tile = document.getElementById('wtile-' + rowIdx + '-' + col);
+        if (tile) { tile.textContent = guess[col]; tile.className = 'wordle-tile ' + res + ' reveal'; }
+      }, delay);
+    })(c, result[c]);
+    delay += 150;
+  }
+
+  setTimeout(function() {
+    _wRenderKeyboard();
+    var won = result.every(function(r){ return r === 'correct'; });
+    var msg = document.getElementById('wordleMsg');
+    if (won) {
+      _wState.done = true;
+      var guessNum = _wState.guesses.length;
+      // Ask who is playing to record score
+      _wAskWho(guessNum);
+      if (msg) msg.textContent = ['Genius! 🎉','Magnificent! 🌟','Impressive! ✨','Splendid! 👏','Great! 😊','Phew! 😅'][guessNum-1] || 'Got it!';
+      _wShowReveal();
+    } else if (_wState.guesses.length >= 6) {
+      _wState.done = true;
+      _wAskWho(null);
+      if (msg) msg.textContent = 'Hard luck! The word was ' + word;
+      _wShowReveal();
+    }
+    _wSaveState();
+  }, delay + 200);
+}
+
+function _wAskWho(score) {
+  var who = confirm('Record this score for Jai? (Cancel = Shrey)') ? 'jai' : 'shrey';
+  _wState.scores[who] = score || 'X';
+  _wRenderScores();
+  _wSaveState();
+  if (window.fbSave) fbSave();
+}
+
+function _wShowReveal() {
+  var r = document.getElementById('wordleReveal');
+  var a = document.getElementById('wordleAnswer');
+  if (r) r.style.display = '';
+  if (a) a.textContent = _wState.word;
+}
+
+// Physical keyboard support when wordle tab is open
+document.addEventListener('keydown', function(e) {
+  var sec = document.getElementById('op-wordle');
+  if (!sec || !sec.classList.contains('active')) return;
+  var k = e.key.toUpperCase();
+  if (k === 'BACKSPACE') _wKey('⌫');
+  else if (k === 'ENTER') _wKey('ENTER');
+  else if (k.length === 1 && k >= 'A' && k <= 'Z') _wKey(k);
+});
+
 // ===== CALENDAR =====
 function renderCalendar() {
   const year = state.calYear, month = state.calMonth;
@@ -1967,6 +2261,7 @@ function deletePhoto(i, e) { e.stopPropagation(); state.photos[i] = null; render
 
 // ===== OUR PLACE =====
 function switchOP(e, sec) {
+  if (sec === 'wordle') { setTimeout(initWordle, 50); }
   document.querySelectorAll('.op-sec').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.op-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('op-' + sec).classList.add('active');
@@ -2073,21 +2368,17 @@ function spawnHearts() {
 // ===== INIT =====
 function checkBirthday() {
   var today = new Date();
-  var m = today.getMonth(); // 0-indexed
+  var m = today.getMonth(); // 0-indexed, March = 2
   var d = today.getDate();
   var tab = document.getElementById('birthdayTab');
-  
-  // Jai's birthday = March 5 (month 2, day 5)
-  // Shrey's birthday = Oct 4 (month 9, day 4)
-  var isJaiBday = m === 2 && d === 5;
-  var isShreyBday = m === 9 && d === 4;
-  var afterJaiBday = (m > 2) || (m === 2 && d > 5);  // after March 5 in same year
-  
+
+  var isShreyBday = (m === 9 && d === 4);
+  // Hide ONLY after March 5 (March 6 onwards, months Apr-Sep)
+  var pastJaiBday = (m === 2 && d >= 6) || (m > 2 && m < 9 && !isShreyBday);
+
   if (tab) {
-    if (afterJaiBday && !isShreyBday) {
-      // Past Jai's birthday — hide tab, push to archive
+    if (pastJaiBday) {
       tab.style.display = 'none';
-      // Add to archive if not already there
       var alreadyArchived = state.archive && state.archive.some(function(a){ return a.type === 'Birthday' && a.title && a.title.includes('Jai'); });
       if (!alreadyArchived) {
         if (!state.archive) state.archive = [];
