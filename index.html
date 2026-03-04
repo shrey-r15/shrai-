@@ -399,9 +399,9 @@
     <div style="font-size:2.5rem;margin-bottom:0.8rem;">💜</div>
     <div class="password-title">Jai & Shrey</div>
     <div class="password-subtitle">enter the password to continue 🌸</div>
-    <input class="password-input" id="passwordInput" type="password" placeholder="password">
+    <input class="password-input" id="passwordInput" type="password" placeholder="password" onkeydown="if(event.key==='Enter'){var v=this.value;if(v==='jaiisthequeen'){document.getElementById('passwordScreen').style.display='none';sessionStorage.setItem('auth','1');}else{this.style.borderColor='#e07070';var t=this;setTimeout(function(){t.style.borderColor='';t.value='';t.focus();},600);}}">
     <div class="password-error" id="passwordError"></div>
-    <button class="btn" style="width:100%;" id="passwordBtn">Enter ✨</button>
+    <button class="btn" style="width:100%;" onclick="var v=document.getElementById('passwordInput').value;if(v==='jaiisthequeen'){document.getElementById('passwordScreen').style.display='none';sessionStorage.setItem('auth','1');}else{var i=document.getElementById('passwordInput');i.style.borderColor='#e07070';setTimeout(function(){i.style.borderColor='';i.value='';i.focus();},600);}">Enter ✨</button>
   </div>
 </div>
 <div class="bg-blobs">
@@ -1491,39 +1491,10 @@ function spawnHearts() {
 
 
 // ===== PASSWORD =====
-function checkPassword() {
-  const input = document.getElementById('passwordInput');
-  const error = document.getElementById('passwordError');
-  const val = input.value;
-  if (val === 'jaiisthequeen') {
-    document.getElementById('passwordScreen').style.display = 'none';
-    sessionStorage.setItem('auth', '1');
-  } else {
-    input.classList.add('wrong');
-    error.textContent = 'wrong password, try again 💜';
-    setTimeout(() => { input.classList.remove('wrong'); input.value = ''; input.focus(); }, 600);
-  }
+if (sessionStorage.getItem('auth') === '1') {
+  var ps = document.getElementById('passwordScreen');
+  if (ps) ps.style.display = 'none';
 }
-
-// Wire up password screen listeners
-(function() {
-  function setupPassword() {
-    if (sessionStorage.getItem('auth') === '1') {
-      var s = document.getElementById('passwordScreen');
-      if (s) s.style.display = 'none';
-      return;
-    }
-    var btn = document.getElementById('passwordBtn');
-    var inp = document.getElementById('passwordInput');
-    if (btn) btn.addEventListener('click', checkPassword);
-    if (inp) inp.addEventListener('keydown', function(e) { if (e.key === 'Enter') checkPassword(); });
-  }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupPassword);
-  } else {
-    setupPassword();
-  }
-})();
 // ===== INIT =====
 function init() {
   setDailyQuote();
