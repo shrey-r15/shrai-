@@ -20,16 +20,6 @@
     --gradient: linear-gradient(135deg, #c9b3e8 0%, #a8c8e8 40%, #6bbfb5 100%);
     --gradient-soft: linear-gradient(160deg, #f0e8ff 0%, #e0f0f8 50%, #c8eae6 100%);
   }
-
-  #passwordScreen { position: fixed; inset: 0; z-index: 9999; background: var(--gradient-soft); display: flex; align-items: center; justify-content: center; }
-  .password-card { background: var(--card); backdrop-filter: blur(20px); border: 1px solid rgba(201,179,232,0.3); border-radius: 24px; padding: 2.5rem 2rem; text-align: center; max-width: 320px; width: 90%; box-shadow: 0 8px 40px rgba(157,125,199,0.15); }
-  .password-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-style: italic; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.4rem; }
-  .password-subtitle { font-size: 0.82rem; color: var(--text-soft); margin-bottom: 1.8rem; }
-  .password-input { width: 100%; padding: 0.75rem 1rem; border: 1.5px solid rgba(201,179,232,0.4); border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; background: rgba(255,255,255,0.6); color: var(--text); outline: none; text-align: center; letter-spacing: 0.05em; transition: border-color 0.2s; margin-bottom: 1rem; }
-  .password-input:focus { border-color: var(--lilac-dark); }
-  .password-input.wrong { border-color: #e07070; animation: shake 0.4s ease; }
-  .password-error { font-size: 0.78rem; color: #c06060; margin-top: -0.5rem; margin-bottom: 0.8rem; min-height: 1.2rem; }
-  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'DM Sans', sans-serif; background: var(--gradient-soft); min-height: 100vh; color: var(--text); overflow-x: hidden; }
 
@@ -282,14 +272,12 @@
   @media (max-width: 520px) { .macro-grid { grid-template-columns: repeat(2,1fr); } }
   @media (max-width: 500px) { .home-grid { grid-template-columns: 1fr 1fr; } .photos-grid { grid-template-columns: repeat(2,1fr); } .birthday-photos-grid { grid-template-columns: repeat(3,1fr); } .mood-grid { grid-template-columns: 1fr; } .home-header h1 { font-size: 2rem; } .birthday-title { font-size: 2.2rem; } }
 </style>
-
   <!-- Firebase -->
-  <!-- Firebase compat SDKs (no module scope issues) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
   <script>
-    const firebaseConfig = {
+    firebase.initializeApp({
       apiKey: "AIzaSyCCJmqDDYGtfnKsFdfy5fUwaoJkgZYjf0E",
       authDomain: "shrai-app.firebaseapp.com",
       databaseURL: "https://shrai-app-default-rtdb.firebaseio.com",
@@ -297,37 +285,29 @@
       storageBucket: "shrai-app.firebasestorage.app",
       messagingSenderId: "452266524844",
       appId: "1:452266524844:web:d2f27864738ca3bd661f09"
-    };
-    firebase.initializeApp(firebaseConfig);
+    });
     const _db = firebase.database();
     const _fbStorage = firebase.storage();
 
-    // Storage helpers
     window._storage = {
       uploadPhoto: async function(file, path) {
-        const ref = _fbStorage.ref(path);
-        await ref.put(file);
-        return await ref.getDownloadURL();
+        const r = _fbStorage.ref(path);
+        await r.put(file);
+        return await r.getDownloadURL();
       },
       deletePhoto_storage: async function(path) {
-        try { await _fbStorage.ref(path).delete(); } catch(e) { console.warn('delete:', e); }
+        try { await _fbStorage.ref(path).delete(); } catch(e) {}
       }
     };
 
     function serializeState() {
       return {
-        goals: state.goals,
-        habits: state.habits,
-        events: state.events,
-        moods: state.moods,
-        gratitude: state.gratitude,
-        moodData: state.moodData,
-        completedChallenges: state.completedChallenges,
-        birthdayCard: state.birthdayCard,
-        birthdayOpened: state.birthdayOpened,
-        archive: state.archive,
-        photoUrls: state.photos.map(p => p ? { url: p.url || null, caption: p.caption || '' } : null),
-        birthdayPhotoUrls: state.birthdayPhotos.map(p => p ? (typeof p === 'string' ? p : p.url || null) : null),
+        goals: state.goals, habits: state.habits, events: state.events,
+        moods: state.moods, gratitude: state.gratitude, moodData: state.moodData,
+        completedChallenges: state.completedChallenges, birthdayCard: state.birthdayCard,
+        birthdayOpened: state.birthdayOpened, archive: state.archive,
+        photoUrls: state.photos.map(p => p ? { url: p.url||null, caption: p.caption||'' } : null),
+        birthdayPhotoUrls: state.birthdayPhotos.map(p => p ? (typeof p==='string' ? p : p.url||null) : null),
       };
     }
 
@@ -343,55 +323,29 @@
       }, 600);
     };
 
-    // Listen for realtime changes
-    _db.ref('app').on('value', (snapshot) => {
-      const data = snapshot.val();
-      if (!data) return;
+    _db.ref('app').on('value', (snap) => {
+      const data = snap.val(); if (!data) return;
       if (data.state) {
         const s = data.state;
         Object.assign(state, s);
-        if (s.photoUrls) state.photos = s.photoUrls.map(p => p && p.url ? { src: p.url, url: p.url, caption: p.caption || '' } : null);
-        if (s.birthdayPhotoUrls) state.birthdayPhotos = s.birthdayPhotoUrls.map(u => u || null);
+        if (s.photoUrls) state.photos = s.photoUrls.map(p => p&&p.url ? {src:p.url,url:p.url,caption:p.caption||''} : null);
+        if (s.birthdayPhotoUrls) state.birthdayPhotos = s.birthdayPhotoUrls.map(u => u||null);
         state.calYear = state.calYear || new Date().getFullYear();
         state.calMonth = state.calMonth || new Date().getMonth();
       }
       if (data.fitness) Object.assign(_fitness, data.fitness);
       if (data.cycle) Object.assign(_cycle, data.cycle);
       if (data.watchlist) _op.watchlist = data.watchlist;
-      if (data.music) { _music.length = 0; data.music.forEach(m => _music.push(m)); }
-
-      const activePage = document.querySelector('.page.active')?.id;
-      if (activePage) {
-        const renders = {
-          goals: () => typeof renderGoals === 'function' && renderGoals(),
-          habits: () => typeof renderHabits === 'function' && renderHabits(),
-          mood: () => typeof renderMoodHistory === 'function' && renderMoodHistory(),
-          gratitude: () => typeof renderGratitude === 'function' && renderGratitude(),
-          calendar: () => typeof renderCalendar === 'function' && renderCalendar(),
-          ourplace: () => typeof renderWatchlist === 'function' && renderWatchlist(),
-          home: () => typeof renderHome === 'function' && renderHome(),
-        };
-        if (renders[activePage]) renders[activePage]();
-      }
+      if (data.music) { _music.length=0; data.music.forEach(m=>_music.push(m)); }
+      const pg = document.querySelector('.page.active')?.id;
+      const renders = { goals:renderGoals, habits:renderHabits, mood:renderMoodHistory, gratitude:renderGratitude, calendar:renderCalendar, home:renderHome };
+      if (pg && renders[pg]) renders[pg]();
     });
-
-    window._fbReady = true;
     console.log('Firebase connected ✅');
   </script>
 </head>
 <body>
 
-
-<div id="passwordScreen">
-  <div class="password-card">
-    <div style="font-size:2.5rem;margin-bottom:0.8rem;">💜</div>
-    <div class="password-title">Jai & Shrey</div>
-    <div class="password-subtitle">enter the password to continue 🌸</div>
-    <input class="password-input" id="passwordInput" type="password" placeholder="password" onkeydown="if(event.key==='Enter'){var v=this.value;if(v==='jaiisthequeen'){document.getElementById('passwordScreen').style.display='none';sessionStorage.setItem('auth','1');}else{this.style.borderColor='#e07070';var t=this;setTimeout(function(){t.style.borderColor='';t.value='';t.focus();},600);}}">
-    <div class="password-error" id="passwordError"></div>
-    <button class="btn" style="width:100%;" onclick="var v=document.getElementById('passwordInput').value;if(v==='jaiisthequeen'){document.getElementById('passwordScreen').style.display='none';sessionStorage.setItem('auth','1');}else{var i=document.getElementById('passwordInput');i.style.borderColor='#e07070';setTimeout(function(){i.style.borderColor='';i.value='';i.focus();},600);}">Enter ✨</button>
-  </div>
-</div>
 <div class="bg-blobs">
   <div class="blob blob-1"></div>
   <div class="blob blob-2"></div>
@@ -989,7 +943,7 @@ function showPage(page) {
   const btn = document.querySelector(`[data-page="${page}"]`);
   if (btn) btn.classList.add('active');
   if (page === 'home') renderHome();
-  if (page === 'goals') { renderGoals(); renderFitnessCards(); if(window.fbSave)fbSave(); }
+  if (page === 'goals') { renderGoals(); renderFitnessCards(); }
   if (page === 'calendar') renderCalendar();
   if (page === 'habits') renderHabits();
   if (page === 'gratitude') renderGratitude();
@@ -1054,17 +1008,14 @@ function renderGoals() {
 }
 function toggleGoal(type, i) {
   state.goals[type][i].done = !state.goals[type][i].done;
-  if (state.goals[type][i].done) { // fb-patched
-  if(window.fbSave)fbSave();
+  if (state.goals[type][i].done) { if(window.fbSave)fbSave();
   state.archive.push({ title: state.goals[type][i].text, date: new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short'}), type: 'Goal' }); spawnHearts(); }
   renderGoals();
 }
-function addGoal(type) { window.fbSave && fbSave(); // patched
-  // original below
-  window.fbSave && (0); function addGoal_orig(type) {
+function addGoal(type) {
   const input = document.getElementById(type + 'GoalInput');
   if (!input.value.trim()) return;
-  state.goals[type].push({ id: Date.now(), text: input.value.trim(), done: false });
+  state.goals[type].push({ id: Date.now(), text: input.value.trim(), done: false }); if(window.fbSave)fbSave();
   input.value = ''; renderGoals();
 }
 function deleteGoal(type, i) { state.goals[type].splice(i, 1); renderGoals(); if(window.fbSave)fbSave(); }
@@ -1077,7 +1028,7 @@ function logMacros(p) {
   f.carb += +document.getElementById(p+'-carb-in').value || 0;
   f.fat += +document.getElementById(p+'-fat-in').value || 0;
   ['-cal-in','-pro-in','-carb-in','-fat-in'].forEach(s => { const el=document.getElementById(p+s); if(el) el.value=''; });
-  renderFitnessCards(); if(window.fbSave)fbSave(); spawnHearts();
+  renderFitnessCards(); spawnHearts();
 }
 function logWorkout(p) {
   const desc = document.getElementById(p+'-wd')?.value.trim();
@@ -1087,7 +1038,7 @@ function logWorkout(p) {
   _fitness[p].workouts.unshift({ desc, type, mins, time: new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) });
   document.getElementById(p+'-wd').value = '';
   document.getElementById(p+'-wm').value = '';
-  renderFitnessCards(); if(window.fbSave)fbSave(); spawnHearts();
+  renderFitnessCards(); spawnHearts();
 }
 function renderFitnessCards() {
   ['j','s'].forEach(p => {
@@ -1146,7 +1097,6 @@ function nextMonth() { state.calMonth++; if (state.calMonth > 11) { state.calMon
 function addEvent() {
   const date = document.getElementById('eventDate').value, title = document.getElementById('eventTitle').value.trim();
   if (!date || !title) return;
-  // fb-patched
   if(window.fbSave)fbSave();
   state.events.push({ date, title });
   document.getElementById('eventDate').value = ''; document.getElementById('eventTitle').value = '';
@@ -1210,7 +1160,6 @@ function selectMood(person, emoji, el) {
 function saveMood(person) {
   const note = document.getElementById(person + 'MoodNote').value;
   const emoji = state.moodData[person]?.emoji || '😌';
-  // fb-patched
   if(window.fbSave)fbSave();
   state.moods.unshift({ person, emoji, note, date: new Date().toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}) });
   state.moodData[person] = { emoji, note };
@@ -1238,7 +1187,6 @@ function renderGratitude() {
 function addGratitude() {
   const text = document.getElementById('gratitudeText').value.trim();
   if (!text) return;
-  // fb-patched
   if(window.fbSave)fbSave();
   state.gratitude.unshift({ author: document.getElementById('gratitudeAuthor').value, text, privacy: document.getElementById('gratitudePrivacy').value, date: new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short'}) });
   document.getElementById('gratitudeText').value = '';
@@ -1284,18 +1232,16 @@ function handlePhotoUpload(event) {
   const file = event.target.files[0]; if (!file) return;
   const slot = state.currentPhotoSlot;
   if (!window._storage) {
-    // fallback to local if storage not ready
     const reader = new FileReader();
     reader.onload = e => { state.photos[slot] = { src: e.target.result, caption: '' }; renderPhotos(); };
     reader.readAsDataURL(file);
   } else {
-    const path = `photos/slot_${slot}_${Date.now()}`;
-    // show loading state
+    const path = 'photos/slot_' + slot + '_' + Date.now();
     state.photos[slot] = { src: null, url: null, caption: '', loading: true }; renderPhotos();
     window._storage.uploadPhoto(file, path).then(url => {
       state.photos[slot] = { src: url, url: url, caption: '', path: path };
       renderPhotos(); if(window.fbSave)fbSave();
-    }).catch(err => { console.error(err); state.photos[slot] = null; renderPhotos(); });
+    }).catch(err => { state.photos[slot] = null; renderPhotos(); });
   }
   event.target.value = '';
 }
@@ -1387,10 +1333,7 @@ function checkBirthday() {
   const isJaiBirthday = today.getMonth() === 2 && today.getDate() === 5;
   const isShreyBirthday = today.getMonth() === 9 && today.getDate() === 4;
   const isBirthday = isJaiBirthday || isShreyBirthday;
-  // update tab label based on whose birthday it is
-  const tab2 = document.getElementById('birthdayTab');
-  if (isJaiBirthday) tab2.textContent = '🎂 Her Day';
-  if (isShreyBirthday) tab2.textContent = '🎂 Your Day';
+  if(isShreyBirthday) document.getElementById('birthdayTab').textContent = '🎂 Your Day';
   const tab = document.getElementById('birthdayTab');
   tab.style.display = isBirthday ? 'flex' : 'none';
   if (isBirthday) setTimeout(() => showPage('birthday'), 500);
@@ -1400,8 +1343,7 @@ function renderBirthday() {
   const grid = document.getElementById('birthdayPhotoGrid'); grid.innerHTML = '';
   state.birthdayPhotos.forEach((photo, i) => {
     const slot = document.createElement('div'); slot.className = 'birthday-photo-slot';
-    if (photo === 'loading') { slot.innerHTML = `<span style="font-size:1.2rem;opacity:0.5;">⏳</span>`; }
-    else if (photo) { slot.innerHTML = `<img src="${photo}" alt="">`; }
+    if (photo) { slot.innerHTML = `<img src="${photo}" alt="">`; }
     else { slot.textContent = '+'; slot.onclick = () => { state.currentBirthdaySlot = i; document.getElementById('birthdayPhotoUpload').click(); }; }
     grid.appendChild(slot);
   });
@@ -1433,12 +1375,12 @@ function handleBirthdayPhotoUpload(event) {
     reader.onload = e => { state.birthdayPhotos[slot] = e.target.result; renderBirthday(); };
     reader.readAsDataURL(file);
   } else {
-    const path = `birthday/slot_${slot}_${Date.now()}`;
+    const path = 'birthday/slot_' + slot + '_' + Date.now();
     state.birthdayPhotos[slot] = 'loading'; renderBirthday();
     window._storage.uploadPhoto(file, path).then(url => {
       state.birthdayPhotos[slot] = url;
       renderBirthday(); if(window.fbSave)fbSave();
-    }).catch(err => { console.error(err); state.birthdayPhotos[slot] = null; renderBirthday(); });
+    }).catch(err => { state.birthdayPhotos[slot] = null; renderBirthday(); });
   }
   event.target.value = '';
 }
@@ -1477,12 +1419,6 @@ function spawnHearts() {
   }
 }
 
-
-// ===== PASSWORD =====
-if (sessionStorage.getItem('auth') === '1') {
-  var ps = document.getElementById('passwordScreen');
-  if (ps) ps.style.display = 'none';
-}
 // ===== INIT =====
 function init() {
   setDailyQuote();
