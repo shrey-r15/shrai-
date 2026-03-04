@@ -2412,11 +2412,17 @@ init();
 </script>
 
 <!-- Firebase sync -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/firebase@9.23.0/compat/app/dist/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/firebase@9.23.0/compat/database/dist/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/firebase@9.23.0/compat/storage/dist/index.js"></script>
 <script>
-firebase.initializeApp({
+function _initFirebase() {
+  if (typeof firebase === 'undefined' || !firebase.database) {
+    console.warn('Firebase failed to load — running in offline mode');
+    window.fbSave = function(){};
+    return;
+  }
+  firebase.initializeApp({
   apiKey:"AIzaSyCCJmqDDYGtfnKsFdfy5fUwaoJkgZYjf0E",
   authDomain:"shrai-app.firebaseapp.com",
   databaseURL:"https://shrai-app-default-rtdb.firebaseio.com",
@@ -2460,6 +2466,7 @@ window.fbSave = function() {
   _fbTimer = setTimeout(function() {
     _db.ref('app/state').set(_fbSerialize()).catch(console.error);
     _db.ref('app/fitness').set(_fitness).catch(console.error);
+    _db.ref('app/workoutHistory').set(_workoutHistory).catch(console.error);
     _db.ref('app/cycle').set(_cycle).catch(console.error);
     _db.ref('app/watchlist').set(_op.watchlist).catch(console.error);
     _db.ref('app/books').set(_op.books).catch(console.error);
@@ -2470,8 +2477,12 @@ window.fbSave = function() {
 
 // Patch saveToLocal to also call fbSave
 var _origSaveToLocal = saveToLocal;
-saveToLocal = function() { _origSaveToLocal(); fbSave(); };
+saveToLocal = function() { _origSaveToLocal(); if(window.fbSave) fbSave(); };
+} // end _initFirebase
+// Call after a short delay to ensure Firebase SDKs are ready
+setTimeout(_initFirebase, 100);
 
+var _fbListenerReady = false;
 _db.ref('app').on('value', function(snap) {
   var data = snap.val(); if (!data) return;
   if (data.state) {
@@ -2488,22 +2499,30 @@ _db.ref('app').on('value', function(snap) {
     if (s.photoUrls) state.photos = s.photoUrls.map(function(p){ return p&&p.url?{src:p.url,url:p.url,caption:p.caption||''}:null; });
     if (s.birthdayPhotoUrls) state.birthdayPhotos = s.birthdayPhotoUrls.map(function(u){ return u||null; });
   }
-  if (data.fitness) Object.assign(_fitness, data.fitness);
+  if (data.fitness) { Object.assign(_fitness, data.fitness); }
+  if (data.workoutHistory) { Object.assign(_workoutHistory, data.workoutHistory); }
   if (data.cycle) { Object.assign(_cycle, data.cycle); }
-  if (data.watchlist) _op.watchlist = data.watchlist;
-  if (data.books) _op.books = data.books;
+  if (data.watchlist) { _op.watchlist = data.watchlist; }
+  if (data.books) { _op.books = data.books; }
   if (data.music) { _music.length=0; data.music.forEach(function(m){_music.push(m);}); }
   if (data.study) { _studySessions.length=0; data.study.forEach(function(s){_studySessions.push(s);}); }
-  // re-render active page
+  // Skip re-render on first load (init() handles that)
+  if (!_fbListenerReady) { _fbListenerReady = true; return; }
+  // Re-render whatever page is active
   var pg = (document.querySelector('.page.active')||{}).id;
   if (!pg) return;
-  var renders = {
-    goals: renderGoals, mood: renderMoodHistory, calendar: renderCalendar,
-    home: renderHome, ourplace: renderOP, love: renderLove,
-    study: function(){ renderStudyStats(); renderStudyLog(); },
-    health: renderFitnessCards, photos: renderPhotos
+  var pageRenders = {
+    'page-goals':    function(){ try{renderGoals();}catch(e){} },
+    'page-mood':     function(){ try{renderMoodHistory();}catch(e){} },
+    'page-calendar': function(){ try{renderCalendar();}catch(e){} },
+    'page-love':     function(){ try{renderLove();}catch(e){} },
+    'page-photos':   function(){ try{renderPhotos();}catch(e){} },
+    'page-ourplace': function(){ try{renderOP();}catch(e){} },
+    'page-study':    function(){ try{renderStudyStats();renderStudyLog();}catch(e){} },
+    'page-health':   function(){ try{renderFitnessCards();}catch(e){} },
+    'page-archive':  function(){ try{renderArchive();}catch(e){} }
   };
-  if (renders[pg]) try { renders[pg](); } catch(e){}
+  if (pageRenders[pg]) pageRenders[pg]();
 });
 
 // Photo upload patched to use Firebase Storage
