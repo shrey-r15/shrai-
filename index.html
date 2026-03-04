@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jai & Shrey ✨</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --lilac: #c9b3e8;
+    --lilac-light: #e8d8ff;
+    --lilac-dark: #9d7dc7;
+    --teal: #6bbfb5;
+    --teal-light: #a8ddd8;
+    --teal-dark: #3d9e93;
+    --bg: #faf7ff;
+    --text: #2d2540;
+    --text-soft: #7a6e8a;
+    --card: rgba(255,255,255,0.75);
+    --gradient: linear-gradient(135deg, #c9b3e8 0%, #a8c8e8 40%, #6bbfb5 100%);
+    --gradient-soft: linear-gradient(160deg, #f0e8ff 0%, #e0f0f8 50%, #c8eae6 100%);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--gradient-soft); min-height: 100vh; color: var(--text); overflow-x: hidden; }
+
+  .bg-blobs { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
+  .blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.25; animation: blobFloat 12s ease-in-out infinite; }
+  .blob-1 { width: 500px; height: 500px; background: var(--lilac); top: -100px; left: -100px; animation-delay: 0s; }
+  .blob-2 { width: 400px; height: 400px; background: var(--teal); bottom: -80px; right: -80px; animation-delay: -4s; }
+  .blob-3 { width: 300px; height: 300px; background: #b8d4f0; top: 40%; left: 40%; animation-delay: -8s; }
+  @keyframes blobFloat { 0%, 100% { transform: translate(0,0) scale(1); } 33% { transform: translate(30px,-30px) scale(1.05); } 66% { transform: translate(-20px,20px) scale(0.95); } }
+
+  nav { position: sticky; top: 0; z-index: 100; backdrop-filter: blur(20px); background: rgba(250,247,255,0.85); border-bottom: 1px solid rgba(201,179,232,0.3); padding: 0 1.5rem; }
+  .nav-inner { max-width: 800px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0.8rem 0; }
+  .nav-title { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .nav-tabs { display: flex; gap: 0.2rem; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .tab-btn { padding: 0.45rem 0.75rem; border: none; background: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.78rem; color: var(--text-soft); border-radius: 20px; transition: all 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 0.3rem; }
+  .tab-btn.active { background: var(--gradient); color: white; font-weight: 500; box-shadow: 0 4px 15px rgba(107,191,181,0.3); }
+  .tab-btn:hover:not(.active) { background: rgba(201,179,232,0.15); color: var(--text); }
+
+  .page { display: none; max-width: 800px; margin: 0 auto; padding: 1.5rem; position: relative; z-index: 1; }
+  .page.active { display: block; animation: fadeUp 0.4s ease; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+  .card { background: var(--card); backdrop-filter: blur(16px); border: 1px solid rgba(201,179,232,0.25); border-radius: 20px; padding: 1.5rem; margin-bottom: 1.2rem; box-shadow: 0 4px 24px rgba(157,125,199,0.08); transition: transform 0.2s, box-shadow 0.2s; }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(157,125,199,0.15); }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 600; margin-bottom: 1.2rem; color: var(--text); }
+  .pill { display: inline-block; padding: 0.3rem 0.9rem; border-radius: 20px; font-size: 0.75rem; font-weight: 500; background: linear-gradient(135deg, rgba(201,179,232,0.25), rgba(107,191,181,0.25)); border: 1px solid rgba(201,179,232,0.4); color: var(--lilac-dark); margin-bottom: 0.8rem; }
+
+  /* HOME */
+  .home-header { text-align: center; padding: 2rem 0 1.5rem; }
+  .home-header h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; font-weight: 300; font-style: italic; line-height: 1.2; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .home-header p { color: var(--text-soft); font-size: 0.9rem; margin-top: 0.5rem; }
+
+  .quote-card { background: linear-gradient(135deg, rgba(201,179,232,0.2), rgba(107,191,181,0.2)); border: 1px solid rgba(201,179,232,0.35); border-radius: 20px; padding: 2rem; text-align: center; margin-bottom: 1.2rem; position: relative; overflow: hidden; }
+  .quote-card::before { content: '"'; font-family: 'Cormorant Garamond', serif; font-size: 8rem; color: rgba(201,179,232,0.2); position: absolute; top: -1rem; left: 1rem; line-height: 1; pointer-events: none; }
+  .quote-text { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-style: italic; font-weight: 400; line-height: 1.7; color: var(--text); margin-bottom: 0.8rem; position: relative; z-index: 1; }
+  .quote-source { font-size: 0.78rem; color: var(--text-soft); letter-spacing: 0.08em; text-transform: uppercase; }
+  .quote-nav { display: flex; justify-content: center; gap: 0.5rem; margin-top: 1rem; }
+  .quote-nav button { padding: 0.4rem 1rem; border-radius: 20px; border: 1px solid rgba(201,179,232,0.4); background: white; cursor: pointer; font-size: 0.8rem; color: var(--text-soft); transition: all 0.2s; }
+  .quote-nav button:hover { background: var(--gradient); color: white; border-color: transparent; }
+
+  .home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .mini-card { background: var(--card); border: 1px solid rgba(201,179,232,0.25); border-radius: 16px; padding: 1.2rem; backdrop-filter: blur(12px); text-align: center; cursor: pointer; transition: all 0.2s; }
+  .mini-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(157,125,199,0.2); }
+  .mini-card .icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+  .mini-card h3 { font-size: 0.85rem; font-weight: 500; color: var(--text); }
+  .mini-card p { font-size: 0.75rem; color: var(--text-soft); margin-top: 0.2rem; }
+
+  /* GOALS */
+  .goals-section { margin-bottom: 1.5rem; }
+  .goal-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.9rem 1rem; border-radius: 12px; background: rgba(255,255,255,0.6); margin-bottom: 0.5rem; border: 1px solid rgba(201,179,232,0.2); transition: all 0.2s; }
+  .goal-item:hover { background: rgba(255,255,255,0.9); }
+  .goal-item.completed .goal-text { text-decoration: line-through; color: var(--text-soft); }
+  .goal-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--lilac); background: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
+  .goal-check.done { background: var(--gradient); border-color: transparent; }
+  .goal-check.done::after { content: '✓'; font-size: 0.75rem; color: white; }
+  .goal-text { flex: 1; font-size: 0.9rem; }
+  .goal-who { font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 10px; font-weight: 500; }
+  .goal-who.jai { background: rgba(201,179,232,0.3); color: var(--lilac-dark); }
+  .goal-who.shrey { background: rgba(107,191,181,0.3); color: var(--teal-dark); }
+  .goal-who.both { background: linear-gradient(135deg, rgba(201,179,232,0.3), rgba(107,191,181,0.3)); color: var(--text); }
+
+  .add-goal-form, .add-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.8rem; }
+  .add-goal-form input, .add-goal-form select,
+  .add-row input, .add-row select { flex: 1; min-width: 120px; padding: 0.6rem 1rem; border-radius: 10px; border: 1px solid rgba(201,179,232,0.4); background: white; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; color: var(--text); outline: none; }
+  .add-goal-form input:focus, .add-row input:focus { border-color: var(--lilac); }
+  .btn { padding: 0.6rem 1.2rem; border-radius: 10px; border: none; background: var(--gradient); color: white; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 500; transition: all 0.2s; white-space: nowrap; }
+  .btn:hover { opacity: 0.88; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(107,191,181,0.35); }
+  .btn-outline { padding: 0.5rem 1rem; border-radius: 10px; border: 1px solid rgba(201,179,232,0.5); background: white; color: var(--text-soft); cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; transition: all 0.2s; }
+  .btn-outline:hover { background: rgba(201,179,232,0.1); color: var(--text); }
+
+  /* CALENDAR */
+  .calendar-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+  .calendar-header h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 1rem; }
+  .cal-day-header { text-align: center; font-size: 0.72rem; font-weight: 500; color: var(--text-soft); padding: 0.4rem 0; text-transform: uppercase; }
+  .cal-day { aspect-ratio: 1; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; cursor: pointer; position: relative; transition: all 0.15s; border: 1px solid transparent; }
+  .cal-day:hover { background: rgba(201,179,232,0.2); }
+  .cal-day.today { background: var(--gradient); color: white; font-weight: 600; }
+  .cal-day.has-event::after { content: ''; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; border-radius: 50%; background: var(--teal); }
+  .cal-day.today.has-event::after { background: white; }
+  .cal-day.other-month { color: rgba(45,37,64,0.25); }
+  .cal-day.birthday { background: linear-gradient(135deg, rgba(255,182,193,0.4), rgba(201,179,232,0.4)); }
+  .cal-day.birthday::before { content: '🎂'; position: absolute; top: -2px; right: -2px; font-size: 0.6rem; }
+  .cal-day.period-flow { background: rgba(255,100,130,0.14); border: 1.5px solid rgba(255,100,130,0.3); }
+  .cal-day.period-predict { background: rgba(255,180,200,0.09); border: 1.5px solid rgba(255,180,200,0.22); }
+  .cal-day.ovulation { background: rgba(255,210,80,0.18); border: 1.5px solid rgba(255,190,60,0.32); }
+
+  .events-list { margin-top: 1rem; }
+  .event-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; border-radius: 12px; background: rgba(255,255,255,0.6); margin-bottom: 0.5rem; border-left: 3px solid var(--lilac); font-size: 0.85rem; }
+  .event-date-badge { font-size: 0.7rem; color: var(--text-soft); min-width: 65px; }
+
+  /* CYCLE PANEL */
+  .cycle-panel { background: rgba(255,200,215,0.1); border: 1px solid rgba(255,150,180,0.24); border-radius: 14px; padding: 1rem; margin-bottom: 1rem; }
+  .cycle-panel-title { font-size: 0.79rem; font-weight: 500; color: #c03060; margin-bottom: 0.55rem; }
+  .cycle-legend { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-bottom: 0.65rem; font-size: 0.71rem; color: var(--text-soft); }
+  .ldot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; margin-right: 3px; vertical-align: middle; }
+  .cycle-controls { display: flex; gap: 0.42rem; align-items: center; flex-wrap: wrap; }
+  .cycle-controls label { font-size: 0.74rem; color: var(--text-soft); }
+
+  /* MOOD */
+  .mood-section { margin-bottom: 1.5rem; }
+  .mood-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .mood-person { background: var(--card); border: 1px solid rgba(201,179,232,0.25); border-radius: 16px; padding: 1.2rem; }
+  .mood-person h3 { font-size: 0.9rem; font-weight: 500; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; }
+  .mood-emojis { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+  .mood-emoji { font-size: 1.5rem; cursor: pointer; padding: 0.3rem; border-radius: 10px; transition: all 0.15s; border: 2px solid transparent; }
+  .mood-emoji.selected { border-color: var(--lilac); background: rgba(201,179,232,0.2); transform: scale(1.15); }
+  .mood-emoji:hover { transform: scale(1.1); }
+  .mood-note { width: 100%; padding: 0.5rem 0.75rem; border-radius: 8px; border: 1px solid rgba(201,179,232,0.35); font-family: 'DM Sans', sans-serif; font-size: 0.8rem; resize: none; background: white; color: var(--text); outline: none; }
+  .mood-history { margin-top: 1rem; }
+  .mood-log-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0; border-bottom: 1px solid rgba(201,179,232,0.1); font-size: 0.8rem; }
+
+  /* HABITS */
+  .habit-item { display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border-radius: 14px; background: rgba(255,255,255,0.6); margin-bottom: 0.6rem; border: 1px solid rgba(201,179,232,0.2); }
+  .habit-streak { font-size: 0.72rem; background: rgba(255,190,60,0.15); padding: 0.25rem 0.6rem; border-radius: 10px; color: #c4920a; font-weight: 500; }
+  .habit-days { display: flex; gap: 3px; margin-left: auto; }
+  .habit-day { width: 18px; height: 18px; border-radius: 4px; background: rgba(201,179,232,0.2); cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; }
+  .habit-day.done { background: var(--gradient); }
+  .habit-day:hover { transform: scale(1.15); }
+
+  /* GRATITUDE */
+  .gratitude-entry { padding: 1.2rem; border-radius: 16px; background: rgba(255,255,255,0.7); margin-bottom: 0.8rem; border: 1px solid rgba(201,179,232,0.2); }
+  .gratitude-entry .date { font-size: 0.72rem; color: var(--text-soft); margin-bottom: 0.4rem; }
+  .gratitude-entry .author { font-size: 0.72rem; padding: 0.2rem 0.6rem; border-radius: 10px; display: inline-block; margin-bottom: 0.5rem; }
+  .gratitude-entry .author.jai { background: rgba(201,179,232,0.3); color: var(--lilac-dark); }
+  .gratitude-entry .author.shrey { background: rgba(107,191,181,0.3); color: var(--teal-dark); }
+  .gratitude-write textarea { width: 100%; min-height: 80px; padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid rgba(201,179,232,0.35); font-family: 'DM Sans', sans-serif; font-size: 0.88rem; resize: none; background: white; color: var(--text); outline: none; margin-bottom: 0.6rem; }
+  .gratitude-write textarea:focus { border-color: var(--lilac); }
+  .write-controls { display: flex; gap: 0.5rem; align-items: center; }
+  .write-controls select { padding: 0.5rem 0.75rem; border-radius: 8px; border: 1px solid rgba(201,179,232,0.35); background: white; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; color: var(--text); outline: none; }
+
+  /* LOVE */
+  .challenge-card { background: linear-gradient(135deg, rgba(201,179,232,0.15), rgba(107,191,181,0.15)); border: 1px solid rgba(201,179,232,0.3); border-radius: 18px; padding: 1.5rem; margin-bottom: 1rem; position: relative; overflow: hidden; }
+  .challenge-card::after { content: ''; position: absolute; top: -40px; right: -40px; width: 120px; height: 120px; border-radius: 50%; background: radial-gradient(circle, rgba(201,179,232,0.2), transparent); }
+  .challenge-tag { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-soft); margin-bottom: 0.5rem; }
+  .challenge-text { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; line-height: 1.6; margin-bottom: 1rem; }
+  .challenge-actions { display: flex; gap: 0.5rem; }
+
+  /* PHOTOS */
+  .photos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 1rem; }
+  .photo-slot { aspect-ratio: 1; border-radius: 14px; background: linear-gradient(135deg, rgba(201,179,232,0.2), rgba(107,191,181,0.2)); border: 1.5px dashed rgba(201,179,232,0.4); display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; position: relative; transition: all 0.2s; }
+  .photo-slot:hover { border-color: var(--lilac); background: rgba(201,179,232,0.1); }
+  .photo-slot img { width: 100%; height: 100%; object-fit: cover; }
+  .photo-slot .add-icon { font-size: 1.5rem; color: var(--lilac); }
+  .photo-slot .photo-delete { position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; border-radius: 50%; background: rgba(0,0,0,0.5); color: white; border: none; cursor: pointer; font-size: 0.65rem; display: none; align-items: center; justify-content: center; }
+  .photo-slot:hover .photo-delete { display: flex; }
+  .photo-caption { position: absolute; bottom: 0; left: 0; right: 0; padding: 0.4rem 0.5rem; background: linear-gradient(transparent, rgba(0,0,0,0.45)); color: white; font-size: 0.65rem; border-radius: 0 0 12px 12px; }
+
+  /* OUR PLACE */
+  .op-tabs { display: flex; gap: 0.4rem; margin-bottom: 1.1rem; flex-wrap: wrap; }
+  .op-tab { padding: 0.4rem 0.9rem; border-radius: 16px; border: 1px solid rgba(201,179,232,0.35); background: white; cursor: pointer; font-size: 0.79rem; color: var(--text-soft); transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+  .op-tab.active { background: var(--gradient); color: white; border-color: transparent; }
+  .op-sec { display: none; }
+  .op-sec.active { display: block; }
+  .media-item { display: flex; align-items: flex-start; gap: 0.85rem; padding: 0.88rem 1rem; border-radius: 13px; background: rgba(255,255,255,0.65); margin-bottom: 0.5rem; border: 1px solid rgba(201,179,232,0.18); transition: all 0.2s; }
+  .media-item:hover { background: rgba(255,255,255,0.9); }
+  .media-emoji { font-size: 1.6rem; flex-shrink: 0; line-height: 1; }
+  .media-info { flex: 1; }
+  .media-title { font-size: 0.9rem; font-weight: 500; margin-bottom: 0.12rem; }
+  .media-meta { font-size: 0.72rem; color: var(--text-soft); }
+  .media-status { font-size: 0.7rem; padding: 0.2rem 0.58rem; border-radius: 8px; font-weight: 500; white-space: nowrap; }
+  .s-want { background: rgba(201,179,232,0.25); color: var(--lilac-dark); }
+  .s-watching { background: rgba(255,215,80,0.22); color: #9a7a00; }
+  .s-done { background: rgba(107,191,181,0.25); color: var(--teal-dark); }
+  .music-item { display: flex; align-items: center; gap: 0.78rem; padding: 0.78rem 1rem; border-radius: 12px; background: rgba(255,255,255,0.62); margin-bottom: 0.45rem; border: 1px solid rgba(201,179,232,0.16); }
+  .music-disc { width: 38px; height: 38px; border-radius: 50%; background: var(--gradient); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; transition: transform 0.5s; }
+  .music-item:hover .music-disc { transform: rotate(180deg); }
+  .music-info { flex: 1; }
+  .music-title { font-size: 0.89rem; font-weight: 500; }
+  .music-sub { font-size: 0.72rem; color: var(--text-soft); }
+  .star { font-size: 1.18rem; cursor: pointer; transition: color 0.12s; }
+  .star.on { color: #f5a623; }
+  .star.off { color: #ddd; }
+  .rating-row { display: flex; align-items: center; gap: 0.5rem; padding: 0.55rem 0; border-bottom: 1px solid rgba(201,179,232,0.1); font-size: 0.83rem; }
+  .rating-row:last-child { border-bottom: none; }
+  .rating-lbl { flex: 1; }
+
+  /* FITNESS */
+  .fitness-person-hdr { font-size: 0.9rem; font-weight: 500; margin: 0.6rem 0 0.75rem; display: flex; align-items: center; gap: 0.4rem; }
+  .macro-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 0.65rem; margin-bottom: 0.8rem; }
+  .macro-box { background: rgba(255,255,255,0.72); border-radius: 13px; padding: 0.85rem 0.5rem; border: 1px solid rgba(201,179,232,0.2); text-align: center; }
+  .macro-val { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 600; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .macro-lbl { font-size: 0.65rem; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.1rem; }
+  .macro-bar { height: 5px; border-radius: 3px; background: rgba(201,179,232,0.18); margin-top: 0.45rem; overflow: hidden; }
+  .macro-fill { height: 100%; border-radius: 3px; background: var(--gradient); transition: width 0.45s; }
+  .workout-entry { display: flex; align-items: center; gap: 0.6rem; padding: 0.65rem 0.85rem; border-radius: 10px; background: rgba(255,255,255,0.56); margin-bottom: 0.4rem; border: 1px solid rgba(201,179,232,0.15); font-size: 0.84rem; }
+  .wtag { font-size: 0.67rem; padding: 0.18rem 0.52rem; border-radius: 8px; font-weight: 500; white-space: nowrap; }
+  .wtag-cardio { background: rgba(249,192,203,0.3); color: #c06080; }
+  .wtag-strength { background: rgba(201,179,232,0.3); color: var(--lilac-dark); }
+  .wtag-yoga { background: rgba(107,191,181,0.3); color: var(--teal-dark); }
+  .wtag-other { background: rgba(200,200,220,0.3); color: #6a6a8a; }
+
+  /* QUOTE BADGE */
+  .quote-source-badge { display: inline-block; padding: 0.23rem 0.75rem; border-radius: 12px; font-size: 0.68rem; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 0.6rem; font-weight: 600; }
+  .badge-ggs { background: rgba(201,179,232,0.3); color: var(--lilac-dark); }
+  .badge-gita { background: rgba(107,191,181,0.3); color: var(--teal-dark); }
+
+  /* BIRTHDAY */
+  #page-birthday { text-align: center; background: radial-gradient(ellipse at center, rgba(255,182,193,0.2) 0%, rgba(201,179,232,0.15) 50%, transparent 100%); }
+  .birthday-hero { padding: 3rem 1rem 2rem; position: relative; }
+  .confetti-container { position: absolute; top: 0; left: 0; right: 0; height: 100%; pointer-events: none; overflow: hidden; }
+  .confetti-piece { position: absolute; width: 8px; height: 8px; border-radius: 2px; animation: confettiFall linear infinite; opacity: 0.7; }
+  @keyframes confettiFall { 0% { transform: translateY(-20px) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+  .birthday-title { font-family: 'Cormorant Garamond', serif; font-size: 3rem; font-weight: 300; font-style: italic; background: linear-gradient(135deg, #f0a0b0, #c9b3e8, #6bbfb5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.2; margin-bottom: 0.5rem; }
+  .birthday-subtitle { font-size: 0.95rem; color: var(--text-soft); margin-bottom: 2rem; }
+  .present-box-wrapper { margin: 1.5rem auto; max-width: 200px; }
+  .present-box { width: 140px; height: 140px; margin: 0 auto; background: linear-gradient(135deg, #f9c0cb, #e8b3e8); border-radius: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 4rem; position: relative; box-shadow: 0 12px 40px rgba(249,192,203,0.5); transition: transform 0.3s; animation: presentBounce 2s ease-in-out infinite; border: 3px solid rgba(255,255,255,0.6); }
+  @keyframes presentBounce { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-8px) rotate(2deg); } }
+  .present-box:hover { transform: scale(1.08) rotate(5deg) !important; animation: none; }
+  .present-ribbon { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 24px; height: 24px; background: linear-gradient(135deg, #f9c0cb, #e090e0); border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+  .present-message { margin-top: 1rem; font-size: 0.85rem; color: var(--text-soft); font-style: italic; }
+  .birthday-reveal { display: none; padding: 1.5rem; background: linear-gradient(135deg, rgba(255,182,193,0.2), rgba(201,179,232,0.2)); border-radius: 20px; margin-top: 1rem; animation: fadeUp 0.6s ease; }
+  .birthday-reveal.show { display: block; }
+  .birthday-reveal-text { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-style: italic; background: linear-gradient(135deg, #f0a0b0, #c9b3e8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.5; margin-bottom: 1rem; }
+  .birthday-photos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; margin: 1rem 0; }
+  .birthday-photo-slot { aspect-ratio: 1; border-radius: 10px; background: linear-gradient(135deg, rgba(255,182,193,0.25), rgba(201,179,232,0.25)); border: 1.5px dashed rgba(249,192,203,0.6); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; overflow: hidden; transition: all 0.2s; }
+  .birthday-photo-slot:hover { border-color: #f9c0cb; }
+  .birthday-photo-slot img { width: 100%; height: 100%; object-fit: cover; }
+  .birthday-card-area { margin-top: 1.5rem; text-align: left; }
+  .card-preview { background: linear-gradient(135deg, rgba(255,240,245,0.9), rgba(240,235,255,0.9)); border: 1px solid rgba(249,192,203,0.4); border-radius: 20px; padding: 2rem; font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; line-height: 1.8; color: var(--text); white-space: pre-wrap; min-height: 120px; box-shadow: 0 8px 32px rgba(249,192,203,0.2); }
+  .card-edit textarea { width: 100%; min-height: 180px; padding: 1.2rem; border-radius: 16px; border: 1px solid rgba(249,192,203,0.5); font-family: 'Cormorant Garamond', serif; font-size: 1rem; line-height: 1.8; resize: none; background: rgba(255,248,250,0.95); color: var(--text); outline: none; margin-bottom: 0.6rem; }
+  .card-edit textarea:focus { border-color: #f9c0cb; }
+
+  /* ARCHIVE */
+  .archive-item { padding: 1rem 1.2rem; border-radius: 14px; background: rgba(255,255,255,0.5); margin-bottom: 0.6rem; border: 1px solid rgba(201,179,232,0.15); display: flex; align-items: center; gap: 1rem; cursor: pointer; transition: all 0.2s; }
+  .archive-item:hover { background: rgba(255,255,255,0.85); }
+  .archive-date { font-size: 0.72rem; color: var(--text-soft); min-width: 60px; }
+  .archive-title { font-size: 0.9rem; flex: 1; }
+  .archive-type { font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 10px; background: rgba(201,179,232,0.2); color: var(--lilac-dark); }
+
+  /* APPA */
+  #appa-wrap { position: fixed; top: 0; left: -220px; z-index: 9999; pointer-events: none; animation: appaFly 22s linear infinite; }
+  #appa-wrap:hover { pointer-events: auto; cursor: pointer; }
+  @keyframes appaFly {
+    0%   { left: -220px; top: 10vh; transform: scaleX(1); }
+    48%  { left: calc(100vw + 220px); top: 17vh; transform: scaleX(1); }
+    49%  { left: calc(100vw + 220px); top: 17vh; transform: scaleX(-1); }
+    98%  { left: -220px; top: 10vh; transform: scaleX(-1); }
+    99%, 100% { left: -220px; top: 10vh; transform: scaleX(1); }
+  }
+  .appa-svg { width: 180px; filter: drop-shadow(0 4px 14px rgba(107,191,181,0.4)); }
+
+  /* HEARTS + MISC */
+  .floating-heart { position: fixed; pointer-events: none; z-index: 999; animation: floatHeart 2s ease-out forwards; font-size: 1.2rem; }
+  @keyframes floatHeart { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-80px) scale(0.5); } }
+  .birthday-tab-indicator { display: inline-flex; align-items: center; gap: 0.3rem; background: linear-gradient(135deg, #f9c0cb, #e8b3e8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600; animation: pulse 1.5s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+  @media (max-width: 520px) { .macro-grid { grid-template-columns: repeat(2,1fr); } }
+  @media (max-width: 500px) { .home-grid { grid-template-columns: 1fr 1fr; } .photos-grid { grid-template-columns: repeat(2,1fr); } .birthday-photos-grid { grid-template-columns: repeat(3,1fr); } .mood-grid { grid-template-columns: 1fr; } .home-header h1 { font-size: 2rem; } .birthday-title { font-size: 2.2rem; } }
+</style>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, set, get, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCCJmqDDYGtfnKsFdfy5fUwaoJkgZYjf0E",
+      authDomain: "shrai-app.firebaseapp.com",
+      databaseURL: "https://shrai-app-default-rtdb.firebaseio.com",
+      projectId: "shrai-app",
+      storageBucket: "shrai-app.firebasestorage.app",
+      messagingSenderId: "452266524844",
+      appId: "1:452266524844:web:d2f27864738ca3bd661f09"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // ── helpers ──
+    function dbSet(path, data) { return set(ref(db, path), data); }
+    function dbUpdate(path, data) { return update(ref(db, path), data); }
+
+    // ── serialise state (photos are large — keep them local only) ──
+    function serializeState() {
+      return {
+        goals: state.goals,
+        habits: state.habits,
+        events: state.events,
+        moods: state.moods,
+        gratitude: state.gratitude,
+        moodData: state.moodData,
+        completedChallenges: state.completedChallenges,
+        birthdayCard: state.birthdayCard,
+        birthdayOpened: state.birthdayOpened,
+        archive: state.archive,
+      };
+    }
+
+    // ── write to Firebase (debounced) ──
+    let _saveTimer = null;
+    window.fbSave = function() {
+      clearTimeout(_saveTimer);
+      _saveTimer = setTimeout(() => {
+        dbSet('app/state', serializeState()).catch(console.error);
+        dbSet('app/fitness', _fitness).catch(console.error);
+        dbSet('app/cycle', _cycle).catch(console.error);
+        // watchlist & music (no large blobs)
+        dbSet('app/watchlist', _op.watchlist).catch(console.error);
+        dbSet('app/music', _music).catch(console.error);
+      }, 600);
+    };
+
+    // ── listen for changes from other device ──
+    onValue(ref(db, 'app'), (snapshot) => {
+      const data = snapshot.val();
+      if (!data) return;
+
+      if (data.state) {
+        const s = data.state;
+        // merge carefully — preserve local photos
+        const savedPhotos = state.photos;
+        const savedBdPhotos = state.birthdayPhotos;
+        Object.assign(state, s);
+        state.photos = savedPhotos;
+        state.birthdayPhotos = savedBdPhotos;
+        // keep calendar position
+        state.calYear = state.calYear || new Date().getFullYear();
+        state.calMonth = state.calMonth || new Date().getMonth();
+      }
+      if (data.fitness) Object.assign(_fitness, data.fitness);
+      if (data.cycle) Object.assign(_cycle, data.cycle);
+      if (data.watchlist) _op.watchlist = data.watchlist;
+      if (data.music) { _music.length = 0; data.music.forEach(m => _music.push(m)); }
+
+      // re-render current page
+      const activePage = document.querySelector('.page.active')?.id;
+      if (activePage) {
+        const renders = {
+          goals: () => typeof renderGoals === 'function' && renderGoals(),
+          habits: () => typeof renderHabits === 'function' && renderHabits(),
+          mood: () => typeof renderMoodHistory === 'function' && renderMoodHistory(),
+          gratitude: () => typeof renderGratitude === 'function' && renderGratitude(),
+          calendar: () => typeof renderCalendar === 'function' && renderCalendar(),
+          ourplace: () => typeof renderWatchlist === 'function' && renderWatchlist() && renderMusicList && renderMusicList(),
+          home: () => typeof renderHome === 'function' && renderHome(),
+        };
+        if (renders[activePage]) renders[activePage]();
+      }
+    });
+
+    // expose so non-module code can call fbSave()
+    window._fbReady = true;
+    console.log('Firebase connected ✅');
+  </script>
+</head>
+<body>
+
+<div class="bg-blobs">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<!-- APPA flying bison -->
+<div id="appa-wrap" title="Yip yip! 🦬" onclick="spawnHearts()">
+  <svg class="appa-svg" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="100" cy="58" rx="68" ry="30" fill="#f5f0e8"/>
+    <ellipse cx="100" cy="55" rx="64" ry="27" fill="#faf7f2"/>
+    <ellipse cx="38" cy="52" rx="27" ry="21" fill="#faf7f2"/>
+    <ellipse cx="38" cy="52" rx="24" ry="18" fill="#f5f0e8"/>
+    <ellipse cx="28" cy="32" rx="5" ry="11" fill="#e8e0d0" transform="rotate(-15,28,32)"/>
+    <ellipse cx="48" cy="30" rx="5" ry="11" fill="#e8e0d0" transform="rotate(10,48,30)"/>
+    <path d="M38 35 L38 67" stroke="#6bbfb5" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M27 46 Q38 35 50 46" stroke="#6bbfb5" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <circle cx="28" cy="48" r="5" fill="white"/>
+    <circle cx="29" cy="48" r="3" fill="#2d2540"/>
+    <circle cx="30" cy="47" r="1" fill="white"/>
+    <ellipse cx="16" cy="54" rx="7" ry="5" fill="#e8e0d0"/>
+    <circle cx="14" cy="54" r="1.8" fill="#c4b8a0"/>
+    <circle cx="18" cy="54" r="1.8" fill="#c4b8a0"/>
+    <ellipse cx="62" cy="84" rx="10" ry="7" fill="#e8e0d0"/>
+    <ellipse cx="82" cy="86" rx="10" ry="6" fill="#e0d8c8"/>
+    <ellipse cx="118" cy="86" rx="10" ry="6" fill="#e0d8c8"/>
+    <ellipse cx="138" cy="84" rx="10" ry="7" fill="#e8e0d0"/>
+    <path d="M168 55 Q185 42 190 57 Q185 67 172 62" fill="#e8e0d0"/>
+    <circle cx="105" cy="30" r="5" fill="#fddcaa"/>
+    <ellipse cx="105" cy="37" rx="4" ry="6" fill="#ff9955"/>
+    <path d="M105 27 L105 33" stroke="#6bbfb5" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M82 38 Q100 30 124 38 Q124 50 100 50 Q82 50 82 38" fill="rgba(107,191,181,0.3)" stroke="rgba(107,191,181,0.5)" stroke-width="1"/>
+    <ellipse cx="185" cy="70" rx="11" ry="5" fill="rgba(255,255,255,0.48)"/>
+    <ellipse cx="175" cy="76" rx="8" ry="4" fill="rgba(255,255,255,0.38)"/>
+  </svg>
+</div>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-title">jai & shrey ✨</div>
+    <div class="nav-tabs" id="navTabs">
+      <button class="tab-btn active" onclick="showPage('home')" data-page="home">🏠 Home</button>
+      <button class="tab-btn" onclick="showPage('goals')" data-page="goals">🎯 Goals</button>
+      <button class="tab-btn" onclick="showPage('calendar')" data-page="calendar">📅 Calendar</button>
+      <button class="tab-btn" onclick="showPage('habits')" data-page="habits">🌱 Habits</button>
+      <button class="tab-btn" onclick="showPage('mood')" data-page="mood">💭 Mood</button>
+      <button class="tab-btn" onclick="showPage('gratitude')" data-page="gratitude">🙏 Gratitude</button>
+      <button class="tab-btn" onclick="showPage('love')" data-page="love">💞 Love</button>
+      <button class="tab-btn" onclick="showPage('photos')" data-page="photos">📸 Us</button>
+      <button class="tab-btn" onclick="showPage('ourplace')" data-page="ourplace">🎬 Our Place</button>
+      <button class="tab-btn birthday-tab-indicator" id="birthdayTab" onclick="showPage('birthday')" data-page="birthday" style="display:none">🎂 Her Day</button>
+      <button class="tab-btn" onclick="showPage('archive')" data-page="archive">🗂️ Archive</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="home-header">
+    <h1>our little world</h1>
+    <p>a place just for us 💜</p>
+  </div>
+  <div class="quote-card" id="quoteCard">
+    <div class="qbadge quote-source-badge badge-ggs">Sri Guru Granth Sahib Ji</div>
+    <div class="quote-text" id="quoteText">Loading your daily wisdom...</div>
+    <div class="quote-source" id="quoteSource"></div>
+    <div class="quote-nav">
+      <button onclick="prevQuote()">← prev</button>
+      <button onclick="nextQuote()">next →</button>
+    </div>
+  </div>
+  <div class="home-grid">
+    <div class="mini-card" onclick="showPage('goals')"><div class="icon">🎯</div><h3>Our Goals</h3><p id="goalCount">Loading...</p></div>
+    <div class="mini-card" onclick="showPage('habits')"><div class="icon">🌱</div><h3>Habits</h3><p id="habitStreak">Keep the streak going</p></div>
+    <div class="mini-card" onclick="showPage('mood')"><div class="icon">💭</div><h3>Today's Mood</h3><p id="moodSummary">Check in with each other</p></div>
+    <div class="mini-card" onclick="showPage('love')"><div class="icon">💞</div><h3>Date Idea</h3><p id="datePreview">See today's challenge</p></div>
+    <div class="mini-card" onclick="showPage('gratitude')"><div class="icon">🙏</div><h3>Gratitude</h3><p>Write what you're thankful for</p></div>
+    <div class="mini-card" onclick="showPage('photos')"><div class="icon">📸</div><h3>Our Photos</h3><p>Add your favourites</p></div>
+  </div>
+</div>
+
+<!-- GOALS -->
+<div class="page" id="page-goals">
+  <div class="section-title">Our Shared Goals 🎯</div>
+  <div class="card goals-section">
+    <div class="pill">🌟 Joint Goals</div>
+    <div id="jointGoalsList"></div>
+    <div class="add-goal-form"><input type="text" id="jointGoalInput" placeholder="Add a shared goal..." /><button class="btn" onclick="addGoal('joint')">Add</button></div>
+  </div>
+  <div class="card goals-section">
+    <div class="pill" style="background:linear-gradient(135deg,rgba(201,179,232,0.3),rgba(201,179,232,0.1));border-color:rgba(201,179,232,0.5);">💜 Jai's Goals</div>
+    <div id="jaiGoalsList"></div>
+    <div class="add-goal-form"><input type="text" id="jaiGoalInput" placeholder="Jai's personal goal..." /><button class="btn" onclick="addGoal('jai')">Add</button></div>
+  </div>
+  <div class="card goals-section">
+    <div class="pill" style="background:linear-gradient(135deg,rgba(107,191,181,0.3),rgba(107,191,181,0.1));border-color:rgba(107,191,181,0.5);">🌊 Shrey's Goals</div>
+    <div id="shreyGoalsList"></div>
+    <div class="add-goal-form"><input type="text" id="shreyGoalInput" placeholder="Shrey's personal goal..." /><button class="btn" onclick="addGoal('shrey')">Add</button></div>
+  </div>
+  <!-- FITNESS TRACKER -->
+  <div class="card" style="border-color:rgba(107,191,181,0.3);" id="fitnessCard">
+    <div class="pill" style="background:linear-gradient(135deg,rgba(107,191,181,0.26),rgba(201,179,232,0.18));border-color:rgba(107,191,181,0.4);">💪 Workout & Nutrition Tracker</div>
+    <div class="fitness-person-hdr">💜 Jai's Day</div>
+    <div class="macro-grid">
+      <div class="macro-box"><div class="macro-val" id="j-cal">0</div><div class="macro-lbl">Calories</div><div class="macro-bar"><div class="macro-fill" id="j-cal-b" style="background:linear-gradient(90deg,#c9b3e8,#9d7dc7);width:0%"></div></div></div>
+      <div class="macro-box"><div class="macro-val" id="j-pro">0g</div><div class="macro-lbl">Protein</div><div class="macro-bar"><div class="macro-fill" id="j-pro-b" style="width:0%"></div></div></div>
+      <div class="macro-box"><div class="macro-val" id="j-carb">0g</div><div class="macro-lbl">Carbs</div><div class="macro-bar"><div class="macro-fill" id="j-carb-b" style="background:linear-gradient(90deg,#6bbfb5,#3d9e93);width:0%"></div></div></div>
+      <div class="macro-box"><div class="macro-val" id="j-fat">0g</div><div class="macro-lbl">Fats</div><div class="macro-bar"><div class="macro-fill" id="j-fat-b" style="background:linear-gradient(90deg,#f5c842,#d4a017);width:0%"></div></div></div>
+    </div>
+    <div class="add-row" style="margin-bottom:0.65rem;">
+      <input type="number" id="j-cal-in" placeholder="Calories" style="max-width:108px;"/>
+      <input type="number" id="j-pro-in" placeholder="Protein g" style="max-width:98px;"/>
+      <input type="number" id="j-carb-in" placeholder="Carbs g" style="max-width:98px;"/>
+      <input type="number" id="j-fat-in" placeholder="Fat g" style="max-width:88px;"/>
+      <button class="btn" onclick="logMacros('j')">Log</button>
+    </div>
+    <div class="add-row" style="margin-bottom:1rem;">
+      <input type="text" id="j-wd" placeholder="Workout (e.g. 5km run, chest day...)"/>
+      <select id="j-wt" style="max-width:108px;"><option value="cardio">Cardio</option><option value="strength">Strength</option><option value="yoga">Yoga</option><option value="other">Other</option></select>
+      <input type="number" id="j-wm" placeholder="mins" style="max-width:78px;"/>
+      <button class="btn" onclick="logWorkout('j')">Log</button>
+    </div>
+    <div id="j-wlog"></div>
+    <hr style="border:none;border-top:1px solid rgba(201,179,232,0.2);margin:1rem 0;"/>
+    <div class="fitness-person-hdr">🌊 Shrey's Day</div>
+    <div class="macro-grid">
+      <div class="macro-box"><div class="macro-val" id="s-cal">0</div><div class="macro-lbl">Calories</div><div class="macro-bar"><div class="macro-fill" id="s-cal-b" style="background:linear-gradient(90deg,#c9b3e8,#9d7dc7);width:0%"></div></div></div>
+      <div class="macro-box"><div class="macro-val" id="s-pro">0g</div><div class="macro-lbl">Protein</div><div class="macro-bar"><div class="macro-fill" id="s-pro-b" style="width:0%"></div></div></div>
+      <div class="macro-box"><div class="macro-val" id="s-carb">0g</div><div class="macro-lbl">Carbs</div><div class="macro-bar"><div class="macro-fill" id="s-carb-b" style="background:linear-gradient(90deg,#6bbfb5,#3d9e93);width:0%"></div></div></div>
+      <div class="macro-box"><div class="macro-val" id="s-fat">0g</div><div class="macro-lbl">Fats</div><div class="macro-bar"><div class="macro-fill" id="s-fat-b" style="background:linear-gradient(90deg,#f5c842,#d4a017);width:0%"></div></div></div>
+    </div>
+    <div class="add-row" style="margin-bottom:0.65rem;">
+      <input type="number" id="s-cal-in" placeholder="Calories" style="max-width:108px;"/>
+      <input type="number" id="s-pro-in" placeholder="Protein g" style="max-width:98px;"/>
+      <input type="number" id="s-carb-in" placeholder="Carbs g" style="max-width:98px;"/>
+      <input type="number" id="s-fat-in" placeholder="Fat g" style="max-width:88px;"/>
+      <button class="btn" onclick="logMacros('s')">Log</button>
+    </div>
+    <div class="add-row">
+      <input type="text" id="s-wd" placeholder="Workout (e.g. pilates, leg day...)"/>
+      <select id="s-wt" style="max-width:108px;"><option value="cardio">Cardio</option><option value="strength">Strength</option><option value="yoga">Yoga</option><option value="other">Other</option></select>
+      <input type="number" id="s-wm" placeholder="mins" style="max-width:78px;"/>
+      <button class="btn" onclick="logWorkout('s')">Log</button>
+    </div>
+    <div id="s-wlog" style="margin-top:0.5rem;"></div>
+  </div>
+</div>
+
+<!-- CALENDAR -->
+<div class="page" id="page-calendar">
+  <div class="card">
+    <div class="calendar-header">
+      <button class="btn-outline" onclick="prevMonth()">‹</button>
+      <h2 id="calMonthYear"></h2>
+      <button class="btn-outline" onclick="nextMonth()">›</button>
+    </div>
+    <!-- CYCLE TRACKER PANEL -->
+    <div class="cycle-panel" id="cyclePanel">
+      <div class="cycle-panel-title">🌸 Shrey's Cycle Tracker <span style="font-size:0.67rem;font-weight:400;color:var(--text-soft);">(Jai's private view)</span></div>
+      <div class="cycle-legend">
+        <span><span class="ldot" style="background:#ff6480;"></span>Period</span>
+        <span><span class="ldot" style="background:#ffb8cc;"></span>Predicted next</span>
+        <span><span class="ldot" style="background:#f5c842;"></span>Ovulation window</span>
+      </div>
+      <div class="cycle-controls">
+        <label>Period start:</label>
+        <input type="date" id="periodStart" style="max-width:158px;"/>
+        <label>Cycle length:</label>
+        <select id="cycleLen"><option value="21">21d</option><option value="24">24d</option><option value="28" selected>28d</option><option value="30">30d</option><option value="32">32d</option><option value="35">35d</option></select>
+        <label>Period duration:</label>
+        <select id="periodDur"><option value="3">3d</option><option value="4">4d</option><option value="5" selected>5d</option><option value="6">6d</option><option value="7">7d</option></select>
+        <button class="btn" style="padding:0.45rem 0.9rem;font-size:0.8rem;" onclick="saveCycle()">Save</button>
+      </div>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+  </div>
+  <div class="card">
+    <div class="section-title" style="font-size:1.2rem;margin-bottom:0.8rem;">Upcoming & Events</div>
+    <div id="eventsList"></div>
+    <div class="add-goal-form" style="margin-top:0.8rem;">
+      <input type="date" id="eventDate" style="max-width:160px;" />
+      <input type="text" id="eventTitle" placeholder="Event name..." />
+      <button class="btn" onclick="addEvent()">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- HABITS -->
+<div class="page" id="page-habits">
+  <div class="section-title">Daily Habits 🌱</div>
+  <div class="card">
+    <div class="pill">🤝 Together</div>
+    <div id="jointHabitsList"></div>
+    <div class="add-goal-form" style="margin-top:0.6rem;"><input type="text" id="jointHabitInput" placeholder="Shared habit..." /><button class="btn" onclick="addHabit('joint')">Add</button></div>
+  </div>
+  <div class="card">
+    <div class="pill" style="background:linear-gradient(135deg,rgba(201,179,232,0.3),rgba(201,179,232,0.1));border-color:rgba(201,179,232,0.5);">💜 Jai</div>
+    <div id="jaiHabitsList"></div>
+    <div class="add-goal-form" style="margin-top:0.6rem;"><input type="text" id="jaiHabitInput" placeholder="Jai's habit..." /><button class="btn" onclick="addHabit('jai')">Add</button></div>
+  </div>
+  <div class="card">
+    <div class="pill" style="background:linear-gradient(135deg,rgba(107,191,181,0.3),rgba(107,191,181,0.1));border-color:rgba(107,191,181,0.5);">🌊 Shrey</div>
+    <div id="shreyHabitsList"></div>
+    <div class="add-goal-form" style="margin-top:0.6rem;"><input type="text" id="shreyHabitInput" placeholder="Shrey's habit..." /><button class="btn" onclick="addHabit('shrey')">Add</button></div>
+  </div>
+</div>
+
+<!-- MOOD -->
+<div class="page" id="page-mood">
+  <div class="section-title">Daily Check-In 💭</div>
+  <div class="mood-grid">
+    <div class="mood-person">
+      <h3>💜 Jai</h3>
+      <div class="mood-emojis" id="jaiMoodEmojis">
+        <span class="mood-emoji" onclick="selectMood('jai','😄',this)">😄</span>
+        <span class="mood-emoji" onclick="selectMood('jai','🥰',this)">🥰</span>
+        <span class="mood-emoji" onclick="selectMood('jai','😌',this)">😌</span>
+        <span class="mood-emoji" onclick="selectMood('jai','😐',this)">😐</span>
+        <span class="mood-emoji" onclick="selectMood('jai','😔',this)">😔</span>
+        <span class="mood-emoji" onclick="selectMood('jai','😤',this)">😤</span>
+        <span class="mood-emoji" onclick="selectMood('jai','😴',this)">😴</span>
+        <span class="mood-emoji" onclick="selectMood('jai','🤩',this)">🤩</span>
+      </div>
+      <textarea class="mood-note" id="jaiMoodNote" placeholder="How are you feeling today..." rows="2"></textarea>
+      <button class="btn" style="width:100%;margin-top:0.3rem;" onclick="saveMood('jai')">Save</button>
+    </div>
+    <div class="mood-person">
+      <h3>🌊 Shrey</h3>
+      <div class="mood-emojis" id="shreyMoodEmojis">
+        <span class="mood-emoji" onclick="selectMood('shrey','😄',this)">😄</span>
+        <span class="mood-emoji" onclick="selectMood('shrey','🥰',this)">🥰</span>
+        <span class="mood-emoji" onclick="selectMood('shrey','😌',this)">😌</span>
+        <span class="mood-emoji" onclick="selectMood('shrey','😐',this)">😐</span>
+        <span class="mood-emoji" onclick="selectMood('shrey','😔',this)">😔</span>
+        <span class="mood-emoji" onclick="selectMood('shrey','😤',this)">😤</span>
+        <span class="mood-emoji" onclick="selectMood('shrey','😴',this)">😴</span>
+        <span class="mood-emoji" onclick="selectMood('shrey','🤩',this)">🤩</span>
+      </div>
+      <textarea class="mood-note" id="shreyMoodNote" placeholder="How are you feeling today..." rows="2"></textarea>
+      <button class="btn" style="width:100%;margin-top:0.3rem;" onclick="saveMood('shrey')">Save</button>
+    </div>
+  </div>
+  <div class="card mood-history">
+    <div class="section-title" style="font-size:1.1rem;margin-bottom:0.8rem;">Recent Check-ins</div>
+    <div id="moodHistory"></div>
+  </div>
+</div>
+
+<!-- GRATITUDE -->
+<div class="page" id="page-gratitude">
+  <div class="section-title">Gratitude Journal 🙏</div>
+  <div class="card gratitude-write">
+    <div class="pill">Write Today's Gratitude</div>
+    <textarea id="gratitudeText" placeholder="I am grateful for..."></textarea>
+    <div class="write-controls">
+      <select id="gratitudeAuthor"><option value="jai">💜 Jai</option><option value="shrey">🌊 Shrey</option></select>
+      <select id="gratitudePrivacy"><option value="shared">Shared 💌</option><option value="private">Private 🔒</option></select>
+      <button class="btn" onclick="addGratitude()">Save Entry</button>
+    </div>
+  </div>
+  <div id="gratitudeList"></div>
+</div>
+
+<!-- LOVE -->
+<div class="page" id="page-love">
+  <div class="section-title">Love & Connection 💞</div>
+  <div class="challenge-card" id="currentChallenge">
+    <div class="challenge-tag">✨ TODAY'S DATE IDEA</div>
+    <div class="challenge-text" id="challengeText">Loading today's idea...</div>
+    <div class="challenge-actions">
+      <button class="btn" onclick="markChallengeComplete()">✓ We Did This!</button>
+      <button class="btn-outline" onclick="newChallenge()">Another Idea →</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="pill">💌 Love Language Ideas</div>
+    <div id="loveLangList" style="display:grid;gap:0.5rem;margin-top:0.5rem;"></div>
+  </div>
+  <div class="card" id="completedChallengesCard">
+    <div class="section-title" style="font-size:1.1rem;margin-bottom:0.8rem;">Completed Together 🌟</div>
+    <div id="completedList"></div>
+  </div>
+</div>
+
+<!-- PHOTOS -->
+<div class="page" id="page-photos">
+  <div class="section-title">Our Moments 📸</div>
+  <div class="card">
+    <div class="pill">Add your favourite photos together</div>
+    <div class="photos-grid" id="photosGrid"></div>
+    <p style="font-size:0.78rem;color:var(--text-soft);text-align:center;margin-top:0.5rem;">Click any + to add a photo from your camera roll</p>
+  </div>
+</div>
+
+<!-- OUR PLACE -->
+<div class="page" id="page-ourplace">
+  <div class="section-title">Our Place 🎬</div>
+  <div class="op-tabs">
+    <button class="op-tab active" onclick="switchOP(event,'watchlist')">🎬 Watchlist</button>
+    <button class="op-tab" onclick="switchOP(event,'music')">🎵 Music</button>
+    <button class="op-tab" onclick="switchOP(event,'ratings')">⭐ Our Ratings</button>
+  </div>
+  <div class="op-sec active" id="op-watchlist">
+    <div class="card">
+      <div class="pill">🎬 Movies & TV Shows</div>
+      <div class="add-row" style="margin-bottom:1rem;">
+        <input type="text" id="wTitle" placeholder="Title..." style="flex:2;min-width:130px;"/>
+        <select id="wType"><option value="🎬">Movie</option><option value="📺">TV Show</option><option value="🎞️">Documentary</option><option value="🎭">Anime</option></select>
+        <select id="wStatus"><option value="want">Want to Watch</option><option value="watching">Watching</option><option value="done">Watched ✓</option></select>
+        <select id="wWho"><option value="both">🤝 Both</option><option value="jai">💜 Jai's pick</option><option value="shrey">🌊 Shrey's pick</option></select>
+        <button class="btn" onclick="addWatch()">Add</button>
+      </div>
+      <div style="display:flex;gap:0.38rem;margin-bottom:0.8rem;flex-wrap:wrap;">
+        <button class="btn-outline" onclick="wFilter('all')" style="font-size:0.74rem;">All</button>
+        <button class="btn-outline" onclick="wFilter('want')" style="font-size:0.74rem;">Want to Watch</button>
+        <button class="btn-outline" onclick="wFilter('watching')" style="font-size:0.74rem;">Watching</button>
+        <button class="btn-outline" onclick="wFilter('done')" style="font-size:0.74rem;">Watched</button>
+      </div>
+      <div id="watchList"></div>
+    </div>
+  </div>
+  <div class="op-sec" id="op-music">
+    <div class="card">
+      <div class="pill">🎵 Music Recommendations</div>
+      <div class="add-row" style="margin-bottom:1rem;">
+        <input type="text" id="mTitle" placeholder="Song or album..." style="flex:2;min-width:120px;"/>
+        <input type="text" id="mArtist" placeholder="Artist..." style="flex:1;min-width:90px;"/>
+        <select id="mWho"><option value="jai">💜 Jai's pick</option><option value="shrey">🌊 Shrey's pick</option><option value="both">🤝 Both love</option></select>
+        <select id="mMood"><option value="🌙">Chill</option><option value="🔥">Hype</option><option value="🥰">Romantic</option><option value="🙏">Spiritual</option><option value="😢">Feels</option><option value="💃">Dance</option></select>
+        <button class="btn" onclick="addMusic()">Add</button>
+      </div>
+      <div id="musicList"></div>
+    </div>
+  </div>
+  <div class="op-sec" id="op-ratings">
+    <div class="card">
+      <div class="pill">⭐ Rate What We've Watched</div>
+      <p style="font-size:0.79rem;color:var(--text-soft);margin-bottom:0.9rem;">Only items marked "Watched" show up here — rate away!</p>
+      <div id="ratingsList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- BIRTHDAY -->
+<div class="page" id="page-birthday">
+  <div class="birthday-hero">
+    <div class="confetti-container" id="confettiContainer"></div>
+    <div class="birthday-title">Happy Birthday,<br>my love 🎂</div>
+    <div class="birthday-subtitle">a very special day for a very special girl ✨</div>
+    <div class="present-box-wrapper">
+      <div class="present-box" id="presentBox" onclick="openPresent()">
+        <div class="present-ribbon"></div>
+        🎁
+      </div>
+      <div class="present-message" id="presentMsg">tap the gift, my love...</div>
+    </div>
+    <div class="birthday-reveal" id="birthdayReveal">
+      <div class="birthday-reveal-text" id="birthdayRevealText">I wonder who's the special girl<br>whose birthday is today? 🌸</div>
+      <div style="margin:1rem 0;">
+        <div class="birthday-photos-grid" id="birthdayPhotoGrid"></div>
+        <p style="font-size:0.75rem;color:var(--text-soft);margin-top:0.5rem;">tap + to add birthday photos ✨</p>
+      </div>
+    </div>
+  </div>
+  <div class="card birthday-card-area">
+    <div class="pill" style="background:linear-gradient(135deg,rgba(249,192,203,0.3),rgba(201,179,232,0.3));border-color:rgba(249,192,203,0.5);">💌 Your Birthday Card</div>
+    <div id="cardEditMode">
+      <div class="card-edit">
+        <textarea id="birthdayCardText" placeholder="Write your birthday card here... This is just for her eyes 🌸&#10;&#10;Tell her how much she means to you..."></textarea>
+        <div style="display:flex;gap:0.5rem;">
+          <button class="btn" onclick="saveBirthdayCard()">Save Card 💌</button>
+          <button class="btn-outline" onclick="toggleCardMode()">Preview Card</button>
+        </div>
+      </div>
+    </div>
+    <div id="cardPreviewMode" style="display:none;">
+      <div class="card-preview" id="cardPreviewText"></div>
+      <button class="btn-outline" style="margin-top:0.8rem;" onclick="toggleCardMode()">Edit Card ✏️</button>
+    </div>
+  </div>
+</div>
+
+<!-- ARCHIVE -->
+<div class="page" id="page-archive">
+  <div class="section-title">Archive 🗂️</div>
+  <div class="card">
+    <div class="pill">Completed Goals & Milestones</div>
+    <div id="archiveList"></div>
+    <p id="archiveEmpty" style="font-size:0.85rem;color:var(--text-soft);text-align:center;padding:1.5rem 0;">Complete goals and they'll appear here ✨</p>
+  </div>
+</div>
+
+<input type="file" id="photoUpload" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
+<input type="file" id="birthdayPhotoUpload" accept="image/*" style="display:none;" onchange="handleBirthdayPhotoUpload(event)">
+
+<script>
+// ===== DATA =====
+let state = {
+  quoteIndex: 0,
+  goals: {
+    joint: [
+      { id: 1, text: "Read one spiritual book together this month", done: false },
+      { id: 2, text: "Cook a healthy meal together every week", done: false },
+      { id: 3, text: "Plan a trip for this year", done: false },
+    ],
+    jai: [
+      { id: 4, text: "Meditate for 10 mins daily", done: false },
+      { id: 5, text: "Work on personal fitness goals", done: false },
+    ],
+    shrey: [
+      { id: 6, text: "Journal every evening", done: false },
+      { id: 7, text: "Read before bed", done: false },
+    ]
+  },
+  habits: {
+    joint: [
+      { id: 1, text: "Morning check-in call 💌", days: [false,false,false,false,false,false,false] },
+      { id: 2, text: "Share one thing you're grateful for", days: [false,false,false,false,false,false,false] },
+    ],
+    jai: [
+      { id: 3, text: "Morning Waheguru simran 🙏", days: [false,false,false,false,false,false,false] },
+      { id: 4, text: "Daily walk / exercise", days: [false,false,false,false,false,false,false] },
+    ],
+    shrey: [
+      { id: 5, text: "Evening meditation 🧘‍♀️", days: [false,false,false,false,false,false,false] },
+      { id: 6, text: "Drink 8 glasses of water", days: [false,false,false,false,false,false,false] },
+    ]
+  },
+  events: [
+    { date: "2026-03-05", title: "🎂 Shrey's Birthday! 💜" },
+    { date: "2026-03-14", title: "Date night 💌" },
+    { date: "2026-04-01", title: "Monthly goals review" },
+  ],
+  moods: [],
+  gratitude: [
+    { author: "jai", text: "Grateful for Shrey's laughter and the way she makes every moment feel special 💜", date: "Mar 3", privacy: "shared" },
+    { author: "shrey", text: "Grateful for Jai and all the little ways he shows up for me 🌊", date: "Mar 3", privacy: "shared" },
+  ],
+  moodData: { jai: null, shrey: null },
+  currentChallengeIndex: 0,
+  completedChallenges: [],
+  photos: new Array(9).fill(null),
+  birthdayPhotos: new Array(6).fill(null),
+  birthdayCard: "",
+  birthdayOpened: false,
+  archive: [],
+  calYear: new Date().getFullYear(),
+  calMonth: new Date().getMonth(),
+  currentPhotoSlot: null,
+  currentBirthdaySlot: null,
+};
+
+// Fitness & Our Place state
+let _fitness = { j:{cal:0,pro:0,carb:0,fat:0,workouts:[]}, s:{cal:0,pro:0,carb:0,fat:0,workouts:[]} };
+let _op = {
+  watchlist: [
+    {id:1,emoji:'📺',title:'Avatar: The Last Airbender',status:'done',who:'both',jr:0,sr:0},
+    {id:2,emoji:'🎬',title:'Yeh Jawaani Hai Deewani',status:'want',who:'both',jr:0,sr:0},
+    {id:3,emoji:'🎬',title:'The Secret Life of Walter Mitty',status:'want',who:'jai',jr:0,sr:0},
+  ],
+  wf: 'all'
+};
+let _music = [
+  {id:1,title:'Ik Ardas',artist:'Gulab Sidhu',who:'jai',mood:'🙏'},
+  {id:2,title:'Kesariya',artist:'Arijit Singh',who:'both',mood:'🥰'},
+  {id:3,title:'Ranjha',artist:'Shershaah OST',who:'shrey',mood:'🥰'},
+  {id:4,title:'Tere Naal',artist:'Tulsi Kumar',who:'both',mood:'🥰'},
+];
+let _cycle = { start: null, len: 28, dur: 5 };
+
+// ===== QUOTES =====
+const quotes = [
+  { text: "The most powerful weapon on earth is the human soul on fire.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "Even Kings and emperors with heaps of wealth and vast dominion cannot compare with an ant filled with the love of God.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "I am neither male nor female, nor am I sexless. I am the Peaceful One, whose form is self-effulgent, powerful radiance.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "One who performs selfless service, without thought of reward, shall attain their Lord and Master.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "Those who have loved are those that have found God.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "Through the Guru's Grace, the divine melody wells up within. Peace and tranquility fill the mind and body.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "Sow the seeds of goodness — then what you harvest shall be good.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "Where there is forgiveness, there God resides.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "The mind is the paper; the body is the ink; write upon it the Lord's Name.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "In the strength of God, the mortal walks in the way of righteousness.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "Rise above the duality and doubt; recognize that the Wondrous Lord is within you.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "Make contentment your earrings, humility your begging bowl, and meditation the ashes you apply to your body.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "Those who serve are content. They blossom in the Word of the Shabad.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "Realizing God's Will, one finds peace; otherwise, one comes and goes in reincarnation.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "Be the slave of the Lord's slaves, and you shall cross over the terrifying world-ocean.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "You are never without me, and I am never without you. What is the difference between you and me?", source: "Sri Guru Granth Sahib Ji" },
+  { text: "Where there is grace, there is no shortage. Where there is no grace, what does one obtain?", source: "Sri Guru Granth Sahib Ji" },
+  { text: "The Infinite Lord is beyond thought; the humble servant meditates on Him.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "Yoga is not in the patched coat, the walking stick, or the smearing of the body with ashes. Yoga is in remaining detached in the midst of the world.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "Without the Naam, the Name of the Lord, life is useless; one should burn such a life.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "Be fearless, and be not afraid; keep God enshrined in your heart.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "Your light is in all lights, and all lights are in You.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "He is the source, He is the stream, and He alone is the one who drinks the water.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "Do not think that you are great, and do not think that others are small.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "The one who sees God in all, and all in God — that one is the true devotee.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "Joy and sorrow are the same to one who has found the eternal truth.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "Conquer your mind, and conquer the world.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "O Nanak, by His Grace, one obtains the wealth of the Naam; it is not found through mere talk.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "Speak only that which will bring you honor.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "The mind is not calmed by outer rituals; it is calmed by love.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "Truth is high, but higher still is truthful living.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "The mortal who remembers the Lord with every breath and every morsel of food — that humble being is my very breath of life.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "Serving others is the highest religion; it erases countless sins.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "One who is absorbed in the Lord's Love night and day — that humble being is always in bliss.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "The Lord is my breath of life; without Him I cannot survive even for a moment.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "The body is the garden, the soul is the gardener — nurture it with the Lord's love.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "Wherever I look, I see the Lord pervading there; the Lord is totally permeating and pervading everywhere.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "O mind, meditate on the Lord, and all your affairs shall be resolved.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "Contentment is the greatest wealth; peace of mind is the highest joy.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "Those who meditate on the True Lord are truly alive; without meditation, their life is useless.", source: "Sri Guru Granth Sahib Ji" },
+  { text: "The soul that has realised the Self, sees God in all beings.", source: "Bhagavad Gita 6.29" },
+  { text: "You have the right to perform your prescribed duties, but you are not entitled to the fruits of your actions.", source: "Bhagavad Gita 2.47" },
+  { text: "The mind is restless and difficult to restrain, but it is subdued by practice and detachment.", source: "Bhagavad Gita 6.35" },
+  { text: "Let a man lift himself by himself; let him not degrade himself; for the Self alone is the friend of the self.", source: "Bhagavad Gita 6.5" },
+  { text: "A gift is pure when it is given from the heart to the right person at the right time, expecting nothing in return.", source: "Bhagavad Gita 17.20" },
+  { text: "The happiness which comes from long practice, which leads to the end of suffering — this kind of happiness arises from the serenity of one's own mind.", source: "Bhagavad Gita 18.37" },
+  { text: "One who sees inaction in action, and action in inaction, is intelligent among men.", source: "Bhagavad Gita 4.18" },
+  { text: "Fear not. What is not real, never was and never will be. What is real, always was and cannot be destroyed.", source: "Bhagavad Gita 2.16" },
+  { text: "The self-controlled soul, who moves among sense objects, free from either attachment or repulsion, wins eternal peace.", source: "Bhagavad Gita 2.64" },
+  { text: "No purifier equals knowledge; in time the man of perfect discipline discovers this in his own spirit.", source: "Bhagavad Gita 4.38" },
+  { text: "When a man gives up all the desires of the mind and is satisfied in the Self, by the Self, then he is said to have attained steady wisdom.", source: "Bhagavad Gita 2.55" },
+  { text: "Wherever the mind wanders, restless and diffuse in its search for satisfaction without, lead it within; train it to rest in the Self.", source: "Bhagavad Gita 6.26" },
+  { text: "Better is one's own dharma, though imperfectly performed, than the dharma of another well performed.", source: "Bhagavad Gita 3.35" },
+  { text: "The wise grieve neither for the living nor for the dead.", source: "Bhagavad Gita 2.11" },
+  { text: "The peace of God is with them whose mind and soul are in harmony, who are free from desire and wrath.", source: "Bhagavad Gita 5.26" },
+  { text: "As the heat of a fire reduces wood to ashes, the fire of knowledge burns all karma to ashes.", source: "Bhagavad Gita 4.37" },
+  { text: "The soul is never born nor dies at any time. It is unborn, eternal, ever-existing, and primeval.", source: "Bhagavad Gita 2.20" },
+  { text: "When meditation is mastered, the mind is unwavering like the flame of a lamp in a windless place.", source: "Bhagavad Gita 6.19" },
+  { text: "Through selfless service, you will always be fruitful and find the fulfillment of your deepest desires.", source: "Bhagavad Gita 3.10" },
+  { text: "Yoga is the journey of the self, through the self, to the self.", source: "Bhagavad Gita 6.20" },
+  { text: "Never was there a time when I did not exist, nor you, nor all these beings; nor will there be any time when we will cease to exist.", source: "Bhagavad Gita 2.12" },
+  { text: "The soul can never be cut to pieces by any weapon, nor burned by fire, nor moistened by water, nor withered by the wind.", source: "Bhagavad Gita 2.23" },
+  { text: "He who has no attachments can really love others, for his love is pure and divine.", source: "Bhagavad Gita 3.19" },
+  { text: "As a person puts on new garments, giving up old ones, the soul accepts new material bodies, giving up the old and useless ones.", source: "Bhagavad Gita 2.22" },
+  { text: "I am the source of all spiritual and material worlds. Everything emanates from Me.", source: "Bhagavad Gita 10.8" },
+  { text: "I am the beginning, the middle and the end of creation.", source: "Bhagavad Gita 10.20" },
+];
+
+const dateIdeas = [
+  "Cook a recipe from each other's culture together at home 🍳",
+  "Create a joint vision board for the next year ✂️",
+  "Go stargazing and name a star after your love 🌟",
+  "Take a sunrise walk and share your intentions for the day 🌅",
+  "Make a playlist of songs that remind you of each other 🎵",
+  "Write each other letters to open in 5 years 💌",
+  "Do a yoga session together and learn a partner pose 🧘",
+  "Visit a temple or sacred space together 🙏",
+  "Teach each other one thing you know how to do well 📚",
+  "Watch the sunset in silence, just being present together 🌇",
+  "Create a scrapbook page of your favourite memories 📷",
+  "Play a board game tournament — winner picks next date 🎲",
+  "Visit a local farmers market and cook what you find 🌿",
+  "Do an at-home spa evening — face masks, oils, music 🛁",
+  "Go for a nature hike and collect something meaningful 🌲",
+  "Draw portraits of each other (badly is even better) 🎨",
+  "Learn 10 words of each other's native language together 🗣️",
+  "Do a random act of kindness together for a stranger 💛",
+  "Make homemade chai and watch a documentary on spirituality ☕",
+  "Write a joint poem about your relationship so far ✍️",
+  "Try a new fitness class together — dance, boxing, pilates 💪",
+  "Plan an imaginary dream holiday in every detail ✈️",
+  "Make a bucket list of 50 things to do together 📋",
+  "Have a candlelit dinner at home — no phones, only presence 🕯️",
+  "Go thrift shopping and pick one outfit for each other 👗",
+  "Do a gratitude walk and take turns sharing what you're thankful for 🙏",
+  "Try a new cultural cuisine at a restaurant neither of you has been to 🍜",
+  "Create a couple's playlist that tells your story in 20 songs 🎶",
+  "Stargaze and each make a wish on a shooting star 🌠",
+  "Have a deep-conversation night with 36 questions to fall deeper in love 💬",
+  "Build something together — even just IKEA furniture counts 🔨",
+  "Do a digital detox day — only presence and nature 🌳",
+  "Visit a gallery or museum and find one painting that represents your love 🖼️",
+  "Take polaroid photos and create a mini album 📸",
+];
+
+const loveLangIdeas = [
+  { type: "Words of Affirmation", idea: "Write 10 things you love most about them and read them aloud 💬" },
+  { type: "Quality Time", idea: "Plan a full day with zero distractions — just you two 🌸" },
+  { type: "Acts of Service", idea: "Take over their least favourite chore this week without being asked 🏠" },
+  { type: "Physical Touch", idea: "Give a long hug every time you see each other today 🤗" },
+  { type: "Gift Giving", idea: "Leave a small, thoughtful surprise somewhere they'll find it 🎁" },
+  { type: "Words of Affirmation", idea: "Send a voice note in the morning saying what you love about them 🎙️" },
+  { type: "Quality Time", idea: "Watch the sunrise together without speaking — just be present 🌅" },
+  { type: "Acts of Service", idea: "Make their favourite meal with extra love and care 🍜" },
+];
+
+// ===== NAVIGATION =====
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  const btn = document.querySelector(`[data-page="${page}"]`);
+  if (btn) btn.classList.add('active');
+  if (page === 'home') renderHome();
+  if (page === 'goals') { renderGoals(); renderFitnessCards(); if(window.fbSave)fbSave(); }
+  if (page === 'calendar') renderCalendar();
+  if (page === 'habits') renderHabits();
+  if (page === 'gratitude') renderGratitude();
+  if (page === 'love') renderLove();
+  if (page === 'photos') renderPhotos();
+  if (page === 'birthday') renderBirthday();
+  if (page === 'archive') renderArchive();
+  if (page === 'ourplace') renderOP();
+}
+
+// ===== QUOTES =====
+function renderQuote() {
+  const q = quotes[state.quoteIndex];
+  document.getElementById('quoteText').textContent = q.text;
+  document.getElementById('quoteSource').textContent = '— ' + q.source;
+  updateQuoteBadge();
+}
+function nextQuote() { state.quoteIndex = (state.quoteIndex + 1) % quotes.length; renderQuote(); }
+function prevQuote() { state.quoteIndex = (state.quoteIndex - 1 + quotes.length) % quotes.length; renderQuote(); }
+function setDailyQuote() { const today = new Date(); state.quoteIndex = (today.getDate() + today.getMonth() * 31) % quotes.length; }
+
+function updateQuoteBadge() {
+  const src = document.getElementById('quoteSource')?.textContent || '';
+  const badge = document.querySelector('.qbadge');
+  if (!badge) return;
+  if (src.includes('Bhagavad Gita')) {
+    badge.textContent = 'Bhagavad Gita';
+    badge.className = 'qbadge quote-source-badge badge-gita';
+  } else {
+    badge.textContent = 'Sri Guru Granth Sahib Ji';
+    badge.className = 'qbadge quote-source-badge badge-ggs';
+  }
+}
+
+// ===== HOME =====
+function renderHome() {
+  renderQuote();
+  const total = state.goals.joint.length + state.goals.jai.length + state.goals.shrey.length;
+  const done = [...state.goals.joint, ...state.goals.jai, ...state.goals.shrey].filter(g => g.done).length;
+  document.getElementById('goalCount').textContent = `${done}/${total} completed`;
+  document.getElementById('datePreview').textContent = dateIdeas[state.currentChallengeIndex].substring(0, 30) + '...';
+  if (state.moodData.jai && state.moodData.shrey) {
+    document.getElementById('moodSummary').textContent = `${state.moodData.jai.emoji} & ${state.moodData.shrey.emoji} today`;
+  }
+}
+
+// ===== GOALS =====
+function renderGoals() {
+  ['joint','jai','shrey'].forEach(type => {
+    const list = document.getElementById(type + 'GoalsList');
+    list.innerHTML = '';
+    state.goals[type].forEach((goal, i) => {
+      const div = document.createElement('div');
+      div.className = 'goal-item' + (goal.done ? ' completed' : '');
+      div.innerHTML = `<div class="goal-check ${goal.done ? 'done' : ''}" onclick="toggleGoal('${type}',${i})"></div>
+        <span class="goal-text">${goal.text}</span>
+        <span class="goal-who ${type === 'joint' ? 'both' : type}">${type === 'joint' ? '🤝 Both' : type === 'jai' ? '💜 Jai' : '🌊 Shrey'}</span>
+        <button onclick="deleteGoal('${type}',${i})" style="background:none;border:none;cursor:pointer;color:var(--text-soft);font-size:0.8rem;padding:0.2rem;">✕</button>`;
+      list.appendChild(div);
+    });
+  });
+}
+function toggleGoal(type, i) {
+  state.goals[type][i].done = !state.goals[type][i].done;
+  if (state.goals[type][i].done) { // fb-patched
+  if(window.fbSave)fbSave();
+  state.archive.push({ title: state.goals[type][i].text, date: new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short'}), type: 'Goal' }); spawnHearts(); }
+  renderGoals();
+}
+function addGoal(type) { window.fbSave && fbSave(); // patched
+  // original below
+  window.fbSave && (0); function addGoal_orig(type) {
+  const input = document.getElementById(type + 'GoalInput');
+  if (!input.value.trim()) return;
+  state.goals[type].push({ id: Date.now(), text: input.value.trim(), done: false });
+  input.value = ''; renderGoals();
+}
+function deleteGoal(type, i) { state.goals[type].splice(i, 1); renderGoals(); if(window.fbSave)fbSave(); }
+
+// ===== FITNESS =====
+function logMacros(p) {
+  const f = _fitness[p];
+  f.cal += +document.getElementById(p+'-cal-in').value || 0;
+  f.pro += +document.getElementById(p+'-pro-in').value || 0;
+  f.carb += +document.getElementById(p+'-carb-in').value || 0;
+  f.fat += +document.getElementById(p+'-fat-in').value || 0;
+  ['-cal-in','-pro-in','-carb-in','-fat-in'].forEach(s => { const el=document.getElementById(p+s); if(el) el.value=''; });
+  renderFitnessCards(); if(window.fbSave)fbSave(); spawnHearts();
+}
+function logWorkout(p) {
+  const desc = document.getElementById(p+'-wd')?.value.trim();
+  if (!desc) return;
+  const type = document.getElementById(p+'-wt')?.value || 'other';
+  const mins = +document.getElementById(p+'-wm')?.value || 0;
+  _fitness[p].workouts.unshift({ desc, type, mins, time: new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) });
+  document.getElementById(p+'-wd').value = '';
+  document.getElementById(p+'-wm').value = '';
+  renderFitnessCards(); if(window.fbSave)fbSave(); spawnHearts();
+}
+function renderFitnessCards() {
+  ['j','s'].forEach(p => {
+    const f = _fitness[p];
+    const goals = { cal:2000, pro:150, carb:250, fat:65 };
+    const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    const setW = (id, pct) => { const el = document.getElementById(id); if (el) el.style.width = Math.min(100,pct) + '%'; };
+    setEl(p+'-cal', f.cal); setEl(p+'-pro', f.pro+'g'); setEl(p+'-carb', f.carb+'g'); setEl(p+'-fat', f.fat+'g');
+    setW(p+'-cal-b', f.cal/goals.cal*100); setW(p+'-pro-b', f.pro/goals.pro*100);
+    setW(p+'-carb-b', f.carb/goals.carb*100); setW(p+'-fat-b', f.fat/goals.fat*100);
+    const logEl = document.getElementById(p+'-wlog');
+    if (logEl) {
+      logEl.innerHTML = '';
+      f.workouts.slice(0,3).forEach(w => {
+        const d = document.createElement('div');
+        d.className = 'workout-entry';
+        d.innerHTML = `<span class="wtag wtag-${w.type}">${w.type}</span><span style="flex:1">${w.desc}</span>${w.mins?`<span style="font-size:0.7rem;color:var(--text-soft);">${w.mins}min</span>`:''}<span style="font-size:0.67rem;color:var(--text-soft);">${w.time}</span>`;
+        logEl.appendChild(d);
+      });
+    }
+  });
+}
+
+// ===== CALENDAR =====
+function renderCalendar() {
+  const year = state.calYear, month = state.calMonth;
+  const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('calMonthYear').textContent = `${monthNames[month]} ${year}`;
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+  ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(d => { const h = document.createElement('div'); h.className = 'cal-day-header'; h.textContent = d; grid.appendChild(h); });
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const today = new Date();
+  for (let i = 0; i < firstDay; i++) { const d = document.createElement('div'); d.className = 'cal-day other-month'; d.textContent = new Date(year, month, 0).getDate() - firstDay + 1 + i; grid.appendChild(d); }
+  for (let day = 1; day <= daysInMonth; day++) {
+    const d = document.createElement('div'); d.className = 'cal-day';
+    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    if (today.getFullYear()===year && today.getMonth()===month && today.getDate()===day) d.classList.add('today');
+    if (month===2 && day===5) d.classList.add('birthday');
+    if (state.events.some(e => e.date === dateStr)) d.classList.add('has-event');
+    d.textContent = day;
+    grid.appendChild(d);
+  }
+  renderEvents();
+  paintCycleDays();
+}
+function renderEvents() {
+  const list = document.getElementById('eventsList');
+  const sorted = [...state.events].sort((a,b) => new Date(a.date) - new Date(b.date));
+  list.innerHTML = '';
+  sorted.forEach(ev => { const d = new Date(ev.date); const div = document.createElement('div'); div.className = 'event-item'; div.innerHTML = `<span class="event-date-badge">${d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</span><span>${ev.title}</span>`; list.appendChild(div); });
+}
+function prevMonth() { state.calMonth--; if (state.calMonth < 0) { state.calMonth = 11; state.calYear--; } renderCalendar(); }
+function nextMonth() { state.calMonth++; if (state.calMonth > 11) { state.calMonth = 0; state.calYear++; } renderCalendar(); }
+function addEvent() {
+  const date = document.getElementById('eventDate').value, title = document.getElementById('eventTitle').value.trim();
+  if (!date || !title) return;
+  // fb-patched
+  if(window.fbSave)fbSave();
+  state.events.push({ date, title });
+  document.getElementById('eventDate').value = ''; document.getElementById('eventTitle').value = '';
+  renderCalendar();
+}
+
+// ===== CYCLE TRACKER =====
+function saveCycle() {
+  _cycle = { start: document.getElementById('periodStart')?.value, len: +document.getElementById('cycleLen')?.value || 28, dur: +document.getElementById('periodDur')?.value || 5 };
+  paintCycleDays(); spawnHearts(); if(window.fbSave)fbSave();
+}
+function paintCycleDays() {
+  if (!_cycle.start) return;
+  const pDays = new Set(), preDays = new Set(), ovDays = new Set();
+  const st = new Date(_cycle.start), cl = _cycle.len, pd = _cycle.dur;
+  for (let cycle = 0; cycle < 4; cycle++) {
+    for (let d = 0; d < pd; d++) { const day = new Date(st); day.setDate(day.getDate() + cycle*cl + d); pDays.add(day.toISOString().split('T')[0]); }
+    const ov = new Date(st); ov.setDate(ov.getDate() + cycle*cl + Math.round(cl/2) - 1); ovDays.add(ov.toISOString().split('T')[0]);
+    for (let d = 0; d < pd; d++) { const day = new Date(st); day.setDate(day.getDate() + (cycle+1)*cl + d); const ds = day.toISOString().split('T')[0]; if (!pDays.has(ds)) preDays.add(ds); }
+  }
+  const header = document.getElementById('calMonthYear')?.textContent || '';
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const mIdx = months.findIndex(m => header.includes(m));
+  const yr = parseInt(header.match(/\d{4}/)?.[0]);
+  document.querySelectorAll('#calGrid .cal-day:not(.other-month)').forEach(el => {
+    el.classList.remove('period-flow','period-predict','ovulation');
+    const day = parseInt(el.textContent.trim());
+    if (!day || isNaN(day) || mIdx === -1 || !yr) return;
+    const ds = `${yr}-${String(mIdx+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    if (pDays.has(ds)) el.classList.add('period-flow');
+    else if (preDays.has(ds)) el.classList.add('period-predict');
+    if (ovDays.has(ds)) el.classList.add('ovulation');
+  });
+}
+
+// ===== HABITS =====
+function renderHabits() {
+  ['joint','jai','shrey'].forEach(type => {
+    const list = document.getElementById(type + 'HabitsList'); list.innerHTML = '';
+    state.habits[type].forEach((habit, i) => {
+      const streak = habit.days.filter(Boolean).length;
+      const div = document.createElement('div'); div.className = 'habit-item';
+      div.innerHTML = `<div style="flex:1"><div style="font-size:0.88rem;margin-bottom:0.4rem;">${habit.text}</div><div class="habit-days">${habit.days.map((done, di) => `<div class="habit-day ${done ? 'done' : ''}" onclick="toggleHabitDay('${type}',${i},${di})"></div>`).join('')}</div></div>
+        <span class="habit-streak">🔥 ${streak} days</span>
+        <button onclick="deleteHabit('${type}',${i})" style="background:none;border:none;cursor:pointer;color:var(--text-soft);font-size:0.75rem;margin-left:0.5rem;">✕</button>`;
+      list.appendChild(div);
+    });
+  });
+}
+function toggleHabitDay(type, i, di) { state.habits[type][i].days[di] = !state.habits[type][i].days[di]; renderHabits(); if(window.fbSave)fbSave(); }
+function addHabit(type) { const input = document.getElementById(type+'HabitInput'); if (!input.value.trim()) return; state.habits[type].push({ id: Date.now(), text: input.value.trim(), days: [false,false,false,false,false,false,false] }); input.value = ''; renderHabits(); if(window.fbSave)fbSave(); }
+function deleteHabit(type, i) { state.habits[type].splice(i, 1); renderHabits(); if(window.fbSave)fbSave(); }
+
+// ===== MOOD =====
+function selectMood(person, emoji, el) {
+  document.querySelectorAll(`#${person}MoodEmojis .mood-emoji`).forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  if (!state.moodData[person]) state.moodData[person] = {};
+  state.moodData[person].emoji = emoji;
+}
+function saveMood(person) {
+  const note = document.getElementById(person + 'MoodNote').value;
+  const emoji = state.moodData[person]?.emoji || '😌';
+  // fb-patched
+  if(window.fbSave)fbSave();
+  state.moods.unshift({ person, emoji, note, date: new Date().toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}) });
+  state.moodData[person] = { emoji, note };
+  document.getElementById(person + 'MoodNote').value = '';
+  renderMoodHistory(); spawnHearts();
+}
+function renderMoodHistory() {
+  const list = document.getElementById('moodHistory'); list.innerHTML = '';
+  state.moods.slice(0, 10).forEach(m => {
+    const div = document.createElement('div'); div.className = 'mood-log-item';
+    div.innerHTML = `<span>${m.emoji}</span><span style="color:var(--text-soft);min-width:60px;font-size:0.75rem;">${m.date}</span><span style="font-size:0.75rem;padding:0.15rem 0.5rem;border-radius:8px;background:${m.person==='jai'?'rgba(201,179,232,0.2)':'rgba(107,191,181,0.2)'};">${m.person==='jai'?'Jai':'Shrey'}</span>${m.note ? `<span style="color:var(--text-soft);font-size:0.8rem;font-style:italic;">${m.note}</span>` : ''}`;
+    list.appendChild(div);
+  });
+}
+
+// ===== GRATITUDE =====
+function renderGratitude() {
+  const list = document.getElementById('gratitudeList'); list.innerHTML = '';
+  state.gratitude.forEach(g => {
+    const div = document.createElement('div'); div.className = 'gratitude-entry';
+    div.innerHTML = `<div class="date">${g.date}</div><span class="author ${g.author}">${g.author === 'jai' ? '💜 Jai' : '🌊 Shrey'} ${g.privacy==='private'?'🔒':''}</span><p style="font-size:0.88rem;line-height:1.6;">${g.text}</p>`;
+    list.appendChild(div);
+  });
+}
+function addGratitude() {
+  const text = document.getElementById('gratitudeText').value.trim();
+  if (!text) return;
+  // fb-patched
+  if(window.fbSave)fbSave();
+  state.gratitude.unshift({ author: document.getElementById('gratitudeAuthor').value, text, privacy: document.getElementById('gratitudePrivacy').value, date: new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short'}) });
+  document.getElementById('gratitudeText').value = '';
+  renderGratitude(); spawnHearts();
+}
+
+// ===== LOVE =====
+function renderLove() {
+  document.getElementById('challengeText').textContent = dateIdeas[state.currentChallengeIndex];
+  const list = document.getElementById('loveLangList'); list.innerHTML = '';
+  loveLangIdeas.forEach(l => {
+    const div = document.createElement('div');
+    div.style.cssText = 'padding:0.75rem 1rem;border-radius:12px;background:rgba(255,255,255,0.6);border:1px solid rgba(201,179,232,0.2);';
+    div.innerHTML = `<div style="font-size:0.7rem;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.3rem;">${l.type}</div><div style="font-size:0.88rem;">${l.idea}</div>`;
+    list.appendChild(div);
+  });
+  renderCompleted();
+}
+function newChallenge() { state.currentChallengeIndex = (state.currentChallengeIndex + 1) % dateIdeas.length; document.getElementById('challengeText').textContent = dateIdeas[state.currentChallengeIndex]; }
+function markChallengeComplete() {
+  state.completedChallenges.push(dateIdeas[state.currentChallengeIndex]);
+  state.archive.push({ title: dateIdeas[state.currentChallengeIndex].substring(0,50), date: new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short'}), type: 'Date' });
+  newChallenge(); spawnHearts(); renderCompleted();
+}
+function renderCompleted() {
+  const list = document.getElementById('completedList'); list.innerHTML = '';
+  if (!state.completedChallenges.length) { list.innerHTML = '<p style="font-size:0.82rem;color:var(--text-soft);padding:0.5rem 0;">Complete your first date idea together ✨</p>'; return; }
+  state.completedChallenges.forEach(c => { const div = document.createElement('div'); div.style.cssText = 'padding:0.6rem 0.8rem;font-size:0.82rem;border-radius:8px;background:rgba(107,191,181,0.1);margin-bottom:0.4rem;'; div.innerHTML = `✓ ${c}`; list.appendChild(div); });
+}
+
+// ===== PHOTOS =====
+function renderPhotos() {
+  const grid = document.getElementById('photosGrid'); grid.innerHTML = '';
+  state.photos.forEach((photo, i) => {
+    const slot = document.createElement('div'); slot.className = 'photo-slot';
+    if (photo) { slot.innerHTML = `<img src="${photo.src}" alt="Memory"><div class="photo-caption">${photo.caption||''}</div><button class="photo-delete" onclick="deletePhoto(${i},event)">✕</button>`; }
+    else { slot.innerHTML = `<span class="add-icon">+</span>`; slot.onclick = () => { state.currentPhotoSlot = i; document.getElementById('photoUpload').click(); }; }
+    grid.appendChild(slot);
+  });
+}
+function handlePhotoUpload(event) {
+  const file = event.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => { state.photos[state.currentPhotoSlot] = { src: e.target.result, caption: '' }; renderPhotos(); };
+  reader.readAsDataURL(file); event.target.value = '';
+}
+function deletePhoto(i, e) { e.stopPropagation(); state.photos[i] = null; renderPhotos(); }
+
+// ===== OUR PLACE =====
+function switchOP(e, sec) {
+  document.querySelectorAll('.op-sec').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.op-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('op-' + sec).classList.add('active');
+  e.target.classList.add('active');
+  if (sec === 'watchlist') renderWatchlist();
+  if (sec === 'music') renderMusic();
+  if (sec === 'ratings') renderRatings();
+}
+function renderOP() { renderWatchlist(); }
+function addWatch() {
+  const title = document.getElementById('wTitle')?.value.trim(); if (!title) return;
+  _op.watchlist.unshift({ id: Date.now(), emoji: document.getElementById('wType')?.value||'🎬', title, status: document.getElementById('wStatus')?.value||'want', who: document.getElementById('wWho')?.value||'both', jr:0, sr:0 });
+  document.getElementById('wTitle').value = ''; renderWatchlist();
+}
+function wFilter(f) { _op.wf = f; renderWatchlist(); }
+function setWS(id, v) { const it = _op.watchlist.find(w => w.id===id); if(it) it.status=v; renderWatchlist(); }
+function delWatch(id) { _op.watchlist = _op.watchlist.filter(w => w.id!==id); renderWatchlist(); }
+function renderWatchlist() {
+  const el = document.getElementById('watchList'); if (!el) return;
+  const filtered = _op.wf === 'all' ? _op.watchlist : _op.watchlist.filter(w => w.status === _op.wf);
+  if (!filtered.length) { el.innerHTML = '<p style="font-size:0.82rem;color:var(--text-soft);padding:1rem 0;text-align:center;">Nothing here yet — add something to watch! 🎬</p>'; return; }
+  el.innerHTML = '';
+  filtered.forEach(it => {
+    const d = document.createElement('div'); d.className = 'media-item';
+    const sc = {want:'s-want',watching:'s-watching',done:'s-done'}[it.status];
+    const sl = {want:'Want to Watch',watching:'Watching',done:'Watched ✓'}[it.status];
+    const wl = {both:'🤝 Both',jai:"💜 Jai's pick",shrey:"🌊 Shrey's pick"}[it.who];
+    d.innerHTML = `<div class="media-emoji">${it.emoji}</div><div class="media-info"><div class="media-title">${it.title}</div><div class="media-meta">${wl}</div></div>
+      <span class="media-status ${sc}">${sl}</span>
+      <select onchange="setWS(${it.id},this.value)" style="font-size:0.72rem;padding:0.2rem 0.4rem;border-radius:6px;max-width:95px;border:1px solid rgba(201,179,232,0.35);">
+        <option value="want" ${it.status==='want'?'selected':''}>Want</option>
+        <option value="watching" ${it.status==='watching'?'selected':''}>Watching</option>
+        <option value="done" ${it.status==='done'?'selected':''}>Watched</option>
+      </select>
+      <button onclick="delWatch(${it.id})" style="background:none;border:none;cursor:pointer;color:var(--text-soft);font-size:0.78rem;padding:0.2rem;">✕</button>`;
+    el.appendChild(d);
+  });
+}
+function addMusic() {
+  const title = document.getElementById('mTitle')?.value.trim(); if (!title) return;
+  _music.unshift({ id: Date.now(), title, artist: document.getElementById('mArtist')?.value.trim()||'', who: document.getElementById('mWho')?.value||'both', mood: document.getElementById('mMood')?.value||'🎵' });
+  document.getElementById('mTitle').value = ''; document.getElementById('mArtist').value = '';
+  renderMusic();
+}
+function delMusic(id) { _music = _music.filter(m => m.id !== id); renderMusic(); }
+function renderMusic() {
+  const el = document.getElementById('musicList'); if (!el) return;
+  if (!_music.length) { el.innerHTML = '<p style="font-size:0.82rem;color:var(--text-soft);padding:1rem 0;text-align:center;">Add songs you want to share 🎵</p>'; return; }
+  el.innerHTML = '';
+  _music.forEach(m => {
+    const d = document.createElement('div'); d.className = 'music-item';
+    const wl = {jai:"💜 Jai's pick",shrey:"🌊 Shrey's pick",both:"🤝 Both love"}[m.who];
+    d.innerHTML = `<div class="music-disc">${m.mood}</div><div class="music-info"><div class="music-title">${m.title}</div><div class="music-sub">${m.artist?m.artist+' · ':''}${wl}</div></div><button onclick="delMusic(${m.id})" style="background:none;border:none;cursor:pointer;color:var(--text-soft);font-size:0.78rem;">✕</button>`;
+    el.appendChild(d);
+  });
+}
+function setRating(id, p, v) { const it = _op.watchlist.find(w => w.id===id); if(it) it[p]=v; renderRatings(); }
+function starHTML(id, p, r) { return Array.from({length:5},(_,i) => `<span class="star ${i<r?'on':'off'}" onclick="setRating(${id},'${p}',${i+1})">${i<r?'★':'☆'}</span>`).join(''); }
+function renderRatings() {
+  const el = document.getElementById('ratingsList'); if (!el) return;
+  const watched = _op.watchlist.filter(w => w.status === 'done');
+  if (!watched.length) { el.innerHTML = '<p style="font-size:0.82rem;color:var(--text-soft);padding:1rem 0;text-align:center;">Mark something as "Watched" to rate it ⭐</p>'; return; }
+  el.innerHTML = '';
+  watched.forEach(it => {
+    const d = document.createElement('div');
+    d.style.cssText = 'padding:1rem;border-radius:14px;background:rgba(255,255,255,0.65);margin-bottom:0.7rem;border:1px solid rgba(201,179,232,0.18);';
+    d.innerHTML = `<div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.5rem;"><span>${it.emoji}</span><span style="font-size:0.9rem;font-weight:500;">${it.title}</span></div>
+      <div class="rating-row"><span class="rating-lbl">💜 Jai's rating</span>${starHTML(it.id,'jr',it.jr)}</div>
+      <div class="rating-row"><span class="rating-lbl">🌊 Shrey's rating</span>${starHTML(it.id,'sr',it.sr)}</div>`;
+    el.appendChild(d);
+  });
+}
+
+// ===== BIRTHDAY =====
+function checkBirthday() {
+  const today = new Date();
+  const isBirthday = today.getMonth() === 2 && today.getDate() === 5;
+  const tab = document.getElementById('birthdayTab');
+  tab.style.display = isBirthday ? 'flex' : 'none';
+  if (isBirthday) setTimeout(() => showPage('birthday'), 500);
+}
+function renderBirthday() {
+  createConfetti();
+  const grid = document.getElementById('birthdayPhotoGrid'); grid.innerHTML = '';
+  state.birthdayPhotos.forEach((photo, i) => {
+    const slot = document.createElement('div'); slot.className = 'birthday-photo-slot';
+    if (photo) { slot.innerHTML = `<img src="${photo}" alt="">`; }
+    else { slot.textContent = '+'; slot.onclick = () => { state.currentBirthdaySlot = i; document.getElementById('birthdayPhotoUpload').click(); }; }
+    grid.appendChild(slot);
+  });
+  if (state.birthdayCard) { document.getElementById('birthdayCardText').value = state.birthdayCard; document.getElementById('cardPreviewText').textContent = state.birthdayCard; }
+  if (state.birthdayOpened) { document.getElementById('birthdayReveal').classList.add('show'); document.getElementById('presentBox').style.transform = 'scale(0.9) rotate(15deg)'; document.getElementById('presentMsg').textContent = '🌸 happy birthday shrey 🌸'; }
+}
+function createConfetti() {
+  const container = document.getElementById('confettiContainer'); container.innerHTML = '';
+  const colors = ['#f9c0cb','#c9b3e8','#6bbfb5','#ffd6e7','#b8d4f0','#ffe4b5'];
+  for (let i = 0; i < 40; i++) {
+    const piece = document.createElement('div'); piece.className = 'confetti-piece';
+    piece.style.cssText = `left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*colors.length)]};width:${4+Math.random()*8}px;height:${4+Math.random()*8}px;animation-duration:${3+Math.random()*4}s;animation-delay:${Math.random()*3}s;border-radius:${Math.random()>0.5?'50%':'2px'};`;
+    container.appendChild(piece);
+  }
+}
+function openPresent() {
+  state.birthdayOpened = true; if(window.fbSave)fbSave();
+  document.getElementById('presentBox').style.animation = 'none';
+  document.getElementById('presentBox').style.transform = 'scale(0.85) rotate(20deg)';
+  document.getElementById('birthdayReveal').classList.add('show');
+  document.getElementById('presentMsg').textContent = '🌸 happy birthday shrey 🌸';
+  createConfetti(); spawnHearts(); setTimeout(spawnHearts,300); setTimeout(spawnHearts,600);
+}
+function handleBirthdayPhotoUpload(event) {
+  const file = event.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => { state.birthdayPhotos[state.currentBirthdaySlot] = e.target.result; renderBirthday(); };
+  reader.readAsDataURL(file); event.target.value = '';
+}
+function saveBirthdayCard() { state.birthdayCard = document.getElementById('birthdayCardText').value; document.getElementById('cardPreviewText').textContent = state.birthdayCard; if(window.fbSave)fbSave(); spawnHearts(); alert('Card saved 💌 She\'ll love it!'); }
+function toggleCardMode() {
+  const editMode = document.getElementById('cardEditMode'), previewMode = document.getElementById('cardPreviewMode');
+  if (editMode.style.display === 'none') { editMode.style.display = 'block'; previewMode.style.display = 'none'; }
+  else { state.birthdayCard = document.getElementById('birthdayCardText').value; document.getElementById('cardPreviewText').textContent = state.birthdayCard; editMode.style.display = 'none'; previewMode.style.display = 'block'; }
+}
+
+// ===== ARCHIVE =====
+function renderArchive() {
+  const list = document.getElementById('archiveList'), empty = document.getElementById('archiveEmpty');
+  list.innerHTML = '';
+  if (!state.archive.length) { empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  state.archive.forEach(a => { const div = document.createElement('div'); div.className = 'archive-item'; div.innerHTML = `<span class="archive-date">${a.date}</span><span class="archive-title">${a.title}</span><span class="archive-type">${a.type}</span>`; list.appendChild(div); });
+  const today = new Date();
+  if (!(today.getMonth()===2 && today.getDate()===5) && state.birthdayCard) {
+    const bdiv = document.createElement('div'); bdiv.className = 'archive-item'; bdiv.style.borderLeft = '3px solid #f9c0cb';
+    bdiv.innerHTML = `<span class="archive-date">Mar 5</span><span class="archive-title">🎂 Shrey's Birthday Card & Memories</span><span class="archive-type" style="background:rgba(249,192,203,0.2);color:#c96080;">Birthday</span>`;
+    bdiv.onclick = () => showPage('birthday'); list.appendChild(bdiv);
+  }
+}
+
+// ===== HEARTS =====
+function spawnHearts() {
+  const hearts = ['💜','🌸','✨','🌊','💫','🤍'];
+  for (let i = 0; i < 5; i++) {
+    setTimeout(() => {
+      const h = document.createElement('div'); h.className = 'floating-heart';
+      h.textContent = hearts[Math.floor(Math.random()*hearts.length)];
+      h.style.cssText = `left:${20+Math.random()*60}vw;top:${40+Math.random()*30}vh;animation-duration:${1.5+Math.random()}s;`;
+      document.body.appendChild(h); setTimeout(() => h.remove(), 2500);
+    }, i * 120);
+  }
+}
+
+// ===== INIT =====
+function init() {
+  setDailyQuote();
+  checkBirthday();
+  renderHome();
+  renderFitnessCards();
+  document.getElementById('eventDate').value = new Date().toISOString().split('T')[0];
+  state.currentChallengeIndex = new Date().getDate() % dateIdeas.length;
+}
+
+init();
+</script>
+</body>
+</html>
