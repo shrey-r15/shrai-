@@ -21,33 +21,6 @@
     --gradient-soft: linear-gradient(160deg, #f0e8ff 0%, #e0f0f8 50%, #c8eae6 100%);
   }
 
-
-
-  .wordle-tile { width:52px; height:52px; border:2px solid rgba(201,179,232,0.35); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; font-weight:700; letter-spacing:0; text-transform:uppercase; transition:background 0.3s, border-color 0.3s; color:var(--text); background:white; }
-  .wordle-tile.filled { border-color:rgba(201,179,232,0.7); animation:wPop 0.1s ease; }
-  .wordle-tile.correct { background:#6bbfb5; border-color:#6bbfb5; color:white; }
-  .wordle-tile.present { background:#f5c842; border-color:#f5c842; color:white; }
-  .wordle-tile.absent  { background:#b0b0b0; border-color:#b0b0b0; color:white; }
-  .wordle-tile.reveal  { animation:wFlip 0.5s ease forwards; }
-  .wordle-row { display:flex; gap:5px; }
-  .wkey { min-width:32px; height:46px; border-radius:6px; border:none; background:rgba(201,179,232,0.2); color:var(--text); font-size:0.78rem; font-weight:600; cursor:pointer; padding:0 6px; font-family:"DM Sans",sans-serif; transition:background 0.2s; }
-  .wkey:active { transform:scale(0.95); }
-  .wkey.correct { background:#6bbfb5; color:white; }
-  .wkey.present { background:#f5c842; color:white; }
-  .wkey.absent  { background:#b0b0b0; color:white; }
-  .wkey.wide { min-width:52px; font-size:0.7rem; }
-  @keyframes wPop  { 0%{transform:scale(1)} 50%{transform:scale(1.12)} 100%{transform:scale(1)} }
-  @keyframes wFlip { 0%{transform:rotateX(0)} 50%{transform:rotateX(-90deg)} 100%{transform:rotateX(0)} }
-  @keyframes wShake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-6px)} 40%,80%{transform:translateX(6px)} }
-  .bday-stage { animation: bdayFadeUp 0.55s ease; }
-  @keyframes bdayFadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
-  @keyframes letterWobble { 0%,100% { transform:rotate(-4deg) scale(1); } 50% { transform:rotate(4deg) scale(1.05); } }
-  #cardLetter { animation: unfoldAnim 0.65s cubic-bezier(0.23,1,0.32,1); transform-origin:top center; }
-  @keyframes unfoldAnim { from { opacity:0; transform:scaleY(0.05) translateY(-30px); } to { opacity:1; transform:scaleY(1) translateY(0); } }
-  .love-item { display:flex; gap:0.55rem; align-items:flex-start; padding:0.5rem 0.2rem; border-bottom:1px solid rgba(201,179,232,0.12); font-size:0.87rem; line-height:1.55; }
-  .love-num { color:var(--lilac-dark); font-weight:600; min-width:30px; font-size:0.78rem; padding-top:0.1rem; }
-  .card-photo-slot { aspect-ratio:1; border-radius:10px; background:rgba(201,179,232,0.1); border:1.5px dashed rgba(201,179,232,0.4); display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; font-size:1.3rem; color:var(--text-soft); }
-  .card-photo-slot img { width:100%; height:100%; object-fit:cover; }
   @keyframes giraffeBounce {
     0%,100% { transform: translateY(0) rotate(-2deg); }
     25% { transform: translateY(-14px) rotate(2deg); }
@@ -182,6 +155,13 @@
   .habit-day:hover { transform: scale(1.15); }
 
   /* GRATITUDE */
+  .gratitude-entry { padding: 1.2rem; border-radius: 16px; background: rgba(255,255,255,0.7); margin-bottom: 0.8rem; border: 1px solid rgba(201,179,232,0.2); }
+  .gratitude-entry .date { font-size: 0.72rem; color: var(--text-soft); margin-bottom: 0.4rem; }
+  .gratitude-entry .author { font-size: 0.72rem; padding: 0.2rem 0.6rem; border-radius: 10px; display: inline-block; margin-bottom: 0.5rem; }
+  .gratitude-entry .author.jai { background: rgba(201,179,232,0.3); color: var(--lilac-dark); }
+  .gratitude-entry .author.shrey { background: rgba(107,191,181,0.3); color: var(--teal-dark); }
+  .gratitude-write textarea { width: 100%; min-height: 80px; padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid rgba(201,179,232,0.35); font-family: 'DM Sans', sans-serif; font-size: 0.88rem; resize: none; background: white; color: var(--text); outline: none; margin-bottom: 0.6rem; }
+  .gratitude-write textarea:focus { border-color: var(--lilac); }
   .write-controls { display: flex; gap: 0.5rem; align-items: center; }
   .write-controls select { padding: 0.5rem 0.75rem; border-radius: 8px; border: 1px solid rgba(201,179,232,0.35); background: white; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; color: var(--text); outline: none; }
 
@@ -358,7 +338,7 @@
       <button class="tab-btn" onclick="showPage('study')" data-page="study">📖 Study</button>
       <button class="tab-btn" onclick="showPage('health')" data-page="health">💪 Health</button>
       <button class="tab-btn" onclick="showPage('ourplace')" data-page="ourplace">🎬 Our Place</button>
-      <button class="tab-btn birthday-tab-indicator" id="birthdayTab" onclick="showPage('birthday')" data-page="birthday">🎂 Her Day</button>
+      <button class="tab-btn birthday-tab-indicator" id="birthdayTab" onclick="showPage('birthday')" data-page="birthday" style="display:none">🎂 Her Day</button>
       <button class="tab-btn" onclick="showPage('archive')" data-page="archive">🗂️ Archive</button>
     </div>
   </div>
@@ -497,7 +477,6 @@
       <input type="number" id="j-wm" placeholder="mins" style="max-width:78px;"/>
       <button class="btn" onclick="logWorkout('j')">Log</button>
     </div>
-    <div style="font-size:0.72rem;color:var(--text-soft);margin:0.6rem 0 0.3rem;font-weight:500;">📋 Workout History</div>
     <div id="j-wlog"></div>
     <button onclick="resetDay('j')" style="background:none;border:1px solid rgba(201,179,232,0.3);border-radius:8px;padding:0.3rem 0.8rem;font-size:0.72rem;color:var(--text-soft);cursor:pointer;margin-top:0.5rem;width:100%;">↺ Reset Jai's Day</button>
     <hr style="border:none;border-top:1px solid rgba(201,179,232,0.2);margin:1rem 0;"/>
@@ -521,8 +500,7 @@
       <input type="number" id="s-wm" placeholder="mins" style="max-width:78px;"/>
       <button class="btn" onclick="logWorkout('s')">Log</button>
     </div>
-    <div style="font-size:0.72rem;color:var(--text-soft);margin:0.6rem 0 0.3rem;font-weight:500;">📋 Workout History</div>
-    <div id="s-wlog"></div>
+    <div id="s-wlog" style="margin-top:0.5rem;"></div>
     <button onclick="resetDay('s')" style="background:none;border:1px solid rgba(107,191,181,0.3);border-radius:8px;padding:0.3rem 0.8rem;font-size:0.72rem;color:var(--text-soft);cursor:pointer;margin-top:0.5rem;width:100%;">↺ Reset Shrey's Day</button>
   </div>
 </div>
@@ -691,7 +669,6 @@
     <button class="op-tab" onclick="switchOP(event,'music')">🎵 Music</button>
     <button class="op-tab" onclick="switchOP(event,'ratings')">⭐ Our Ratings</button>
     <button class="op-tab" onclick="switchOP(event,'books')">📚 Books</button>
-    <button class="op-tab" onclick="switchOP(event,'wordle')">🟩 Wordle</button>
   </div>
   <div class="op-sec active" id="op-watchlist">
     <div class="card">
@@ -740,23 +717,6 @@
       <div id="ratingsList"></div>
     </div>
   </div>
-
-  <div class="op-sec" id="op-wordle">
-    <div class="card">
-      <div class="pill">🟩 Daily Wordle</div>
-      <div style="text-align:center;margin-bottom:0.8rem;">
-        <div style="font-size:0.75rem;color:var(--text-soft);" id="wordleDate"></div>
-        <div id="wordleScores" style="display:flex;justify-content:center;gap:1.5rem;margin-top:0.5rem;font-size:0.8rem;"></div>
-      </div>
-      <div id="wordleBoard" style="display:flex;flex-direction:column;align-items:center;gap:5px;margin-bottom:1rem;"></div>
-      <div id="wordleKeyboard" style="display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:1rem;"></div>
-      <div id="wordleMsg" style="text-align:center;font-size:0.9rem;color:var(--text-soft);min-height:1.5rem;margin-bottom:0.5rem;"></div>
-      <div id="wordleReveal" style="display:none;text-align:center;">
-        <div style="font-size:0.75rem;color:var(--text-soft);margin-bottom:0.4rem;">Today's word was</div>
-        <div id="wordleAnswer" style="font-size:1.4rem;font-weight:600;letter-spacing:0.15em;color:var(--text);"></div>
-      </div>
-    </div>
-  </div>
   <div class="op-sec" id="op-books">
     <div class="card">
       <div class="pill">📚 Books</div>
@@ -779,139 +739,42 @@
 </div>
 
 <!-- BIRTHDAY -->
-<div class="page" id="page-birthday" style="padding-bottom:2rem;">
-
-  <!-- STAGE 1: Present -->
-  <div id="bday-stage-present" class="bday-stage">
-    <div style="text-align:center;padding:2rem 1rem 1rem;">
-      <div style="font-size:0.85rem;color:var(--text-soft);margin-bottom:0.4rem;letter-spacing:0.05em;">🎂 5th March 2026</div>
-      <h2 style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:400;margin-bottom:2.5rem;color:var(--text);">Happy Birthday, my love 🎂</h2>
-      <div id="presentBox" onclick="openPresent()" style="cursor:pointer;display:inline-block;user-select:none;transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-        <svg width="160" height="185" viewBox="0 0 160 185">
-          <rect x="20" y="82" width="120" height="93" rx="8" fill="#f9c0cb"/>
-          <rect id="presentLid" x="14" y="55" width="132" height="34" rx="8" fill="#f07090" style="transition:all 0.5s ease;transform-origin:80px 55px;"/>
-          <rect x="72" y="55" width="16" height="120" fill="#c03060" opacity="0.65"/>
-          <rect x="14" y="67" width="132" height="10" fill="#c03060" opacity="0.65"/>
-          <ellipse cx="56" cy="44" rx="24" ry="15" fill="#e05070" transform="rotate(-22,56,44)"/>
-          <ellipse cx="104" cy="44" rx="24" ry="15" fill="#e05070" transform="rotate(22,104,44)"/>
-          <circle cx="80" cy="50" r="11" fill="#c03060"/>
-          <text x="138" y="38" font-size="18">✨</text>
-          <text x="8" y="48" font-size="15">🌸</text>
-          <text x="128" y="168" font-size="15">💜</text>
-        </svg>
+<div class="page" id="page-birthday">
+  <div class="birthday-hero">
+    <div class="confetti-container" id="confettiContainer"></div>
+    <div class="birthday-title">Happy Birthday,<br>my love 🎂</div>
+    <div class="birthday-subtitle">a very special day for a very special girl ✨</div>
+    <div class="present-box-wrapper">
+      <div class="present-box" id="presentBox" onclick="openPresent()">
+        <div class="present-ribbon"></div>
+        🎁
       </div>
-      <p style="font-size:0.82rem;color:var(--text-soft);margin-top:1.2rem;" id="presentHint">tap the present 🎁</p>
+      <div class="present-message" id="presentMsg">tap the gift, my love...</div>
+    </div>
+    <div class="birthday-reveal" id="birthdayReveal">
+      <div class="birthday-reveal-text" id="birthdayRevealText">I wonder who's the special girl<br>whose birthday is today? 🌸</div>
+      <div style="margin:1rem 0;">
+        <div class="birthday-photos-grid" id="birthdayPhotoGrid"></div>
+        <p style="font-size:0.75rem;color:var(--text-soft);margin-top:0.5rem;">tap + to add birthday photos ✨</p>
+      </div>
     </div>
   </div>
-
-  <!-- STAGE 2: Silly photo reveal -->
-  <div id="bday-stage-photo" class="bday-stage" style="display:none;">
-    <div style="text-align:center;padding:1.5rem 1rem;">
-      <div id="bdayTypeText" style="font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-weight:400;min-height:2.5rem;margin-bottom:1.5rem;color:var(--text);line-height:1.5;"></div>
-      <div id="jaiPhotoWrap" style="display:none;position:relative;display:none;margin-bottom:1.5rem;">
-        <img src="data:image/jpeg;base64,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" style="width:200px;border-radius:22px;box-shadow:0 8px 32px rgba(201,179,232,0.45);border:3px solid rgba(249,192,203,0.6);"/>
-        <div style="position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);background:white;border-radius:20px;padding:0.3rem 0.9rem;font-size:0.73rem;white-space:nowrap;box-shadow:0 2px 10px rgba(0,0,0,0.1);border:1px solid rgba(201,179,232,0.3);">👆 this girl right here!!</div>
-      </div>
-      <div id="bdayTypeText2" style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;min-height:2rem;margin-top:2rem;color:var(--text-soft);"></div>
-      <button id="openCardBtn" onclick="openCard()" class="btn" style="display:none;margin-top:1.8rem;font-size:1rem;padding:0.85rem 2.2rem;">💌 Open Card</button>
-    </div>
-  </div>
-
-  <!-- STAGE 3: Envelope + Card -->
-  <div id="bday-stage-card" class="bday-stage" style="display:none;">
-    <div style="padding:1rem;">
-      <div id="cardEnvelope" onclick="unfoldCard()" style="cursor:pointer;text-align:center;padding:2.5rem 1rem 1.5rem;">
-        <svg width="130" height="100" viewBox="0 0 130 100">
-          <rect x="2" y="22" width="126" height="76" rx="8" fill="#fff0f5" stroke="rgba(201,179,232,0.5)" stroke-width="1.5"/>
-          <polyline points="2,22 65,60 128,22" fill="none" stroke="rgba(201,179,232,0.45)" stroke-width="1.5"/>
-          <polygon id="envFlap" points="2,22 65,60 128,22 128,2 2,2" fill="#f9c0cb" stroke="rgba(249,192,203,0.5)" stroke-width="1" style="transition:all 0.6s ease;transform-origin:65px 22px;"/>
-          <text x="65" y="88" text-anchor="middle" font-size="20">💌</text>
-        </svg>
-        <p style="font-size:0.82rem;color:var(--text-soft);margin-top:0.6rem;">tap to open your card 💜</p>
-      </div>
-      <div id="cardLetter" style="display:none;">
-        <div class="card" style="background:linear-gradient(135deg,rgba(249,192,203,0.12),rgba(201,179,232,0.12));border-color:rgba(249,192,203,0.5);">
-          <div style="text-align:center;font-size:1.6rem;margin-bottom:1.2rem;">🎂 💜 🌸</div>
-          <div id="cardMessageText" style="font-family:'Cormorant Garamond',serif;font-size:1.12rem;line-height:1.95;color:var(--text);white-space:pre-wrap;"></div>
-          <div id="cardJaiPhotoWrap" style="text-align:center;margin:1.5rem 0;display:none;">
-            <div id="cardBeautifulPhotoSlot" onclick="_cardBeautifulPhotoClick()" style="cursor:pointer;display:inline-block;">
-              <div id="cardBeautifulPhotoEmpty" style="width:200px;height:200px;border-radius:20px;border:2px dashed rgba(201,179,232,0.5);background:rgba(249,192,203,0.08);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;">
-                <div style="font-size:2rem;">📸</div>
-                <div style="font-size:0.75rem;color:var(--text-soft);">tap to add a photo</div>
-              </div>
-              <img id="cardBeautifulPhotoImg" src="" style="width:200px;border-radius:20px;box-shadow:0 6px 24px rgba(201,179,232,0.4);border:3px solid rgba(249,192,203,0.5);display:none;"/>
-            </div>
-            <input type="file" id="cardBeautifulPhotoInput" accept="image/*" style="display:none;" onchange="_handleBeautifulPhoto(event)"/>
-          </div>
-          <div id="cardMessage2Wrap" style="display:none;">
-            <div id="cardMessageText2" style="font-family:'Cormorant Garamond',serif;font-size:1.12rem;line-height:1.95;color:var(--text);white-space:pre-wrap;"></div>
-          </div>
-          <div id="cardPhotosWrap" style="display:none;margin-top:1.5rem;">
-            <p style="font-size:0.75rem;color:var(--text-soft);text-align:center;margin-bottom:0.8rem;">our favourite moments 📸</p>
-            <div id="cardPhotosGrid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;"></div>
-          </div>
-          <div id="cardSignoff" style="display:none;text-align:center;margin-top:1.5rem;font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--text);">with all my love 💜<br>— Shrey</div>
-        </div>
-        <div style="display:flex;gap:0.6rem;justify-content:center;margin-top:1rem;flex-wrap:wrap;">
-          <button class="btn-outline" onclick="closeCard()">Close card 💌</button>
+  <div class="card birthday-card-area">
+    <div class="pill" style="background:linear-gradient(135deg,rgba(249,192,203,0.3),rgba(201,179,232,0.3));border-color:rgba(249,192,203,0.5);">💌 Your Birthday Card</div>
+    <div id="cardEditMode">
+      <div class="card-edit">
+        <textarea id="birthdayCardText" placeholder="Write your birthday card here... This is just for her eyes 🌸&#10;&#10;Tell her how much she means to you..."></textarea>
+        <div style="display:flex;gap:0.5rem;">
+          <button class="btn" onclick="saveBirthdayCard()">Save Card 💌</button>
+          <button class="btn-outline" onclick="toggleCardMode()">Preview Card</button>
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- STAGE 4: Bear surprise -->
-  <div id="bday-stage-bear" class="bday-stage" style="display:none;">
-    <div style="text-align:center;padding:1.5rem 1rem 2rem;">
-      <svg width="150" height="170" viewBox="0 0 150 170" style="margin-bottom:0.2rem;">
-        <ellipse cx="75" cy="118" rx="44" ry="47" fill="#c8906a"/>
-        <circle cx="75" cy="62" r="37" fill="#c8906a"/>
-        <circle cx="43" cy="33" r="16" fill="#c8906a"/><circle cx="43" cy="33" r="10" fill="#e8b090"/>
-        <circle cx="107" cy="33" r="16" fill="#c8906a"/><circle cx="107" cy="33" r="10" fill="#e8b090"/>
-        <ellipse cx="75" cy="71" rx="23" ry="19" fill="#e8b090"/>
-        <circle cx="63" cy="57" r="5.5" fill="#2a2a2a"/><circle cx="87" cy="57" r="5.5" fill="#2a2a2a"/>
-        <circle cx="64.5" cy="55.5" r="2" fill="white"/><circle cx="88.5" cy="55.5" r="2" fill="white"/>
-        <ellipse cx="75" cy="69" rx="5.5" ry="4" fill="#8b5e3c"/>
-        <path d="M63 77 Q75 87 87 77" stroke="#8b5e3c" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        <ellipse cx="75" cy="120" rx="26" ry="30" fill="#e8b090"/>
-        <ellipse cx="30" cy="112" rx="15" ry="11" fill="#c8906a" transform="rotate(-28,30,112)"/>
-        <ellipse cx="120" cy="112" rx="15" ry="11" fill="#c8906a" transform="rotate(28,120,112)"/>
-        <ellipse cx="55" cy="158" rx="15" ry="13" fill="#c8906a"/>
-        <ellipse cx="95" cy="158" rx="15" ry="13" fill="#c8906a"/>
-        <rect x="88" y="4" width="58" height="36" rx="10" fill="white" stroke="rgba(201,179,232,0.6)" stroke-width="1.5"/>
-        <polygon points="94,32 88,44 106,32" fill="white" stroke="rgba(201,179,232,0.4)" stroke-width="1"/>
-        <text x="117" y="18" text-anchor="middle" font-size="8" fill="#9d7dc7" font-weight="600">did you</text>
-        <text x="117" y="28" text-anchor="middle" font-size="8" fill="#9d7dc7" font-weight="600">think that</text>
-        <text x="117" y="38" text-anchor="middle" font-size="8" fill="#9d7dc7" font-weight="600">was it? 😏</text>
-      </svg>
-      <p style="font-size:0.9rem;color:var(--text);margin-bottom:0.4rem;font-weight:500;">there's one more thing... 🤫</p>
-      <p style="font-size:0.8rem;color:var(--text-soft);margin-bottom:1.8rem;">tap the letter when you're ready 💌</p>
-      <div id="secretLetter" onclick="open100Things()" style="cursor:pointer;display:inline-block;animation:letterWobble 1.8s ease infinite;">
-        <svg width="75" height="58" viewBox="0 0 75 58">
-          <rect x="2" y="14" width="71" height="42" rx="6" fill="#fff0f5" stroke="rgba(249,192,203,0.8)" stroke-width="1.5"/>
-          <polygon points="2,14 37.5,35 73,14 73,2 2,2" fill="#f9c0cb" stroke="rgba(249,192,203,0.6)" stroke-width="1"/>
-          <polyline points="2,14 37.5,35 73,14" fill="none" stroke="rgba(201,179,232,0.5)" stroke-width="1.2"/>
-          <text x="37.5" y="50" text-anchor="middle" font-size="16">💜</text>
-        </svg>
-        <p style="font-size:0.72rem;color:var(--lilac-dark);margin-top:0.4rem;font-weight:500;">tap me 👆</p>
-      </div>
+    <div id="cardPreviewMode" style="display:none;">
+      <div class="card-preview" id="cardPreviewText"></div>
+      <button class="btn-outline" style="margin-top:0.8rem;" onclick="toggleCardMode()">Edit Card ✏️</button>
     </div>
   </div>
-
-  <!-- STAGE 5: 100 things -->
-  <div id="bday-stage-100" class="bday-stage" style="display:none;">
-    <div class="card" style="background:linear-gradient(135deg,rgba(249,192,203,0.08),rgba(201,179,232,0.08));border-color:rgba(249,192,203,0.4);">
-      <div style="text-align:center;margin-bottom:1.4rem;">
-        <div style="font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:400;color:var(--text);">100 reasons I love you 💜</div>
-        <div style="font-size:0.75rem;color:var(--text-soft);margin-top:0.4rem;">happy 20th, my girl 🎂</div>
-      </div>
-      <div id="hundredList"></div>
-      <div style="text-align:center;margin-top:1.5rem;">
-        <button class="btn-outline" onclick="showBdayStage('bday-stage-bear')">← back</button>
-      </div>
-    </div>
-  </div>
-
-  <input type="file" id="cardPhotoInput" accept="image/*" style="display:none;" onchange="handleCardPhotoUpload(event)"/>
 </div>
 
 <!-- ARCHIVE -->
@@ -981,7 +844,6 @@ let state = {
 
 // Fitness & Our Place state
 let _fitness = { j:{cal:0,pro:0,carb:0,fat:0,workouts:[]}, s:{cal:0,pro:0,carb:0,fat:0,workouts:[]} };
-var _workoutHistory = { j:[], s:[] };
 let _op = {
   books: [],
   watchlist: [
@@ -999,6 +861,36 @@ let _music = [
 ];
 let _cycle = { start: null, len: 28, dur: 5 };
 
+
+// ===== PERSIST (localStorage) =====
+function saveToLocal() {
+  try {
+    localStorage.setItem('jas_state', JSON.stringify({
+      goals: state.goals, events: state.events, moods: state.moods,
+      moodData: state.moodData, completedChallenges: state.completedChallenges, bucketList: state.bucketList,
+      birthdayCard: state.birthdayCard, birthdayOpened: state.birthdayOpened,
+      archive: state.archive
+    }));
+    localStorage.setItem('jas_fitness', JSON.stringify(_fitness));
+    localStorage.setItem('jas_cycle', JSON.stringify(_cycle));
+    localStorage.setItem('jas_op', JSON.stringify({watchlist:_op.watchlist, books:_op.books}));
+    localStorage.setItem('jas_music', JSON.stringify(_music));
+  } catch(e) {}
+}
+function loadFromLocal() {
+  try {
+    var s = localStorage.getItem('jas_state');
+    if (s) Object.assign(state, JSON.parse(s));
+    var f = localStorage.getItem('jas_fitness');
+    if (f) Object.assign(_fitness, JSON.parse(f));
+    var c = localStorage.getItem('jas_cycle');
+    if (c) Object.assign(_cycle, JSON.parse(c));
+    var op = localStorage.getItem('jas_op');
+    if (op) { var opd=JSON.parse(op); _op.watchlist=opd.watchlist||_op.watchlist; _op.books=opd.books||[]; }
+    var mu = localStorage.getItem('jas_music');
+    if (mu) { var md=JSON.parse(mu); _music.length=0; md.forEach(function(m){_music.push(m);}); }
+  } catch(e) {}
+}
 // ===== QUOTES =====
 const quotes = [
   { text: "The most powerful weapon on earth is the human soul on fire.", source: "Sri Guru Granth Sahib Ji" },
@@ -1130,9 +1022,11 @@ function showPage(page) {
   if (page === 'health') renderFitnessCards();
   if (page === 'study') { renderStudyStats(); renderStudyLog(); updateGiraffe(); }
   if (page === 'calendar') renderCalendar();
+  if (page === 'habits') renderHabits();
+  if (page === 'gratitude') renderGratitude();
   if (page === 'love') renderLove();
   if (page === 'photos') renderPhotos();
-  if (page === 'birthday') initBirthday();
+  if (page === 'birthday') renderBirthday();
   if (page === 'archive') renderArchive();
   if (page === 'ourplace') renderOP();
 }
@@ -1148,7 +1042,6 @@ function saveToLocal() {
       archive: state.archive
     }));
     localStorage.setItem('jas_fitness', JSON.stringify(_fitness));
-    localStorage.setItem('jas_wh', JSON.stringify(_workoutHistory));
     localStorage.setItem('jas_cycle', JSON.stringify(_cycle));
     localStorage.setItem('jas_op', JSON.stringify({watchlist:_op.watchlist, books:_op.books}));
     localStorage.setItem('jas_music', JSON.stringify(_music));
@@ -1160,8 +1053,6 @@ function loadFromLocal() {
     if (s) Object.assign(state, JSON.parse(s));
     var f = localStorage.getItem('jas_fitness');
     if (f) Object.assign(_fitness, JSON.parse(f));
-    var wh = localStorage.getItem('jas_wh');
-    if (wh) { var whd=JSON.parse(wh); _workoutHistory.j=whd.j||[]; _workoutHistory.s=whd.s||[]; }
     var c = localStorage.getItem('jas_cycle');
     if (c) Object.assign(_cycle, JSON.parse(c));
     var op = localStorage.getItem('jas_op');
@@ -1280,22 +1171,17 @@ function logMacros(p) {
   renderFitnessCards(); spawnHearts(); saveToLocal();
 }
 function logWorkout(p) {
-  var descEl = document.getElementById(p+'-wd'); if (!descEl) return;
-  var desc = descEl.value.trim(); if (!desc) return;
-  var type = (document.getElementById(p+'-wt')||{}).value || 'other';
-  var mins = +(document.getElementById(p+'-wm')||{}).value || 0;
-  var entry = { desc:desc, type:type, mins:mins,
-    time: new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),
-    date: new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short'}) };
-  _fitness[p].workouts.unshift(entry);
-  _workoutHistory[p].unshift(entry);
-  if (_workoutHistory[p].length > 50) _workoutHistory[p].pop(); // keep last 50
-  descEl.value = '';
-  var mEl = document.getElementById(p+'-wm'); if(mEl) mEl.value = '';
+  const desc = document.getElementById(p+'-wd')?.value.trim();
+  if (!desc) return;
+  const type = document.getElementById(p+'-wt')?.value || 'other';
+  const mins = +document.getElementById(p+'-wm')?.value || 0;
+  _fitness[p].workouts.unshift({ desc, type, mins, time: new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) });
+  document.getElementById(p+'-wd').value = '';
+  document.getElementById(p+'-wm').value = '';
   renderFitnessCards(); spawnHearts(); saveToLocal();
 }
 function resetDay(p) {
-  if (!confirm('Reset ' + (p==='j'?"Jai's":"Shrey's") + ' daily macros? Workout history is kept.')) return;
+  if (!confirm("Reset " + (p==="j"?"Jai's":"Shrey's") + " day?")) return;
   _fitness[p] = {cal:0,pro:0,carb:0,fat:0,workouts:[]};
   renderFitnessCards(); saveToLocal();
 }
@@ -1308,29 +1194,15 @@ function renderFitnessCards() {
     setEl(p+'-cal', f.cal); setEl(p+'-pro', f.pro+'g'); setEl(p+'-carb', f.carb+'g'); setEl(p+'-fat', f.fat+'g');
     setW(p+'-cal-b', f.cal/goals.cal*100); setW(p+'-pro-b', f.pro/goals.pro*100);
     setW(p+'-carb-b', f.carb/goals.carb*100); setW(p+'-fat-b', f.fat/goals.fat*100);
-    var logEl = document.getElementById(p+'-wlog');
+    const logEl = document.getElementById(p+'-wlog');
     if (logEl) {
       logEl.innerHTML = '';
-      var history = _workoutHistory[p] || [];
-      if (!history.length) {
-        logEl.innerHTML = '<p style="font-size:0.78rem;color:var(--text-soft);text-align:center;padding:0.5rem;">No workouts logged yet 💪</p>';
-      } else {
-        history.slice(0,10).forEach(function(w) {
-          var d = document.createElement('div');
-          d.className = 'workout-entry';
-          d.innerHTML = '<span class="wtag wtag-' + w.type + '">' + w.type + '</span>'
-            + '<span style="flex:1">' + w.desc + '</span>'
-            + (w.mins ? '<span style="font-size:0.7rem;color:var(--text-soft);">' + w.mins + 'min</span>' : '')
-            + '<span style="font-size:0.67rem;color:var(--text-soft);">' + (w.date||'') + ' ' + (w.time||'') + '</span>';
-          logEl.appendChild(d);
-        });
-        if (history.length > 10) {
-          var more = document.createElement('p');
-          more.style.cssText = 'font-size:0.72rem;color:var(--text-soft);text-align:center;margin-top:0.4rem;';
-          more.textContent = '+ ' + (history.length - 10) + ' more sessions';
-          logEl.appendChild(more);
-        }
-      }
+      f.workouts.slice(0,3).forEach(w => {
+        const d = document.createElement('div');
+        d.className = 'workout-entry';
+        d.innerHTML = `<span class="wtag wtag-${w.type}">${w.type}</span><span style="flex:1">${w.desc}</span>${w.mins?`<span style="font-size:0.7rem;color:var(--text-soft);">${w.mins}min</span>`:''}<span style="font-size:0.67rem;color:var(--text-soft);">${w.time}</span>`;
+        logEl.appendChild(d);
+      });
     }
   });
 }
@@ -1425,9 +1297,8 @@ function updateGiraffe() {
     if (wh >= _giraffeColors[i].minHrs) { level = _giraffeColors[i]; break; }
   }
   var svg = document.getElementById('giraffeSvg'); if (!svg) return;
-  if (!svg.querySelectorAll) return;
   ['gBody','gNeck','gHead','gLeg1','gLeg2','gLeg3','gLeg4'].forEach(function(id){
-    var el = document.getElementById(id);
+    var el = svg.getElementById(id)||document.getElementById(id);
     if(el) el.setAttribute('fill', level.body);
   });
   svg.querySelectorAll('ellipse[opacity],ellipse[fill="#C8901A"],rect[fill="#C8901A"],path[stroke="#C8901A"]').forEach(function(el){
@@ -1622,7 +1493,17 @@ function updateCyclePredictions() {
   if (daEl) daEl.textContent = daysAway + 'd';
 }
 
-// ===== BUCKET LIST renders when love page opens =====
+// Patch renderLove to also render bucket list
+var _origRenderLove = typeof renderLove === 'function' ? renderLove : null;
+
+// ===== RENDER LOVE (extended) =====
+function renderLove() {
+  renderBucketList();
+  // re-render challenge and love lang if functions exist
+  if (typeof renderCurrentChallenge === 'function') renderCurrentChallenge();
+  if (typeof renderLoveLang === 'function') renderLoveLang();
+  if (typeof renderCompletedChallenges === 'function') renderCompletedChallenges();
+}
 
 
 
@@ -1662,438 +1543,6 @@ function initCyclePanel() {
   var stored = localStorage.getItem('jas_cycleVisible');
   if (stored === '0') toggleCyclePanel();
 }
-
-// ===== BIRTHDAY =====
-var _cardPhotos = [null,null,null,null,null,null];
-var _cardPhotoSlot = 0;
-
-var _Things = [
-  "your smile",
-  "your hazel eyes",
-  "your dimples",
-  "your little forehead",
-  "your sleepy voice",
-  "when you ask for multiple kisses before we end the call",
-  "your angry face lol",
-  "the way you're always cold",
-  "how stubborn you are",
-  "your hard work",
-  "the little bit you eat",
-  "how you wanted to do medical examinations on me",
-  "your laugh",
-  "how you look when you're excited — bare hugging",
-  "the way everything is a lot easier when you're here",
-  "how I feel safe (except for the time in yr12)",
-  "the way you exist",
-  "your sense of humour",
-  "the way you pout when you don't get what you want",
-  "how you say you're fine and your face says something completely different",
-  "the random voice notes that are somehow always exactly what I needed",
-  "how you get fully invested in other people's drama",
-  "the way you hold on a little longer when we hug",
-  "how you somehow always know when I need you without me saying anything",
-  "the way your eyes go soft when you're being genuine",
-  "how you make even the most boring day feel like something",
-  "the face you make right before you start laughing",
-  "how you chose medicine because you actually care — that's so you"
-];
-
-var _msg1 = "Happy birthday to the most beautiful girl I know";
-var _msg2 = "BIG 20 is such a milestone. It\u2019s been amazing to see you grow over the last few years and especially over the past year. Even with all the trials and tribulations that have come your way, you have not stopped working your ass off, and that is one of the main reasons I love you.\n\nCannot wait for you to become a doctor and how we manage the rest of our lives together.\n\nHope you have the best day and don\u2019t party too hard, whoop whoop!! \uD83C\uDF89";
-
-function showBdayStage(id) {
-  document.querySelectorAll('.bday-stage').forEach(function(s){ s.style.display = 'none'; });
-  var el = document.getElementById(id);
-  if (!el) return;
-  el.style.display = '';
-  el.style.animation = 'none';
-  void el.offsetHeight;
-  el.style.animation = '';
-}
-
-function openPresent() {
-  var lid = document.getElementById('presentLid');
-  if (lid) {
-    lid.style.transition = 'all 0.5s ease';
-    lid.style.transform = 'translateY(-38px) rotate(-20deg)';
-    lid.style.opacity = '0';
-  }
-  setTimeout(function() {
-    showBdayStage('bday-stage-photo');
-    typeOut('bdayTypeText', 'I wonder... whose birthday is it today? \uD83E\uDD14', 65, function() {
-      setTimeout(function() {
-        var wrap = document.getElementById('jaiPhotoWrap');
-        if (wrap) wrap.style.display = 'block';
-        setTimeout(function() {
-          typeOut('bdayTypeText2', '...oh wait, I think I know \uD83D\uDC40', 75, function() {
-            setTimeout(function() {
-              var btn = document.getElementById('openCardBtn');
-              if (btn) btn.style.display = '';
-            }, 700);
-          });
-        }, 800);
-      }, 500);
-    });
-    spawnHearts();
-  }, 520);
-}
-
-function typeOut(elId, msg, speed, cb) {
-  var el = document.getElementById(elId); if (!el) { if(cb) cb(); return; }
-  el.textContent = '';
-  var i = 0;
-  var t = setInterval(function() {
-    el.textContent += msg[i];
-    i++;
-    if (i >= msg.length) { clearInterval(t); if (cb) cb(); }
-  }, speed);
-}
-
-function openCard() {
-  showBdayStage('bday-stage-card');
-}
-
-function unfoldCard() {
-  var env = document.getElementById('cardEnvelope');
-  var letter = document.getElementById('cardLetter');
-  var flap = document.getElementById('envFlap');
-  if (flap) {
-    flap.style.transition = 'all 0.55s ease';
-    flap.style.transform = 'rotateX(180deg)';
-    flap.style.opacity = '0';
-  }
-  setTimeout(function() {
-    if (env) env.style.display = 'none';
-    if (letter) {
-      letter.style.display = '';
-      _loadBeautifulPhoto();
-      renderCardPhotos();
-      // Type first part of message
-      typeOut('cardMessageText', _msg1, 40, function() {
-        // Show Jai photo
-        setTimeout(function() {
-          var photoWrap = document.getElementById('cardJaiPhotoWrap');
-          if (photoWrap) photoWrap.style.display = 'block';
-          // Then type rest of message
-          setTimeout(function() {
-            var wrap2 = document.getElementById('cardMessage2Wrap');
-            var el2 = document.getElementById('cardMessageText2');
-            if (wrap2) wrap2.style.display = '';
-            typeOut('cardMessageText2', _msg2, 18, function() {
-              // show photos and signoff
-              setTimeout(function() {
-                var pw = document.getElementById('cardPhotosWrap');
-                var so = document.getElementById('cardSignoff');
-                if (pw) pw.style.display = '';
-                if (so) so.style.display = '';
-                spawnHearts();
-              }, 400);
-            });
-          }, 600);
-        }, 500);
-      });
-    }
-  }, 560);
-}
-
-function closeCard() {
-  showBdayStage('bday-stage-bear');
-  spawnHearts();
-}
-
-function open100Things() {
-  showBdayStage('bday-stage-100');
-  renderHundredList();
-}
-
-function renderHundredList() {
-  var el = document.getElementById('hundredList'); if (!el) return;
-  el.innerHTML = '';
-  _hundredThings.forEach(function(thing, i) {
-    var d = document.createElement('div');
-    d.className = 'love-item';
-    d.innerHTML = '<span class="love-num">' + (i + 1) + '</span><span>' + thing + '</span>';
-    el.appendChild(d);
-  });
-}
-
-function renderCardPhotos() {
-  var grid = document.getElementById('cardPhotosGrid'); if (!grid) return;
-  grid.innerHTML = '';
-  for (var i = 0; i < 6; i++) {
-    (function(slot) {
-      var d = document.createElement('div');
-      d.className = 'card-photo-slot';
-      if (_cardPhotos[slot]) {
-        d.innerHTML = '<img src="' + _cardPhotos[slot] + '" />';
-        d.onclick = (function(s){ return function(){ _cardPhotoSlot=s; document.getElementById('cardPhotoInput').click(); }; })(slot);
-      } else {
-        d.textContent = '+';
-        d.onclick = (function(s){ return function(){ _cardPhotoSlot=s; document.getElementById('cardPhotoInput').click(); }; })(slot);
-      }
-      grid.appendChild(d);
-    })(i);
-  }
-}
-
-function handleCardPhotoUpload(event) {
-  var file = event.target.files[0]; if (!file) return;
-  var rd = new FileReader();
-  rd.onload = function(e) {
-    _cardPhotos[_cardPhotoSlot] = e.target.result;
-    renderCardPhotos();
-    try { localStorage.setItem('jas_cardPhotos', JSON.stringify(_cardPhotos)); } catch(ex) {}
-  };
-  rd.readAsDataURL(file);
-  event.target.value = '';
-}
-
-function initBirthday() {
-  try {
-    var saved = localStorage.getItem('jas_cardPhotos');
-    if (saved) _cardPhotos = JSON.parse(saved);
-  } catch(e) {}
-  showBdayStage('bday-stage-present');
-}
-
-
-function _cardBeautifulPhotoClick() {
-  document.getElementById('cardBeautifulPhotoInput').click();
-}
-function _handleBeautifulPhoto(event) {
-  var file = event.target.files[0]; if (!file) return;
-  var rd = new FileReader();
-  rd.onload = function(e) {
-    var img = document.getElementById('cardBeautifulPhotoImg');
-    var empty = document.getElementById('cardBeautifulPhotoEmpty');
-    if (img) { img.src = e.target.result; img.style.display = ''; }
-    if (empty) empty.style.display = 'none';
-    try { localStorage.setItem('jas_beautifulPhoto', e.target.result); } catch(ex) {}
-  };
-  rd.readAsDataURL(file);
-  event.target.value = '';
-}
-function _loadBeautifulPhoto() {
-  try {
-    var saved = localStorage.getItem('jas_beautifulPhoto');
-    if (saved) {
-      var img = document.getElementById('cardBeautifulPhotoImg');
-      var empty = document.getElementById('cardBeautifulPhotoEmpty');
-      if (img) { img.src = saved; img.style.display = ''; }
-      if (empty) empty.style.display = 'none';
-    }
-  } catch(e) {}
-}
-
-// ===== WORDLE =====
-var _WORDS = ["about","above","abuse","actor","acute","admit","adopt","adult","after","again","agent","agree","ahead","alarm","album","alert","alike","align","alive","alley","allow","alone","along","altar","alter","angel","anger","angle","angry","anime","ankle","annex","antic","apart","apple","apply","arena","argue","arise","armor","array","arrow","asked","atlas","attic","audio","audit","avoid","awake","award","aware","awful","badly","baker","bases","basic","basis","batch","beach","beard","beast","began","begin","being","below","bench","bible","birth","black","blade","blame","bland","blank","blast","blaze","bleak","blend","bless","blind","block","blood","bloom","blown","blues","blunt","blush","board","boast","bonus","boost","booth","bound","boxer","brace","brain","brake","brand","brave","bread","break","breed","brick","bride","brief","bring","broad","broke","brook","brown","brush","buddy","build","built","bulge","bunch","burst","buyer","cabin","camel","canal","candy","carry","catch","cause","cease","chain","chair","chaos","charm","chase","cheap","check","cheek","chess","chest","chief","child","china","chips","choir","civic","civil","claim","class","clean","clear","clerk","click","cliff","climb","cling","clock","clone","close","cloud","coach","coast","cobra","comet","comic","comma","coral","could","count","court","cover","crack","craft","crane","crash","crazy","cream","creek","crime","cross","crowd","crown","crude","crush","crypt","curve","cycle","daily","dance","dares","dated","death","debut","decay","delay","delta","dense","depot","depth","derby","devil","dirty","disco","ditch","diver","dodge","doing","doubt","dough","draft","drain","drama","drape","drawl","drawn","dream","dress","dried","drift","drill","drink","drive","drone","drove","drown","drugs","drunk","dryer","dumpy","dying","eager","eagle","early","earth","eaten","eight","elite","empty","enemy","enjoy","enter","entry","error","essay","event","every","exact","exile","exist","extra","fable","faced","faint","fairy","faith","false","fancy","fangs","fault","feast","feels","fence","ferry","fetch","fever","fewer","fiber","field","fiery","fight","final","fixed","flame","flare","flash","flask","fleet","flesh","float","flood","floor","flour","fluid","flush","focus","force","forge","forth","found","frame","frank","fraud","fresh","front","frost","froze","froze","fruit","fully","funny","giant","given","gland","glare","glass","globe","gloom","gloss","gloat","glove","going","grace","grade","grain","grand","grant","grasp","grass","grave","great","greed","green","greet","grief","grind","groan","groin","groom","group","grove","grown","gruesome","guard","guest","guide","guild","guile","guise","gusto","happy","harsh","haste","haven","heart","heavy","hence","herbs","heron","honor","horse","hotel","hound","house","hover","human","humid","hurry","ideal","image","imply","inbox","index","inner","input","irony","issue","jewel","joker","joust","juicy","jumpy","karma","kneel","knife","knock","knoll","known","label","lance","large","laser","later","laugh","layer","learn","lease","leave","legal","lemur","level","light","limit","linen","liner","liver","loose","lover","lower","lucky","lunar","lying","magic","major","maker","manor","maple","march","match","meant","mercy","merge","minor","minus","model","money","month","moral","moron","morph","motor","motto","mound","mount","mouse","moved","movie","muddy","music","naive","nasty","naval","nerve","never","night","noble","noise","north","noted","novel","nurse","nymph","occur","ocean","offer","often","olive","onset","order","other","outer","oxide","ozone","paint","panic","paper","party","paste","patch","pause","peace","pearl","pedal","penny","perch","peril","phase","phone","photo","piano","piece","pilot","pirate","pixel","pizza","place","plaid","plain","plane","plant","plate","plaza","plead","pluck","plumb","plume","plunk","plush","point","polar","porch","pound","power","press","price","pride","prime","print","prior","prize","probe","proof","prose","proud","prove","prowl","pulse","punch","pupil","purge","queen","query","quest","queue","quick","quiet","quota","quote","radar","radio","raise","rally","ranch","range","rapid","ratio","reach","react","realm","rebel","rebel","recap","refer","reign","relax","repay","repel","reply","rider","ridge","rifle","rigid","risky","rival","rivet","robin","robot","rocky","roman","rough","round","route","ruler","rumor","rusty","sadly","saint","salad","sauce","scalp","scamp","scant","scare","scent","scene","scope","score","sense","serve","seven","shade","shake","shall","shame","shape","share","sharp","sheer","sheet","shell","shift","shine","shirt","shock","shore","short","shout","sight","sigma","silly","since","sixth","sixty","skill","slate","slave","sleep","slice","slide","sling","slope","smart","smell","smile","smirk","smoke","snake","solar","solid","solve","sorry","south","space","spare","spark","speak","spell","spend","spill","spine","split","spoke","spoof","sport","spout","spray","spree","sprig","sprout","stack","staff","stage","stain","stair","stake","stall","stamp","stand","stark","start","state","staunch","stave","steal","steam","steel","steep","steer","stern","stick","stiff","still","stock","stomp","stone","stood","storm","story","stove","strap","straw","stray","strip","strum","stuck","study","stunt","style","sugar","suite","sunny","super","surge","swamp","swarm","swear","sweat","sweet","swept","swift","swipe","swirl","sword","swore","sworn","table","talon","taste","tatoo","tease","teeth","tempo","tense","tenth","terms","thank","their","theme","there","these","thick","thing","think","third","thorn","those","three","threw","throw","tiger","tight","timer","title","today","token","tooth","total","touch","tough","towel","tower","toxic","trace","track","trade","trail","train","trait","tramp","trash","trawl","tread","treat","trend","trick","tried","troop","trove","truck","truly","trump","trunk","trust","truth","tumor","tuner","tunic","tweak","twice","twist","tying","udder","ultra","uncut","under","unify","union","unlit","until","upper","upset","urban","using","usual","utter","valid","valor","valve","vapor","vault","vegan","verse","video","vigor","viral","virus","visor","visit","vista","vital","vivid","voice","voter","vow","vowel","waged","waltz","waste","watch","water","weary","weave","weedy","weird","whale","wheat","wheel","where","which","while","white","whole","whose","wider","wield","witty","woman","women","world","worse","worst","worth","would","wound","wrath","wrist","write","wrote","yacht","yearn","yield","young","yours","youth","zappy","zesty","zilch","zippy","zombi","zonal","lover","bliss","bound","crush","dates","dream","heart","sweet","roses","hugs"];
-
-function _wordleGetWord() {
-  // Deterministic daily word based on date
-  var d = new Date();
-  var seed = d.getFullYear() * 10000 + (d.getMonth()+1) * 100 + d.getDate();
-  return _WORDS[seed % _WORDS.length].toUpperCase();
-}
-
-var _wState = {
-  word: '', guesses: [], current: '', done: false,
-  scores: { jai: null, shrey: null }
-};
-
-function _wLoadState() {
-  try {
-    var today = new Date().toDateString();
-    var saved = localStorage.getItem('jas_wordle');
-    if (saved) {
-      var s = JSON.parse(saved);
-      if (s.date === today) {
-        _wState = s.state;
-        _wState.word = _wordleGetWord();
-        return;
-      }
-    }
-  } catch(e) {}
-  _wState = { word: _wordleGetWord(), guesses: [], current: '', done: false, scores: { jai: null, shrey: null } };
-}
-
-function _wSaveState() {
-  try {
-    localStorage.setItem('jas_wordle', JSON.stringify({ date: new Date().toDateString(), state: _wState }));
-  } catch(e) {}
-}
-
-function initWordle() {
-  _wLoadState();
-  _wRenderBoard();
-  _wRenderKeyboard();
-  _wRenderScores();
-  var dateEl = document.getElementById('wordleDate');
-  if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long' });
-  if (_wState.done) _wShowReveal();
-}
-
-function _wRenderBoard() {
-  var board = document.getElementById('wordleBoard'); if (!board) return;
-  board.innerHTML = '';
-  for (var r = 0; r < 6; r++) {
-    var row = document.createElement('div'); row.className = 'wordle-row'; row.id = 'wrow-' + r;
-    for (var c = 0; c < 5; c++) {
-      var tile = document.createElement('div');
-      tile.className = 'wordle-tile'; tile.id = 'wtile-' + r + '-' + c;
-      var guess = _wState.guesses[r];
-      if (guess) {
-        tile.textContent = guess.letters[c];
-        tile.classList.add(guess.result[c]);
-      }
-      row.appendChild(tile);
-    }
-    board.appendChild(row);
-  }
-  // Show current typing in next row
-  if (!_wState.done && _wState.guesses.length < 6) {
-    var curRow = _wState.guesses.length;
-    for (var i = 0; i < _wState.current.length; i++) {
-      var t = document.getElementById('wtile-' + curRow + '-' + i);
-      if (t) { t.textContent = _wState.current[i]; t.classList.add('filled'); }
-    }
-  }
-}
-
-function _wRenderKeyboard() {
-  var kb = document.getElementById('wordleKeyboard'); if (!kb) return;
-  kb.innerHTML = '';
-  var rows = [['Q','W','E','R','T','Y','U','I','O','P'], ['A','S','D','F','G','H','J','K','L'], ['ENTER','Z','X','C','V','B','N','M','⌫']];
-  var keyState = {};
-  _wState.guesses.forEach(function(g) {
-    g.letters.forEach(function(l, i) {
-      var r = g.result[i];
-      if (!keyState[l] || r === 'correct' || (r === 'present' && keyState[l] === 'absent')) keyState[l] = r;
-    });
-  });
-  rows.forEach(function(row) {
-    var r = document.createElement('div'); r.style.cssText = 'display:flex;gap:5px;';
-    row.forEach(function(k) {
-      var btn = document.createElement('button');
-      btn.className = 'wkey' + (k.length > 1 ? ' wide' : '');
-      btn.textContent = k;
-      if (keyState[k]) btn.classList.add(keyState[k]);
-      btn.onclick = function() { _wKey(k); };
-      r.appendChild(btn);
-    });
-    kb.appendChild(r);
-  });
-}
-
-function _wRenderScores() {
-  var el = document.getElementById('wordleScores'); if (!el) return;
-  el.innerHTML = '';
-  var s = _wState.scores;
-  ['jai','shrey'].forEach(function(p) {
-    var d = document.createElement('div');
-    d.style.cssText = 'text-align:center;';
-    d.innerHTML = '<div style="font-size:0.7rem;color:var(--text-soft);">' + (p==='jai'?'💜 Jai':'🌊 Shrey') + '</div>'
-      + '<div style="font-weight:600;">' + (s[p] ? s[p] + '/6' : '—') + '</div>';
-    el.appendChild(d);
-  });
-}
-
-function _wKey(k) {
-  if (_wState.done) return;
-  var msg = document.getElementById('wordleMsg');
-  if (k === '⌫' || k === 'BACKSPACE') {
-    _wState.current = _wState.current.slice(0, -1);
-  } else if (k === 'ENTER') {
-    if (_wState.current.length < 5) {
-      if (msg) { msg.textContent = 'Not enough letters!'; msg.style.animation='none'; void msg.offsetHeight; msg.style.animation='wShake 0.4s ease'; }
-      return;
-    }
-    _wSubmit();
-    return;
-  } else if (_wState.current.length < 5 && k.length === 1) {
-    _wState.current += k.toUpperCase();
-  }
-  _wRenderBoard();
-}
-
-function _wSubmit() {
-  var guess = _wState.current.toUpperCase();
-  var word = _wState.word;
-  var result = ['absent','absent','absent','absent','absent'];
-  var wordArr = word.split('');
-  var guessArr = guess.split('');
-  // First pass: correct
-  var used = [false,false,false,false,false];
-  guessArr.forEach(function(l,i) { if (l === wordArr[i]) { result[i] = 'correct'; used[i] = true; } });
-  // Second pass: present
-  guessArr.forEach(function(l,i) {
-    if (result[i] === 'correct') return;
-    for (var j = 0; j < 5; j++) {
-      if (!used[j] && wordArr[j] === l) { result[i] = 'present'; used[j] = true; break; }
-    }
-  });
-
-  var rowIdx = _wState.guesses.length;
-  _wState.guesses.push({ letters: guessArr, result: result });
-  _wState.current = '';
-
-  // Animate reveal
-  var delay = 0;
-  for (var c = 0; c < 5; c++) {
-    (function(col, res) {
-      setTimeout(function() {
-        var tile = document.getElementById('wtile-' + rowIdx + '-' + col);
-        if (tile) { tile.textContent = guess[col]; tile.className = 'wordle-tile ' + res + ' reveal'; }
-      }, delay);
-    })(c, result[c]);
-    delay += 150;
-  }
-
-  setTimeout(function() {
-    _wRenderKeyboard();
-    var won = result.every(function(r){ return r === 'correct'; });
-    var msg = document.getElementById('wordleMsg');
-    if (won) {
-      _wState.done = true;
-      var guessNum = _wState.guesses.length;
-      // Ask who is playing to record score
-      _wAskWho(guessNum);
-      if (msg) msg.textContent = ['Genius! 🎉','Magnificent! 🌟','Impressive! ✨','Splendid! 👏','Great! 😊','Phew! 😅'][guessNum-1] || 'Got it!';
-      _wShowReveal();
-    } else if (_wState.guesses.length >= 6) {
-      _wState.done = true;
-      _wAskWho(null);
-      if (msg) msg.textContent = 'Hard luck! The word was ' + word;
-      _wShowReveal();
-    }
-    _wSaveState();
-  }, delay + 200);
-}
-
-function _wAskWho(score) {
-  var who = confirm('Record this score for Jai? (Cancel = Shrey)') ? 'jai' : 'shrey';
-  _wState.scores[who] = score || 'X';
-  _wRenderScores();
-  _wSaveState();
-  if (window.fbSave) fbSave();
-}
-
-function _wShowReveal() {
-  var r = document.getElementById('wordleReveal');
-  var a = document.getElementById('wordleAnswer');
-  if (r) r.style.display = '';
-  if (a) a.textContent = _wState.word;
-}
-
-// Physical keyboard support when wordle tab is open
-document.addEventListener('keydown', function(e) {
-  var sec = document.getElementById('op-wordle');
-  if (!sec || !sec.classList.contains('active')) return;
-  var k = e.key.toUpperCase();
-  if (k === 'BACKSPACE') _wKey('⌫');
-  else if (k === 'ENTER') _wKey('ENTER');
-  else if (k.length === 1 && k >= 'A' && k <= 'Z') _wKey(k);
-});
-
 // ===== CALENDAR =====
 function renderCalendar() {
   const year = state.calYear, month = state.calMonth;
@@ -2189,6 +1638,23 @@ function paintCycleDays() {
   });
 }
 
+// ===== HABITS =====
+function renderHabits() {
+  ['joint','jai','shrey'].forEach(type => {
+    const list = document.getElementById(type + 'HabitsList'); list.innerHTML = '';
+    state.habits[type].forEach((habit, i) => {
+      const streak = habit.days.filter(Boolean).length;
+      const div = document.createElement('div'); div.className = 'habit-item';
+      div.innerHTML = `<div style="flex:1"><div style="font-size:0.88rem;margin-bottom:0.4rem;">${habit.text}</div><div class="habit-days">${habit.days.map((done, di) => `<div class="habit-day ${done ? 'done' : ''}" onclick="toggleHabitDay('${type}',${i},${di})"></div>`).join('')}</div></div>
+        <span class="habit-streak">🔥 ${streak} days</span>
+        <button onclick="deleteHabit('${type}',${i})" style="background:none;border:none;cursor:pointer;color:var(--text-soft);font-size:0.75rem;margin-left:0.5rem;">✕</button>`;
+      list.appendChild(div);
+    });
+  });
+}
+function toggleHabitDay(type, i, di) { state.habits[type][i].days[di] = !state.habits[type][i].days[di]; renderHabits(); }
+function addHabit(type) { const input = document.getElementById(type+'HabitInput'); if (!input.value.trim()) return; state.habits[type].push({ id: Date.now(), text: input.value.trim(), days: [false,false,false,false,false,false,false] }); input.value = ''; renderHabits(); }
+function deleteHabit(type, i) { state.habits[type].splice(i, 1); renderHabits(); }
 
 // ===== MOOD =====
 function selectMood(person, emoji, el) {
@@ -2215,10 +1681,25 @@ function renderMoodHistory() {
   });
 }
 
+// ===== GRATITUDE =====
+function renderGratitude() {
+  const list = document.getElementById('gratitudeList'); list.innerHTML = '';
+  state.gratitude.forEach(g => {
+    const div = document.createElement('div'); div.className = 'gratitude-entry';
+    div.innerHTML = `<div class="date">${g.date}</div><span class="author ${g.author}">${g.author === 'jai' ? '💜 Jai' : '🌊 Shrey'} ${g.privacy==='private'?'🔒':''}</span><p style="font-size:0.88rem;line-height:1.6;">${g.text}</p>`;
+    list.appendChild(div);
+  });
+}
+function addGratitude() {
+  const text = document.getElementById('gratitudeText').value.trim();
+  if (!text) return;
+  state.gratitude.unshift({ author: document.getElementById('gratitudeAuthor').value, text, privacy: document.getElementById('gratitudePrivacy').value, date: new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short'}) });
+  document.getElementById('gratitudeText').value = '';
+  renderGratitude(); spawnHearts();
+}
 
 // ===== LOVE =====
 function renderLove() {
-  renderBucketList();
   document.getElementById('challengeText').textContent = dateIdeas[state.currentChallengeIndex];
   const list = document.getElementById('loveLangList'); list.innerHTML = '';
   loveLangIdeas.forEach(l => {
@@ -2261,7 +1742,6 @@ function deletePhoto(i, e) { e.stopPropagation(); state.photos[i] = null; render
 
 // ===== OUR PLACE =====
 function switchOP(e, sec) {
-  if (sec === 'wordle') { setTimeout(initWordle, 50); }
   document.querySelectorAll('.op-sec').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.op-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('op-' + sec).classList.add('active');
@@ -2336,6 +1816,58 @@ function renderRatings() {
   });
 }
 
+// ===== BIRTHDAY =====
+function checkBirthday() {
+  const today = new Date();
+  const isJaiBirthday = today.getMonth() === 2 && today.getDate() === 5;
+  const isShreyBirthday = today.getMonth() === 9 && today.getDate() === 4;
+  const isBirthday = isJaiBirthday || isShreyBirthday;
+  if(isShreyBirthday) document.getElementById('birthdayTab').textContent = '🎂 Your Day';
+  const tab = document.getElementById('birthdayTab');
+  tab.style.display = isBirthday ? 'flex' : 'none';
+  if (isBirthday) setTimeout(() => showPage('birthday'), 500);
+}
+function renderBirthday() {
+  createConfetti();
+  const grid = document.getElementById('birthdayPhotoGrid'); grid.innerHTML = '';
+  state.birthdayPhotos.forEach((photo, i) => {
+    const slot = document.createElement('div'); slot.className = 'birthday-photo-slot';
+    if (photo) { slot.innerHTML = `<img src="${photo}" alt="">`; }
+    else { slot.textContent = '+'; slot.onclick = () => { state.currentBirthdaySlot = i; document.getElementById('birthdayPhotoUpload').click(); }; }
+    grid.appendChild(slot);
+  });
+  if (state.birthdayCard) { document.getElementById('birthdayCardText').value = state.birthdayCard; document.getElementById('cardPreviewText').textContent = state.birthdayCard; }
+  if (state.birthdayOpened) { document.getElementById('birthdayReveal').classList.add('show'); document.getElementById('presentBox').style.transform = 'scale(0.9) rotate(15deg)'; document.getElementById('presentMsg').textContent = '🌸 happy birthday shrey 🌸'; }
+}
+function createConfetti() {
+  const container = document.getElementById('confettiContainer'); container.innerHTML = '';
+  const colors = ['#f9c0cb','#c9b3e8','#6bbfb5','#ffd6e7','#b8d4f0','#ffe4b5'];
+  for (let i = 0; i < 40; i++) {
+    const piece = document.createElement('div'); piece.className = 'confetti-piece';
+    piece.style.cssText = `left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*colors.length)]};width:${4+Math.random()*8}px;height:${4+Math.random()*8}px;animation-duration:${3+Math.random()*4}s;animation-delay:${Math.random()*3}s;border-radius:${Math.random()>0.5?'50%':'2px'};`;
+    container.appendChild(piece);
+  }
+}
+function openPresent() {
+  state.birthdayOpened = true; saveToLocal();
+  document.getElementById('presentBox').style.animation = 'none';
+  document.getElementById('presentBox').style.transform = 'scale(0.85) rotate(20deg)';
+  document.getElementById('birthdayReveal').classList.add('show');
+  document.getElementById('presentMsg').textContent = '🌸 happy birthday shrey 🌸';
+  createConfetti(); spawnHearts(); setTimeout(spawnHearts,300); setTimeout(spawnHearts,600);
+}
+function handleBirthdayPhotoUpload(event) {
+  const file = event.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => { state.birthdayPhotos[state.currentBirthdaySlot] = e.target.result; renderBirthday(); };
+  reader.readAsDataURL(file); event.target.value = '';
+}
+function saveBirthdayCard() { state.birthdayCard = document.getElementById('birthdayCardText').value; document.getElementById('cardPreviewText').textContent = state.birthdayCard; saveToLocal(); spawnHearts(); alert('Card saved 💌 She\'ll love it!'); }
+function toggleCardMode() {
+  const editMode = document.getElementById('cardEditMode'), previewMode = document.getElementById('cardPreviewMode');
+  if (editMode.style.display === 'none') { editMode.style.display = 'block'; previewMode.style.display = 'none'; }
+  else { state.birthdayCard = document.getElementById('birthdayCardText').value; document.getElementById('cardPreviewText').textContent = state.birthdayCard; editMode.style.display = 'none'; previewMode.style.display = 'block'; }
+}
 
 // ===== ARCHIVE =====
 function renderArchive() {
@@ -2366,35 +1898,6 @@ function spawnHearts() {
 }
 
 // ===== INIT =====
-function checkBirthday() {
-  var today = new Date();
-  var m = today.getMonth(); // 0-indexed, March = 2
-  var d = today.getDate();
-  var tab = document.getElementById('birthdayTab');
-
-  var isShreyBday = (m === 9 && d === 4);
-  // Hide ONLY after March 5 (March 6 onwards, months Apr-Sep)
-  var pastJaiBday = (m === 2 && d >= 6) || (m > 2 && m < 9 && !isShreyBday);
-
-  if (tab) {
-    if (pastJaiBday) {
-      tab.style.display = 'none';
-      var alreadyArchived = state.archive && state.archive.some(function(a){ return a.type === 'Birthday' && a.title && a.title.includes('Jai'); });
-      if (!alreadyArchived) {
-        if (!state.archive) state.archive = [];
-        state.archive.unshift({ title: "🎂 Jai's 20th Birthday", date: 'Mar 5', type: 'Birthday' });
-        saveToLocal();
-      }
-    } else {
-      tab.style.display = '';
-      if (isShreyBday) {
-        tab.textContent = '🎂 Your Day';
-      } else {
-        tab.textContent = '🎂 Her Day';
-      }
-    }
-  }
-}
 function init() {
   loadFromLocal();
   setDailyQuote();
