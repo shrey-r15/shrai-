@@ -20,6 +20,19 @@
     --gradient: linear-gradient(135deg, #c9b3e8 0%, #a8c8e8 40%, #6bbfb5 100%);
     --gradient-soft: linear-gradient(160deg, #f0e8ff 0%, #e0f0f8 50%, #c8eae6 100%);
   }
+
+  @keyframes giraffeBounce {
+    0%,100% { transform: translateY(0) rotate(-2deg); }
+    25% { transform: translateY(-14px) rotate(2deg); }
+    75% { transform: translateY(-7px) rotate(-1deg); }
+  }
+
+  body.hide-cycle-colours .cal-day.period-flow,
+  body.hide-cycle-colours .cal-day.period-predict,
+  body.hide-cycle-colours .cal-day.ovulation {
+    background: none !important;
+    border: none !important;
+  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'DM Sans', sans-serif; background: var(--gradient-soft); min-height: 100vh; color: var(--text); overflow-x: hidden; }
 
@@ -142,13 +155,6 @@
   .habit-day:hover { transform: scale(1.15); }
 
   /* GRATITUDE */
-  .gratitude-entry { padding: 1.2rem; border-radius: 16px; background: rgba(255,255,255,0.7); margin-bottom: 0.8rem; border: 1px solid rgba(201,179,232,0.2); }
-  .gratitude-entry .date { font-size: 0.72rem; color: var(--text-soft); margin-bottom: 0.4rem; }
-  .gratitude-entry .author { font-size: 0.72rem; padding: 0.2rem 0.6rem; border-radius: 10px; display: inline-block; margin-bottom: 0.5rem; }
-  .gratitude-entry .author.jai { background: rgba(201,179,232,0.3); color: var(--lilac-dark); }
-  .gratitude-entry .author.shrey { background: rgba(107,191,181,0.3); color: var(--teal-dark); }
-  .gratitude-write textarea { width: 100%; min-height: 80px; padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid rgba(201,179,232,0.35); font-family: 'DM Sans', sans-serif; font-size: 0.88rem; resize: none; background: white; color: var(--text); outline: none; margin-bottom: 0.6rem; }
-  .gratitude-write textarea:focus { border-color: var(--lilac); }
   .write-controls { display: flex; gap: 0.5rem; align-items: center; }
   .write-controls select { padding: 0.5rem 0.75rem; border-radius: 8px; border: 1px solid rgba(201,179,232,0.35); background: white; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; color: var(--text); outline: none; }
 
@@ -272,77 +278,6 @@
   @media (max-width: 520px) { .macro-grid { grid-template-columns: repeat(2,1fr); } }
   @media (max-width: 500px) { .home-grid { grid-template-columns: 1fr 1fr; } .photos-grid { grid-template-columns: repeat(2,1fr); } .birthday-photos-grid { grid-template-columns: repeat(3,1fr); } .mood-grid { grid-template-columns: 1fr; } .home-header h1 { font-size: 2rem; } .birthday-title { font-size: 2.2rem; } }
 </style>
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-  <script>
-    firebase.initializeApp({
-      apiKey: "AIzaSyCCJmqDDYGtfnKsFdfy5fUwaoJkgZYjf0E",
-      authDomain: "shrai-app.firebaseapp.com",
-      databaseURL: "https://shrai-app-default-rtdb.firebaseio.com",
-      projectId: "shrai-app",
-      storageBucket: "shrai-app.firebasestorage.app",
-      messagingSenderId: "452266524844",
-      appId: "1:452266524844:web:d2f27864738ca3bd661f09"
-    });
-    const _db = firebase.database();
-    const _fbStorage = firebase.storage();
-
-    window._storage = {
-      uploadPhoto: async function(file, path) {
-        const r = _fbStorage.ref(path);
-        await r.put(file);
-        return await r.getDownloadURL();
-      },
-      deletePhoto_storage: async function(path) {
-        try { await _fbStorage.ref(path).delete(); } catch(e) {}
-      }
-    };
-
-    function serializeState() {
-      return {
-        goals: state.goals, habits: state.habits, events: state.events,
-        moods: state.moods, gratitude: state.gratitude, moodData: state.moodData,
-        completedChallenges: state.completedChallenges, birthdayCard: state.birthdayCard,
-        birthdayOpened: state.birthdayOpened, archive: state.archive,
-        photoUrls: state.photos.map(p => p ? { url: p.url||null, caption: p.caption||'' } : null),
-        birthdayPhotoUrls: state.birthdayPhotos.map(p => p ? (typeof p==='string' ? p : p.url||null) : null),
-      };
-    }
-
-    let _saveTimer = null;
-    window.fbSave = function() {
-      clearTimeout(_saveTimer);
-      _saveTimer = setTimeout(() => {
-        _db.ref('app/state').set(serializeState()).catch(console.error);
-        _db.ref('app/fitness').set(_fitness).catch(console.error);
-        _db.ref('app/cycle').set(_cycle).catch(console.error);
-        _db.ref('app/watchlist').set(_op.watchlist).catch(console.error);
-        _db.ref('app/music').set(_music).catch(console.error);
-      }, 600);
-    };
-
-    _db.ref('app').on('value', (snap) => {
-      const data = snap.val(); if (!data) return;
-      if (data.state) {
-        const s = data.state;
-        Object.assign(state, s);
-        if (s.photoUrls) state.photos = s.photoUrls.map(p => p&&p.url ? {src:p.url,url:p.url,caption:p.caption||''} : null);
-        if (s.birthdayPhotoUrls) state.birthdayPhotos = s.birthdayPhotoUrls.map(u => u||null);
-        state.calYear = state.calYear || new Date().getFullYear();
-        state.calMonth = state.calMonth || new Date().getMonth();
-      }
-      if (data.fitness) Object.assign(_fitness, data.fitness);
-      if (data.cycle) Object.assign(_cycle, data.cycle);
-      if (data.watchlist) _op.watchlist = data.watchlist;
-      if (data.music) { _music.length=0; data.music.forEach(m=>_music.push(m)); }
-      const pg = document.querySelector('.page.active')?.id;
-      const renders = { goals:renderGoals, habits:renderHabits, mood:renderMoodHistory, gratitude:renderGratitude, calendar:renderCalendar, home:renderHome };
-      if (pg && renders[pg]) renders[pg]();
-    });
-    console.log('Firebase connected ✅');
-  </script>
 </head>
 <body>
 
@@ -353,8 +288,8 @@
 </div>
 
 <!-- APPA flying bison -->
-<div id="appa-wrap" title="Yip yip! 🦬" onclick="spawnHearts()">
-  <svg class="appa-svg" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+<div id="appa-wrap" title="Yip yip! 🦬" onclick="spawnHearts()" style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);z-index:50;pointer-events:auto;cursor:pointer;opacity:0.55;transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.55'">
+  <svg style="width:80px;filter:drop-shadow(0 2px 6px rgba(107,191,181,0.4));" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
     <ellipse cx="100" cy="58" rx="68" ry="30" fill="#f5f0e8"/>
     <ellipse cx="100" cy="55" rx="64" ry="27" fill="#faf7f2"/>
     <ellipse cx="38" cy="52" rx="27" ry="21" fill="#faf7f2"/>
@@ -390,11 +325,11 @@
       <button class="tab-btn active" onclick="showPage('home')" data-page="home">🏠 Home</button>
       <button class="tab-btn" onclick="showPage('goals')" data-page="goals">🎯 Goals</button>
       <button class="tab-btn" onclick="showPage('calendar')" data-page="calendar">📅 Calendar</button>
-      <button class="tab-btn" onclick="showPage('habits')" data-page="habits">🌱 Habits</button>
       <button class="tab-btn" onclick="showPage('mood')" data-page="mood">💭 Mood</button>
-      <button class="tab-btn" onclick="showPage('gratitude')" data-page="gratitude">🙏 Gratitude</button>
       <button class="tab-btn" onclick="showPage('love')" data-page="love">💞 Love</button>
       <button class="tab-btn" onclick="showPage('photos')" data-page="photos">📸 Us</button>
+      <button class="tab-btn" onclick="showPage('study')" data-page="study">📖 Study</button>
+      <button class="tab-btn" onclick="showPage('health')" data-page="health">💪 Health</button>
       <button class="tab-btn" onclick="showPage('ourplace')" data-page="ourplace">🎬 Our Place</button>
       <button class="tab-btn birthday-tab-indicator" id="birthdayTab" onclick="showPage('birthday')" data-page="birthday" style="display:none">🎂 Her Day</button>
       <button class="tab-btn" onclick="showPage('archive')" data-page="archive">🗂️ Archive</button>
@@ -419,32 +354,99 @@
   </div>
   <div class="home-grid">
     <div class="mini-card" onclick="showPage('goals')"><div class="icon">🎯</div><h3>Our Goals</h3><p id="goalCount">Loading...</p></div>
-    <div class="mini-card" onclick="showPage('habits')"><div class="icon">🌱</div><h3>Habits</h3><p id="habitStreak">Keep the streak going</p></div>
     <div class="mini-card" onclick="showPage('mood')"><div class="icon">💭</div><h3>Today's Mood</h3><p id="moodSummary">Check in with each other</p></div>
     <div class="mini-card" onclick="showPage('love')"><div class="icon">💞</div><h3>Date Idea</h3><p id="datePreview">See today's challenge</p></div>
-    <div class="mini-card" onclick="showPage('gratitude')"><div class="icon">🙏</div><h3>Gratitude</h3><p>Write what you're thankful for</p></div>
     <div class="mini-card" onclick="showPage('photos')"><div class="icon">📸</div><h3>Our Photos</h3><p>Add your favourites</p></div>
   </div>
 </div>
 
 <!-- GOALS -->
 <div class="page" id="page-goals">
-  <div class="section-title">Our Shared Goals 🎯</div>
-  <div class="card goals-section">
-    <div class="pill">🌟 Joint Goals</div>
-    <div id="jointGoalsList"></div>
-    <div class="add-goal-form"><input type="text" id="jointGoalInput" placeholder="Add a shared goal..." /><button class="btn" onclick="addGoal('joint')">Add</button></div>
+  <div class="section-title">Our Goals 🎯</div>
+  <div class="op-tabs" style="margin-bottom:1rem;">
+    <button class="op-tab active" onclick="switchGoalTab(event,'daily')" id="gtab-daily">☀️ Daily</button>
+    <button class="op-tab" onclick="switchGoalTab(event,'weekly')" id="gtab-weekly">📅 Weekly</button>
+    <button class="op-tab" onclick="switchGoalTab(event,'monthly')" id="gtab-monthly">🗓️ Monthly</button>
+    <button class="op-tab" onclick="switchGoalTab(event,'yearly')" id="gtab-yearly">🌟 Yearly</button>
   </div>
-  <div class="card goals-section">
-    <div class="pill" style="background:linear-gradient(135deg,rgba(201,179,232,0.3),rgba(201,179,232,0.1));border-color:rgba(201,179,232,0.5);">💜 Jai's Goals</div>
-    <div id="jaiGoalsList"></div>
-    <div class="add-goal-form"><input type="text" id="jaiGoalInput" placeholder="Jai's personal goal..." /><button class="btn" onclick="addGoal('jai')">Add</button></div>
+  <div id="goalsContent"></div>
+</div>
+
+
+<!-- STUDY -->
+<div class="page" id="page-study">
+  <div class="section-title">Study Timer 📖</div>
+
+  <!-- Giraffe + Timer -->
+  <div class="card" style="text-align:center;padding:2rem 1rem;">
+    <div id="giraffeWrap" style="margin-bottom:1rem;position:relative;display:inline-block;">
+      <svg id="giraffeSvg" viewBox="0 0 120 200" width="110" style="transition:filter 0.8s;">
+        <!-- body -->
+        <ellipse cx="60" cy="140" rx="30" ry="38" fill="#F5C842" id="gBody"/>
+        <!-- neck -->
+        <rect x="50" y="75" width="20" height="70" rx="10" fill="#F5C842" id="gNeck"/>
+        <!-- head -->
+        <ellipse cx="60" cy="62" rx="18" ry="16" fill="#F5C842" id="gHead"/>
+        <!-- ears -->
+        <ellipse cx="45" cy="52" rx="7" ry="10" fill="#F5C842"/>
+        <ellipse cx="75" cy="52" rx="7" ry="10" fill="#F5C842"/>
+        <!-- ossicones -->
+        <rect x="47" y="38" width="5" height="14" rx="2" fill="#C8901A"/>
+        <rect x="68" y="38" width="5" height="14" rx="2" fill="#C8901A"/>
+        <!-- eyes -->
+        <circle cx="53" cy="60" r="3.5" fill="#333"/>
+        <circle cx="67" cy="60" r="3.5" fill="#333"/>
+        <circle cx="54.2" cy="58.8" r="1" fill="white"/>
+        <circle cx="68.2" cy="58.8" r="1" fill="white"/>
+        <!-- nostrils -->
+        <ellipse cx="56" cy="70" rx="2" ry="1.2" fill="#C8901A"/>
+        <ellipse cx="64" cy="70" rx="2" ry="1.2" fill="#C8901A"/>
+        <!-- spots -->
+        <ellipse cx="55" cy="120" rx="9" ry="7" fill="#C8901A" opacity="0.5"/>
+        <ellipse cx="72" cy="105" rx="7" ry="6" fill="#C8901A" opacity="0.5"/>
+        <ellipse cx="52" cy="148" rx="8" ry="6" fill="#C8901A" opacity="0.5"/>
+        <!-- legs -->
+        <rect x="37" y="172" width="10" height="28" rx="5" fill="#F5C842" id="gLeg1"/>
+        <rect x="50" y="172" width="10" height="28" rx="5" fill="#F5C842" id="gLeg2"/>
+        <rect x="62" y="172" width="10" height="28" rx="5" fill="#F5C842" id="gLeg3"/>
+        <rect x="75" y="172" width="10" height="28" rx="5" fill="#F5C842" id="gLeg4"/>
+        <!-- tail -->
+        <path d="M88 150 Q100 160 95 175" stroke="#C8901A" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div id="giraffeLevel" style="font-size:0.78rem;color:var(--text-soft);margin-bottom:0.6rem;">🌿 Fresh start — begin studying!</div>
+    <div id="timerDisplay" style="font-family:'Cormorant Garamond',serif;font-size:3.5rem;font-weight:300;color:var(--text);letter-spacing:0.05em;margin-bottom:1rem;">00:00:00</div>
+    <div style="display:flex;gap:0.6rem;justify-content:center;flex-wrap:wrap;margin-bottom:1rem;">
+      <select id="studyWho" style="border:1px solid rgba(201,179,232,0.4);border-radius:10px;padding:0.4rem 0.7rem;font-size:0.82rem;">
+        <option value="jai">💜 Jai</option>
+        <option value="shrey">🌊 Shrey</option>
+      </select>
+      <input type="text" id="studySubject" placeholder="Subject (e.g. Maths, Bio...)" style="flex:1;min-width:140px;"/>
+    </div>
+    <div style="display:flex;gap:0.6rem;justify-content:center;">
+      <button class="btn" id="studyStartBtn" onclick="studyStart()">▶ Start</button>
+      <button class="btn-outline" id="studyStopBtn" onclick="studyStop()" style="display:none;">⏹ Stop</button>
+      <button class="btn-outline" id="studyPauseBtn" onclick="studyPause()" style="display:none;">⏸ Pause</button>
+    </div>
   </div>
-  <div class="card goals-section">
-    <div class="pill" style="background:linear-gradient(135deg,rgba(107,191,181,0.3),rgba(107,191,181,0.1));border-color:rgba(107,191,181,0.5);">🌊 Shrey's Goals</div>
-    <div id="shreyGoalsList"></div>
-    <div class="add-goal-form"><input type="text" id="shreyGoalInput" placeholder="Shrey's personal goal..." /><button class="btn" onclick="addGoal('shrey')">Add</button></div>
+
+  <!-- Stats -->
+  <div class="card">
+    <div class="pill">📊 Revision Stats</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.7rem;margin:0.8rem 0;" id="studyStats"></div>
   </div>
+
+  <!-- Session log -->
+  <div class="card">
+    <div class="pill">📝 Session Log</div>
+    <div id="studyLog"></div>
+  </div>
+</div>
+
+
+<!-- HEALTH -->
+<div class="page" id="page-health">
+  <div class="section-title">Health 💪</div>
   <!-- FITNESS TRACKER -->
   <div class="card" style="border-color:rgba(107,191,181,0.3);" id="fitnessCard">
     <div class="pill" style="background:linear-gradient(135deg,rgba(107,191,181,0.26),rgba(201,179,232,0.18));border-color:rgba(107,191,181,0.4);">💪 Workout & Nutrition Tracker</div>
@@ -469,6 +471,7 @@
       <button class="btn" onclick="logWorkout('j')">Log</button>
     </div>
     <div id="j-wlog"></div>
+    <button onclick="resetDay('j')" style="background:none;border:1px solid rgba(201,179,232,0.3);border-radius:8px;padding:0.3rem 0.8rem;font-size:0.72rem;color:var(--text-soft);cursor:pointer;margin-top:0.5rem;width:100%;">↺ Reset Jai's Day</button>
     <hr style="border:none;border-top:1px solid rgba(201,179,232,0.2);margin:1rem 0;"/>
     <div class="fitness-person-hdr">🌊 Shrey's Day</div>
     <div class="macro-grid">
@@ -491,6 +494,7 @@
       <button class="btn" onclick="logWorkout('s')">Log</button>
     </div>
     <div id="s-wlog" style="margin-top:0.5rem;"></div>
+    <button onclick="resetDay('s')" style="background:none;border:1px solid rgba(107,191,181,0.3);border-radius:8px;padding:0.3rem 0.8rem;font-size:0.72rem;color:var(--text-soft);cursor:pointer;margin-top:0.5rem;width:100%;">↺ Reset Shrey's Day</button>
   </div>
 </div>
 
@@ -502,9 +506,19 @@
       <h2 id="calMonthYear"></h2>
       <button class="btn-outline" onclick="nextMonth()">›</button>
     </div>
-    <!-- CYCLE TRACKER PANEL -->
-    <div class="cycle-panel" id="cyclePanel">
-      <div class="cycle-panel-title">🌸 Jai's Cycle Tracker <span style="font-size:0.67rem;font-weight:400;color:var(--text-soft);">(Shrey's private view)</span></div>
+    <div class="cal-grid" id="calGrid"></div>
+  </div>
+
+  <!-- CYCLE TRACKER PANEL (below calendar) -->
+  <div class="card cycle-panel" id="cyclePanel" style="margin-top:0.8rem;">
+    <div class="cycle-panel-title" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.6rem;">
+      <span>🌸 Jai's Cycle Tracker</span>
+      <div style="display:flex;gap:0.4rem;">
+        <button onclick="toggleCycleColours()" id="cycleColourToggle" style="background:none;border:1px solid rgba(255,150,180,0.4);border-radius:20px;padding:0.2rem 0.7rem;font-size:0.7rem;color:#c03060;cursor:pointer;">🎨 Hide colours</button>
+        <button onclick="toggleCyclePanel()" id="cyclePanelToggle" style="background:none;border:1px solid rgba(255,150,180,0.4);border-radius:20px;padding:0.2rem 0.7rem;font-size:0.7rem;color:#c03060;cursor:pointer;">Hide 🙈</button>
+      </div>
+    </div>
+    <div id="cyclePanelBody">
       <div class="cycle-legend">
         <span><span class="ldot" style="background:#ff6480;"></span>Period</span>
         <span><span class="ldot" style="background:#ffb8cc;"></span>Predicted next</span>
@@ -519,8 +533,26 @@
         <select id="periodDur"><option value="3">3d</option><option value="4">4d</option><option value="5" selected>5d</option><option value="6">6d</option><option value="7">7d</option></select>
         <button class="btn" style="padding:0.45rem 0.9rem;font-size:0.8rem;" onclick="saveCycle()">Save</button>
       </div>
+      <div id="cyclePredictions" style="margin-top:0.8rem;display:none;">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;font-size:0.75rem;">
+          <div style="background:rgba(255,100,128,0.1);border-radius:10px;padding:0.6rem;text-align:center;">
+            <div style="font-size:1rem;">🩸</div>
+            <div style="font-weight:500;margin:0.2rem 0;" id="nextPeriodDate">—</div>
+            <div style="color:var(--text-soft);">Next period</div>
+          </div>
+          <div style="background:rgba(245,200,66,0.1);border-radius:10px;padding:0.6rem;text-align:center;">
+            <div style="font-size:1rem;">🌕</div>
+            <div style="font-weight:500;margin:0.2rem 0;" id="nextOvDate">—</div>
+            <div style="color:var(--text-soft);">Ovulation</div>
+          </div>
+          <div style="background:rgba(107,191,181,0.1);border-radius:10px;padding:0.6rem;text-align:center;">
+            <div style="font-size:1rem;">📅</div>
+            <div style="font-weight:500;margin:0.2rem 0;" id="daysUntilPeriod">—</div>
+            <div style="color:var(--text-soft);">Days away</div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="cal-grid" id="calGrid"></div>
   </div>
   <div class="card">
     <div class="section-title" style="font-size:1.2rem;margin-bottom:0.8rem;">Upcoming & Events</div>
@@ -534,25 +566,6 @@
 </div>
 
 <!-- HABITS -->
-<div class="page" id="page-habits">
-  <div class="section-title">Daily Habits 🌱</div>
-  <div class="card">
-    <div class="pill">🤝 Together</div>
-    <div id="jointHabitsList"></div>
-    <div class="add-goal-form" style="margin-top:0.6rem;"><input type="text" id="jointHabitInput" placeholder="Shared habit..." /><button class="btn" onclick="addHabit('joint')">Add</button></div>
-  </div>
-  <div class="card">
-    <div class="pill" style="background:linear-gradient(135deg,rgba(201,179,232,0.3),rgba(201,179,232,0.1));border-color:rgba(201,179,232,0.5);">💜 Jai</div>
-    <div id="jaiHabitsList"></div>
-    <div class="add-goal-form" style="margin-top:0.6rem;"><input type="text" id="jaiHabitInput" placeholder="Jai's habit..." /><button class="btn" onclick="addHabit('jai')">Add</button></div>
-  </div>
-  <div class="card">
-    <div class="pill" style="background:linear-gradient(135deg,rgba(107,191,181,0.3),rgba(107,191,181,0.1));border-color:rgba(107,191,181,0.5);">🌊 Shrey</div>
-    <div id="shreyHabitsList"></div>
-    <div class="add-goal-form" style="margin-top:0.6rem;"><input type="text" id="shreyHabitInput" placeholder="Shrey's habit..." /><button class="btn" onclick="addHabit('shrey')">Add</button></div>
-  </div>
-</div>
-
 <!-- MOOD -->
 <div class="page" id="page-mood">
   <div class="section-title">Daily Check-In 💭</div>
@@ -594,21 +607,6 @@
   </div>
 </div>
 
-<!-- GRATITUDE -->
-<div class="page" id="page-gratitude">
-  <div class="section-title">Gratitude Journal 🙏</div>
-  <div class="card gratitude-write">
-    <div class="pill">Write Today's Gratitude</div>
-    <textarea id="gratitudeText" placeholder="I am grateful for..."></textarea>
-    <div class="write-controls">
-      <select id="gratitudeAuthor"><option value="jai">💜 Jai</option><option value="shrey">🌊 Shrey</option></select>
-      <select id="gratitudePrivacy"><option value="shared">Shared 💌</option><option value="private">Private 🔒</option></select>
-      <button class="btn" onclick="addGratitude()">Save Entry</button>
-    </div>
-  </div>
-  <div id="gratitudeList"></div>
-</div>
-
 <!-- LOVE -->
 <div class="page" id="page-love">
   <div class="section-title">Love & Connection 💞</div>
@@ -627,6 +625,22 @@
   <div class="card" id="completedChallengesCard">
     <div class="section-title" style="font-size:1.1rem;margin-bottom:0.8rem;">Completed Together 🌟</div>
     <div id="completedList"></div>
+  </div>
+
+  <!-- BUCKET LIST -->
+  <div class="card">
+    <div class="pill">🪣 Bucket List</div>
+    <p style="font-size:0.78rem;color:var(--text-soft);margin-bottom:0.8rem;">Things you want to do together one day ✨</p>
+    <div id="bucketList"></div>
+    <div class="add-goal-form" style="margin-top:0.8rem;">
+      <input type="text" id="bucketInput" placeholder="Add a bucket list item..." style="flex:2"/>
+      <select id="bucketWho" style="max-width:110px;">
+        <option value="both">🤝 Both</option>
+        <option value="jai">💜 Jai's idea</option>
+        <option value="shrey">🌊 Shrey's idea</option>
+      </select>
+      <button class="btn" onclick="addBucket()">Add</button>
+    </div>
   </div>
 </div>
 
@@ -647,6 +661,7 @@
     <button class="op-tab active" onclick="switchOP(event,'watchlist')">🎬 Watchlist</button>
     <button class="op-tab" onclick="switchOP(event,'music')">🎵 Music</button>
     <button class="op-tab" onclick="switchOP(event,'ratings')">⭐ Our Ratings</button>
+    <button class="op-tab" onclick="switchOP(event,'books')">📚 Books</button>
   </div>
   <div class="op-sec active" id="op-watchlist">
     <div class="card">
@@ -665,6 +680,14 @@
         <button class="btn-outline" onclick="wFilter('done')" style="font-size:0.74rem;">Watched</button>
       </div>
       <div id="watchList"></div>
+      <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(201,179,232,0.2);">
+        <button class="btn" style="width:100%;" onclick="pickMovieNight()">🎲 Pick Movie Night!</button>
+        <div id="moviePick" style="display:none;margin-top:0.8rem;text-align:center;padding:1rem;background:linear-gradient(135deg,rgba(201,179,232,0.15),rgba(107,191,181,0.15));border-radius:14px;">
+          <div style="font-size:0.72rem;color:var(--text-soft);margin-bottom:0.3rem;">TONIGHT'S PICK 🎬</div>
+          <div id="moviePickName" style="font-size:1.1rem;font-weight:500;"></div>
+          <div id="moviePickWho" style="font-size:0.75rem;color:var(--text-soft);margin-top:0.3rem;"></div>
+        </div>
+      </div>
     </div>
   </div>
   <div class="op-sec" id="op-music">
@@ -685,6 +708,25 @@
       <div class="pill">⭐ Rate What We've Watched</div>
       <p style="font-size:0.79rem;color:var(--text-soft);margin-bottom:0.9rem;">Only items marked "Watched" show up here — rate away!</p>
       <div id="ratingsList"></div>
+    </div>
+  </div>
+  <div class="op-sec" id="op-books">
+    <div class="card">
+      <div class="pill">📚 Books</div>
+      <div class="add-row" style="margin-bottom:1rem;">
+        <input type="text" id="bTitle" placeholder="Book title..." style="flex:2;min-width:130px;"/>
+        <input type="text" id="bAuthor" placeholder="Author..." style="flex:1;min-width:90px;"/>
+        <select id="bStatus"><option value="want">Want to Read</option><option value="reading">Reading</option><option value="done">Finished</option></select>
+        <select id="bWho"><option value="both">🤝 Both</option><option value="jai">💜 Jai</option><option value="shrey">🌊 Shrey</option></select>
+        <button class="btn" onclick="addBook()">Add</button>
+      </div>
+      <div style="display:flex;gap:0.38rem;margin-bottom:0.8rem;flex-wrap:wrap;">
+        <button class="btn-outline" onclick="bFilter('all')" style="font-size:0.74rem;">All</button>
+        <button class="btn-outline" onclick="bFilter('want')" style="font-size:0.74rem;">Want to Read</button>
+        <button class="btn-outline" onclick="bFilter('reading')" style="font-size:0.74rem;">Reading</button>
+        <button class="btn-outline" onclick="bFilter('done')" style="font-size:0.74rem;">Finished</button>
+      </div>
+      <div id="bookList"></div>
     </div>
   </div>
 </div>
@@ -746,19 +788,12 @@
 let state = {
   quoteIndex: 0,
   goals: {
-    joint: [
-      { id: 1, text: "Read one spiritual book together this month", done: false },
-      { id: 2, text: "Cook a healthy meal together every week", done: false },
-      { id: 3, text: "Plan a trip for this year", done: false },
+    daily:   [],
+    weekly:  [],
+    monthly: [],
+    yearly:  [
+      { id: 1, text: "Plan a trip for this year", done: false, who: "both" },
     ],
-    jai: [
-      { id: 4, text: "Meditate for 10 mins daily", done: false },
-      { id: 5, text: "Work on personal fitness goals", done: false },
-    ],
-    shrey: [
-      { id: 6, text: "Journal every evening", done: false },
-      { id: 7, text: "Read before bed", done: false },
-    ]
   },
   habits: {
     joint: [
@@ -788,6 +823,7 @@ let state = {
   moodData: { jai: null, shrey: null },
   currentChallengeIndex: 0,
   completedChallenges: [],
+  bucketList: [],
   photos: new Array(9).fill(null),
   birthdayPhotos: new Array(6).fill(null),
   birthdayCard: "",
@@ -802,6 +838,7 @@ let state = {
 // Fitness & Our Place state
 let _fitness = { j:{cal:0,pro:0,carb:0,fat:0,workouts:[]}, s:{cal:0,pro:0,carb:0,fat:0,workouts:[]} };
 let _op = {
+  books: [],
   watchlist: [
     {id:1,emoji:'📺',title:'Avatar: The Last Airbender',status:'done',who:'both',jr:0,sr:0},
     {id:2,emoji:'🎬',title:'Yeh Jawaani Hai Deewani',status:'want',who:'both',jr:0,sr:0},
@@ -943,10 +980,11 @@ function showPage(page) {
   const btn = document.querySelector(`[data-page="${page}"]`);
   if (btn) btn.classList.add('active');
   if (page === 'home') renderHome();
-  if (page === 'goals') { renderGoals(); renderFitnessCards(); }
+  if (page === 'goals') { renderGoals(); }
+  if (page === 'love') { renderBucketList(); }
+  if (page === 'health') renderFitnessCards();
+  if (page === 'study') { renderStudyStats(); renderStudyLog(); updateGiraffe(); }
   if (page === 'calendar') renderCalendar();
-  if (page === 'habits') renderHabits();
-  if (page === 'gratitude') renderGratitude();
   if (page === 'love') renderLove();
   if (page === 'photos') renderPhotos();
   if (page === 'birthday') renderBirthday();
@@ -954,6 +992,36 @@ function showPage(page) {
   if (page === 'ourplace') renderOP();
 }
 
+
+// ===== PERSIST (localStorage) =====
+function saveToLocal() {
+  try {
+    localStorage.setItem('jas_state', JSON.stringify({
+      goals: state.goals, events: state.events, moods: state.moods,
+      moodData: state.moodData, completedChallenges: state.completedChallenges, bucketList: state.bucketList,
+      birthdayCard: state.birthdayCard, birthdayOpened: state.birthdayOpened,
+      archive: state.archive
+    }));
+    localStorage.setItem('jas_fitness', JSON.stringify(_fitness));
+    localStorage.setItem('jas_cycle', JSON.stringify(_cycle));
+    localStorage.setItem('jas_op', JSON.stringify({watchlist:_op.watchlist, books:_op.books}));
+    localStorage.setItem('jas_music', JSON.stringify(_music));
+  } catch(e) {}
+}
+function loadFromLocal() {
+  try {
+    var s = localStorage.getItem('jas_state');
+    if (s) Object.assign(state, JSON.parse(s));
+    var f = localStorage.getItem('jas_fitness');
+    if (f) Object.assign(_fitness, JSON.parse(f));
+    var c = localStorage.getItem('jas_cycle');
+    if (c) Object.assign(_cycle, JSON.parse(c));
+    var op = localStorage.getItem('jas_op');
+    if (op) { var opd=JSON.parse(op); _op.watchlist=opd.watchlist||_op.watchlist; _op.books=opd.books||[]; }
+    var mu = localStorage.getItem('jas_music');
+    if (mu) { var md=JSON.parse(mu); _music.length=0; md.forEach(function(m){_music.push(m);}); }
+  } catch(e) {}
+}
 // ===== QUOTES =====
 function renderQuote() {
   const q = quotes[state.quoteIndex];
@@ -963,7 +1031,16 @@ function renderQuote() {
 }
 function nextQuote() { state.quoteIndex = (state.quoteIndex + 1) % quotes.length; renderQuote(); }
 function prevQuote() { state.quoteIndex = (state.quoteIndex - 1 + quotes.length) % quotes.length; renderQuote(); }
-function setDailyQuote() { const today = new Date(); state.quoteIndex = (today.getDate() + today.getMonth() * 31) % quotes.length; }
+function setDailyQuote() {
+  const today = new Date();
+  const dayNum = today.getDate() + today.getMonth() * 31;
+  const ggssQuotes = quotes.filter(q => q.source.includes('Granth'));
+  const bgQuotes = quotes.filter(q => q.source.includes('Gita'));
+  // alternate: even days = GGSS, odd days = BG
+  const pool = dayNum % 2 === 0 ? ggssQuotes : bgQuotes;
+  const base = quotes.indexOf(pool[dayNum % pool.length]);
+  state.quoteIndex = base >= 0 ? base : dayNum % quotes.length;
+}
 
 function updateQuoteBadge() {
   const src = document.getElementById('quoteSource')?.textContent || '';
@@ -981,8 +1058,9 @@ function updateQuoteBadge() {
 // ===== HOME =====
 function renderHome() {
   renderQuote();
-  const total = state.goals.joint.length + state.goals.jai.length + state.goals.shrey.length;
-  const done = [...state.goals.joint, ...state.goals.jai, ...state.goals.shrey].filter(g => g.done).length;
+  const allGoals = [...(state.goals.daily||[]), ...(state.goals.weekly||[]), ...(state.goals.monthly||[]), ...(state.goals.yearly||[])];
+  const total = allGoals.length;
+  const done = allGoals.filter(g => g.done).length;
   document.getElementById('goalCount').textContent = `${done}/${total} completed`;
   document.getElementById('datePreview').textContent = dateIdeas[state.currentChallengeIndex].substring(0, 30) + '...';
   if (state.moodData.jai && state.moodData.shrey) {
@@ -991,34 +1069,57 @@ function renderHome() {
 }
 
 // ===== GOALS =====
-function renderGoals() {
-  ['joint','jai','shrey'].forEach(type => {
-    const list = document.getElementById(type + 'GoalsList');
-    list.innerHTML = '';
-    state.goals[type].forEach((goal, i) => {
-      const div = document.createElement('div');
-      div.className = 'goal-item' + (goal.done ? ' completed' : '');
-      div.innerHTML = `<div class="goal-check ${goal.done ? 'done' : ''}" onclick="toggleGoal('${type}',${i})"></div>
-        <span class="goal-text">${goal.text}</span>
-        <span class="goal-who ${type === 'joint' ? 'both' : type}">${type === 'joint' ? '🤝 Both' : type === 'jai' ? '💜 Jai' : '🌊 Shrey'}</span>
-        <button onclick="deleteGoal('${type}',${i})" style="background:none;border:none;cursor:pointer;color:var(--text-soft);font-size:0.8rem;padding:0.2rem;">✕</button>`;
-      list.appendChild(div);
-    });
-  });
-}
-function toggleGoal(type, i) {
-  state.goals[type][i].done = !state.goals[type][i].done;
-  if (state.goals[type][i].done) { if(window.fbSave)fbSave();
-  state.archive.push({ title: state.goals[type][i].text, date: new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short'}), type: 'Goal' }); spawnHearts(); }
+var _currentGoalPeriod = 'daily';
+function switchGoalTab(e, period) {
+  _currentGoalPeriod = period;
+  document.querySelectorAll('[id^="gtab-"]').forEach(t => t.classList.remove('active'));
+  document.getElementById('gtab-' + period).classList.add('active');
   renderGoals();
 }
-function addGoal(type) {
-  const input = document.getElementById(type + 'GoalInput');
-  if (!input.value.trim()) return;
-  state.goals[type].push({ id: Date.now(), text: input.value.trim(), done: false }); if(window.fbSave)fbSave();
-  input.value = ''; renderGoals();
+function renderGoals() {
+  const period = _currentGoalPeriod;
+  const goals = state.goals[period] || [];
+  const labels = { daily:'☀️ Daily Goals', weekly:'📅 Weekly Goals', monthly:'🗓️ Monthly Goals', yearly:'🌟 Yearly Goals' };
+  const container = document.getElementById('goalsContent');
+  container.innerHTML = '';
+  const card = document.createElement('div'); card.className = 'card goals-section';
+  const done = goals.filter(g=>g.done).length;
+  card.innerHTML = '<div class="pill">' + labels[period] + '</div>'
+    + (goals.length ? '<div style="font-size:0.75rem;color:var(--text-soft);margin-bottom:0.8rem;">'+done+' / '+goals.length+' complete</div>' : '');
+  goals.forEach((goal, i) => {
+    const whoLabel = goal.who==='jai'?'💜 Jai':goal.who==='shrey'?'🌊 Shrey':'🤝 Both';
+    const whoClass = goal.who==='jai'?'jai':goal.who==='shrey'?'shrey':'both';
+    const div = document.createElement('div');
+    div.className = 'goal-item' + (goal.done ? ' completed' : '');
+    div.innerHTML = '<div class="goal-check ' + (goal.done?'done':'') + '" onclick="toggleGoal(\'' + period + '\',' + i + ')"></div>'
+      + '<span class="goal-text">' + goal.text + '</span>'
+      + '<span class="goal-who ' + whoClass + '">' + whoLabel + '</span>'
+      + '<button onclick="deleteGoal(\'' + period + '\',' + i + ')" style="background:none;border:none;cursor:pointer;color:var(--text-soft);font-size:0.8rem;">✕</button>';
+    card.appendChild(div);
+  });
+  // Add form
+  const form = document.createElement('div'); form.className = 'add-goal-form'; form.style.marginTop = '0.8rem';
+  form.innerHTML = '<input type="text" id="goalInput" placeholder="Add a ' + period + ' goal..." style="flex:2"/>'
+    + '<select id="goalWho" style="max-width:110px;"><option value="both">🤝 Both</option><option value="jai">💜 Jai</option><option value="shrey">🌊 Shrey</option></select>'
+    + '<button class="btn" onclick="addGoal()">Add</button>';
+  card.appendChild(form);
+  container.appendChild(card);
 }
-function deleteGoal(type, i) { state.goals[type].splice(i, 1); renderGoals(); if(window.fbSave)fbSave(); }
+function toggleGoal(period, i) {
+  state.goals[period][i].done = !state.goals[period][i].done; saveToLocal();
+  if (state.goals[period][i].done) { state.archive.push({ title: state.goals[period][i].text, date: new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short'}), type: period.charAt(0).toUpperCase()+period.slice(1)+' Goal' }); spawnHearts(); }
+  renderGoals();
+}
+function addGoal() {
+  const input = document.getElementById('goalInput');
+  const who = document.getElementById('goalWho').value;
+  if (!input || !input.value.trim()) return;
+  const period = _currentGoalPeriod;
+  if (!state.goals[period]) state.goals[period] = [];
+  state.goals[period].push({ id: Date.now(), text: input.value.trim(), done: false, who: who });
+  input.value = ''; renderGoals(); saveToLocal();
+}
+function deleteGoal(period, i) { state.goals[period].splice(i, 1); renderGoals(); saveToLocal(); }
 
 // ===== FITNESS =====
 function logMacros(p) {
@@ -1028,7 +1129,7 @@ function logMacros(p) {
   f.carb += +document.getElementById(p+'-carb-in').value || 0;
   f.fat += +document.getElementById(p+'-fat-in').value || 0;
   ['-cal-in','-pro-in','-carb-in','-fat-in'].forEach(s => { const el=document.getElementById(p+s); if(el) el.value=''; });
-  renderFitnessCards(); spawnHearts();
+  renderFitnessCards(); spawnHearts(); saveToLocal();
 }
 function logWorkout(p) {
   const desc = document.getElementById(p+'-wd')?.value.trim();
@@ -1038,7 +1139,12 @@ function logWorkout(p) {
   _fitness[p].workouts.unshift({ desc, type, mins, time: new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) });
   document.getElementById(p+'-wd').value = '';
   document.getElementById(p+'-wm').value = '';
-  renderFitnessCards(); spawnHearts();
+  renderFitnessCards(); spawnHearts(); saveToLocal();
+}
+function resetDay(p) {
+  if (!confirm("Reset " + (p==="j"?"Jai's":"Shrey's") + " day?")) return;
+  _fitness[p] = {cal:0,pro:0,carb:0,fat:0,workouts:[]};
+  renderFitnessCards(); saveToLocal();
 }
 function renderFitnessCards() {
   ['j','s'].forEach(p => {
@@ -1062,6 +1168,333 @@ function renderFitnessCards() {
   });
 }
 
+
+// ===== BOOKS =====
+var _booksFilter = 'all';
+function addBook() {
+  var title = document.getElementById('bTitle').value.trim();
+  if (!title) return;
+  var author = document.getElementById('bAuthor').value.trim();
+  var status = document.getElementById('bStatus').value;
+  var who = document.getElementById('bWho').value;
+  _op.books.unshift({ id: Date.now(), title: title, author: author, status: status, who: who });
+  document.getElementById('bTitle').value = '';
+  document.getElementById('bAuthor').value = '';
+  renderBooks(); saveToLocal();
+}
+function bFilter(f) { _booksFilter = f; renderBooks(); }
+function setBS(id, v) {
+  var b = _op.books.find(function(x){ return x.id===id; });
+  if(b){ b.status=v; renderBooks(); saveToLocal(); }
+}
+function delBook(id) {
+  _op.books = _op.books.filter(function(x){ return x.id!==id; });
+  renderBooks(); saveToLocal();
+}
+function renderBooks() {
+  var el = document.getElementById('bookList'); if (!el) return;
+  var list = _booksFilter === 'all' ? _op.books : _op.books.filter(function(b){ return b.status===_booksFilter; });
+  el.innerHTML = '';
+  if (!list.length) { el.innerHTML = '<p style="color:var(--text-soft);font-size:0.82rem;text-align:center;padding:1rem;">No books yet 📖</p>'; return; }
+  list.forEach(function(b) {
+    var whoLabel = b.who==='both'?'🤝 Both':b.who==='jai'?'💜 Jai':'🌊 Shrey';
+    var statusLabel = b.status==='done'?'Finished':b.status==='reading'?'Reading':'Want to Read';
+    var d = document.createElement('div');
+    d.style.cssText = 'display:flex;align-items:center;gap:0.6rem;padding:0.7rem 0.85rem;border-radius:12px;background:rgba(255,255,255,0.55);margin-bottom:0.45rem;border:1px solid rgba(201,179,232,0.15);flex-wrap:wrap;';
+    d.innerHTML = '<span>📖</span>'
+      +'<div style="flex:1"><div style="font-size:0.88rem;font-weight:500;">'+b.title+'</div>'
+      +(b.author?'<div style="font-size:0.74rem;color:var(--text-soft);">'+b.author+'</div>':'')+'</div>'
+      +'<span style="font-size:0.72rem;color:var(--text-soft);">'+whoLabel+'</span>'
+      +'<span style="font-size:0.72rem;padding:0.2rem 0.5rem;border-radius:8px;background:rgba(201,179,232,0.15);">'+statusLabel+'</span>'
+      +'<select onchange="setBS('+b.id+',this.value)" style="font-size:0.72rem;border:1px solid rgba(201,179,232,0.3);border-radius:6px;padding:0.15rem;">'
+      +'<option value="want"'+(b.status==='want'?' selected':'')+'>Want</option>'
+      +'<option value="reading"'+(b.status==='reading'?' selected':'')+'>Reading</option>'
+      +'<option value="done"'+(b.status==='done'?' selected':'')+'>Done</option></select>'
+      +'<button onclick="delBook('+b.id+')" style="background:none;border:none;cursor:pointer;color:var(--text-soft);">✕</button>';
+    el.appendChild(d);
+  });
+}
+
+// ===== STUDY TIMER =====
+var _studyTimer = null;
+var _studySeconds = 0;
+var _studyPaused = false;
+var _studySessions = JSON.parse(localStorage.getItem('jas_study') || '[]');
+
+var _giraffeColors = [
+  { minHrs: 0,  body:'#F5C842', spots:'#C8901A', label:'🌿 Fresh start — begin studying!' },
+  { minHrs: 1,  body:'#E8B830', spots:'#B07A10', label:'📚 Getting warmed up (1h+)' },
+  { minHrs: 3,  body:'#D4A020', spots:'#9A6800', label:'🔥 In the zone (3h+)' },
+  { minHrs: 6,  body:'#B88010', spots:'#7A4A00', label:'💫 Serious studier (6h+)' },
+  { minHrs: 10, body:'#8B5E00', spots:'#5A3A00', label:'🌟 On a roll (10h+)' },
+  { minHrs: 15, body:'#5C3A00', spots:'#3A2000', label:'👑 15hr goal reached! Legend!' },
+];
+
+function studyWeekHours() {
+  var now = new Date();
+  var weekStart = new Date(now); weekStart.setDate(now.getDate() - now.getDay()); weekStart.setHours(0,0,0,0);
+  return _studySessions.filter(function(s){ return new Date(s.date) >= weekStart; })
+    .reduce(function(a,s){ return a + s.secs; }, 0) / 3600;
+}
+function studyMonthHours() {
+  var now = new Date();
+  return _studySessions.filter(function(s){
+    var d = new Date(s.date); return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear();
+  }).reduce(function(a,s){ return a + s.secs; }, 0) / 3600;
+}
+function studyAllHours() {
+  return _studySessions.reduce(function(a,s){ return a + s.secs; }, 0) / 3600;
+}
+function fmt(secs) {
+  var h = Math.floor(secs/3600), m = Math.floor((secs%3600)/60), s = secs%60;
+  return (h?String(h).padStart(2,'0')+':':'') + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+}
+function fmtHrs(h) { return h < 0.1 ? '0m' : h >= 1 ? h.toFixed(1)+'h' : Math.round(h*60)+'m'; }
+
+function updateGiraffe() {
+  var wh = studyWeekHours();
+  var level = _giraffeColors[0];
+  for (var i = _giraffeColors.length-1; i >= 0; i--) {
+    if (wh >= _giraffeColors[i].minHrs) { level = _giraffeColors[i]; break; }
+  }
+  var svg = document.getElementById('giraffeSvg'); if (!svg) return;
+  if (!svg.querySelectorAll) return;
+  ['gBody','gNeck','gHead','gLeg1','gLeg2','gLeg3','gLeg4'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.setAttribute('fill', level.body);
+  });
+  svg.querySelectorAll('ellipse[opacity],ellipse[fill="#C8901A"],rect[fill="#C8901A"],path[stroke="#C8901A"]').forEach(function(el){
+    if(el.getAttribute('fill')==='#C8901A') el.setAttribute('fill', level.spots);
+    if(el.getAttribute('stroke')==='#C8901A') el.setAttribute('stroke', level.spots);
+  });
+  var lbl = document.getElementById('giraffeLevel'); if(lbl) lbl.textContent = level.label;
+}
+
+function bounceGiraffe() {
+  var wrap = document.getElementById('giraffeWrap'); if (!wrap) return;
+  wrap.style.animation = 'none';
+  wrap.offsetHeight;
+  wrap.style.animation = 'giraffeBounce 0.6s ease infinite';
+}
+function stopBounce() {
+  var wrap = document.getElementById('giraffeWrap'); if (!wrap) return;
+  wrap.style.animation = 'none';
+}
+
+function studyTick() {
+  _studySeconds++;
+  var el = document.getElementById('timerDisplay');
+  if (el) {
+    var h = Math.floor(_studySeconds/3600), m = Math.floor((_studySeconds%3600)/60), s = _studySeconds%60;
+    el.textContent = String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  }
+}
+
+function studyStart() {
+  if (_studyTimer) return;
+  _studyPaused = false;
+  _studyTimer = setInterval(studyTick, 1000);
+  bounceGiraffe();
+  document.getElementById('studyStartBtn').style.display = 'none';
+  document.getElementById('studyStopBtn').style.display = '';
+  document.getElementById('studyPauseBtn').style.display = '';
+}
+
+function studyPause() {
+  if (_studyPaused) {
+    _studyTimer = setInterval(studyTick, 1000);
+    _studyPaused = false;
+    bounceGiraffe();
+    document.getElementById('studyPauseBtn').textContent = '⏸ Pause';
+  } else {
+    clearInterval(_studyTimer); _studyTimer = null;
+    _studyPaused = true;
+    stopBounce();
+    document.getElementById('studyPauseBtn').textContent = '▶ Resume';
+  }
+}
+
+function studyStop() {
+  if (_studySeconds < 5) { alert('Session too short!'); return; }
+  clearInterval(_studyTimer); _studyTimer = null;
+  _studyPaused = false;
+  stopBounce();
+  var who = document.getElementById('studyWho')?.value || 'jai';
+  var subject = document.getElementById('studySubject')?.value.trim() || 'General';
+  _studySessions.unshift({
+    id: Date.now(), who: who, subject: subject, secs: _studySeconds,
+    date: new Date().toISOString(),
+    dateLabel: new Date().toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})
+  });
+  localStorage.setItem('jas_study', JSON.stringify(_studySessions));
+  _studySeconds = 0;
+  document.getElementById('timerDisplay').textContent = '00:00:00';
+  document.getElementById('studyStartBtn').style.display = '';
+  document.getElementById('studyStopBtn').style.display = 'none';
+  document.getElementById('studyPauseBtn').style.display = 'none';
+  document.getElementById('studyPauseBtn').textContent = '⏸ Pause';
+  if(document.getElementById('studySubject')) document.getElementById('studySubject').value = '';
+  updateGiraffe();
+  renderStudyStats();
+  renderStudyLog();
+  spawnHearts();
+}
+
+function renderStudyStats() {
+  var el = document.getElementById('studyStats'); if (!el) return;
+  updateGiraffe();
+  var wh = studyWeekHours(), mh = studyMonthHours(), ah = studyAllHours();
+  var goal = 15;
+  var pct = Math.min(100, Math.round(wh/goal*100));
+  el.innerHTML =
+    '<div style="text-align:center;background:rgba(255,255,255,0.6);border-radius:14px;padding:0.9rem;border:1px solid rgba(201,179,232,0.2);">'
+    + '<div style="font-size:1.4rem;font-weight:600;color:var(--lilac-dark);">' + fmtHrs(wh) + '</div>'
+    + '<div style="font-size:0.72rem;color:var(--text-soft);">This week</div>'
+    + '<div style="margin-top:0.4rem;background:rgba(201,179,232,0.2);border-radius:6px;height:6px;"><div style="background:var(--gradient);border-radius:6px;height:100%;width:'+pct+'%;transition:width 0.5s;"></div></div>'
+    + '<div style="font-size:0.65rem;color:var(--text-soft);margin-top:0.2rem;">'+pct+'% of 15h goal</div>'
+    + '</div>'
+    + '<div style="text-align:center;background:rgba(255,255,255,0.6);border-radius:14px;padding:0.9rem;border:1px solid rgba(201,179,232,0.2);">'
+    + '<div style="font-size:1.4rem;font-weight:600;color:var(--teal-dark);">' + fmtHrs(mh) + '</div>'
+    + '<div style="font-size:0.72rem;color:var(--text-soft);">This month</div></div>'
+    + '<div style="text-align:center;background:rgba(255,255,255,0.6);border-radius:14px;padding:0.9rem;border:1px solid rgba(201,179,232,0.2);">'
+    + '<div style="font-size:1.4rem;font-weight:600;color:var(--text);">' + fmtHrs(ah) + '</div>'
+    + '<div style="font-size:0.72rem;color:var(--text-soft);">All time</div></div>';
+}
+
+function renderStudyLog() {
+  var el = document.getElementById('studyLog'); if (!el) return;
+  if (!_studySessions.length) { el.innerHTML = '<p style="font-size:0.82rem;color:var(--text-soft);text-align:center;padding:0.8rem;">No sessions yet — start studying! 📚</p>'; return; }
+  el.innerHTML = '';
+  _studySessions.slice(0,15).forEach(function(s) {
+    var whoLabel = s.who==='jai'?'💜 Jai':'🌊 Shrey';
+    var d = document.createElement('div');
+    d.style.cssText = 'display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.85rem;border-radius:10px;background:rgba(255,255,255,0.55);margin-bottom:0.35rem;border:1px solid rgba(201,179,232,0.12);';
+    d.innerHTML = '<span style="font-size:0.75rem;color:var(--text-soft);min-width:80px;">' + s.dateLabel + '</span>'
+      + '<span style="font-size:0.8rem;flex:1;">' + s.subject + '</span>'
+      + '<span style="font-size:0.72rem;">' + whoLabel + '</span>'
+      + '<span style="font-size:0.82rem;font-weight:500;color:var(--lilac-dark);">' + fmt(s.secs) + '</span>';
+    el.appendChild(d);
+  });
+}
+
+// ===== BUCKET LIST =====
+function addBucket() {
+  var input = document.getElementById('bucketInput');
+  var who = document.getElementById('bucketWho').value;
+  if (!input || !input.value.trim()) return;
+  if (!state.bucketList) state.bucketList = [];
+  state.bucketList.unshift({ id: Date.now(), text: input.value.trim(), who: who, done: false });
+  input.value = '';
+  renderBucketList(); saveToLocal();
+}
+function toggleBucket(i) {
+  state.bucketList[i].done = !state.bucketList[i].done;
+  if (state.bucketList[i].done) spawnHearts();
+  renderBucketList(); saveToLocal();
+}
+function deleteBucket(i) {
+  state.bucketList.splice(i, 1);
+  renderBucketList(); saveToLocal();
+}
+function renderBucketList() {
+  var el = document.getElementById('bucketList'); if (!el) return;
+  var list = state.bucketList || [];
+  el.innerHTML = '';
+  if (!list.length) { el.innerHTML = '<p style="font-size:0.82rem;color:var(--text-soft);text-align:center;padding:0.5rem;">No bucket list items yet 🪣</p>'; return; }
+  list.forEach(function(item, i) {
+    var whoLabel = item.who==='both'?'🤝 Both':item.who==='jai'?'💜 Jai':'🌊 Shrey';
+    var d = document.createElement('div');
+    d.className = 'goal-item' + (item.done?' completed':'');
+    d.innerHTML = '<div class="goal-check ' + (item.done?'done':'') + '" onclick="toggleBucket(' + i + ')"></div>'
+      + '<span class="goal-text"' + (item.done?' style="text-decoration:line-through;opacity:0.5;"':'') + '>' + item.text + '</span>'
+      + '<span class="goal-who ' + (item.who==='both'?'both':item.who) + '">' + whoLabel + '</span>'
+      + '<button onclick="deleteBucket(' + i + ')" style="background:none;border:none;cursor:pointer;color:var(--text-soft);font-size:0.8rem;">✕</button>';
+    el.appendChild(d);
+  });
+}
+
+// ===== MOVIE NIGHT PICKER =====
+function pickMovieNight() {
+  var unwatched = _op.watchlist.filter(function(w){ return w.status === 'want' || w.status === 'watching'; });
+  var pickEl = document.getElementById('moviePick');
+  var nameEl = document.getElementById('moviePickName');
+  var whoEl = document.getElementById('moviePickWho');
+  if (!unwatched.length) { alert('No unwatched movies in your list! Add some first 🎬'); return; }
+  var pick = unwatched[Math.floor(Math.random() * unwatched.length)];
+  var whoLabel = pick.who==='both'?'🤝 Both picked this':pick.who==='jai'?'💜 Jai\'s pick':'🌊 Shrey\'s pick';
+  nameEl.textContent = (pick.emoji||'🎬') + ' ' + pick.title;
+  whoEl.textContent = whoLabel;
+  pickEl.style.display = 'block';
+  spawnHearts();
+}
+
+// ===== CYCLE PREDICTIONS =====
+function updateCyclePredictions() {
+  if (!_cycle.start) return;
+  var predsEl = document.getElementById('cyclePredictions');
+  if (!predsEl) return;
+  predsEl.style.display = 'block';
+  var st = new Date(_cycle.start);
+  var today = new Date(); today.setHours(0,0,0,0);
+  var cl = _cycle.len || 28;
+  var pd = _cycle.dur || 5;
+  // Find next period start after today
+  var nextPeriod = new Date(st);
+  while (nextPeriod <= today) { nextPeriod.setDate(nextPeriod.getDate() + cl); }
+  var nextOv = new Date(nextPeriod);
+  nextOv.setDate(nextOv.getDate() - Math.round(cl/2) + 1);
+  // If ovulation already passed for this cycle, use next
+  if (nextOv <= today) { nextOv.setDate(nextOv.getDate() + cl); }
+  var daysAway = Math.round((nextPeriod - today) / (1000*60*60*24));
+  var fmt = function(d) { return d.toLocaleDateString('en-GB',{day:'numeric',month:'short'}); };
+  var npEl = document.getElementById('nextPeriodDate');
+  var noEl = document.getElementById('nextOvDate');
+  var daEl = document.getElementById('daysUntilPeriod');
+  if (npEl) npEl.textContent = fmt(nextPeriod);
+  if (noEl) noEl.textContent = fmt(nextOv);
+  if (daEl) daEl.textContent = daysAway + 'd';
+}
+
+// ===== BUCKET LIST renders when love page opens =====
+
+
+
+// ===== CYCLE COLOUR TOGGLE =====
+var _cycleColoursOn = true;
+function toggleCycleColours() {
+  _cycleColoursOn = !_cycleColoursOn;
+  var btn = document.getElementById('cycleColourToggle');
+  if (_cycleColoursOn) {
+    document.body.classList.remove('hide-cycle-colours');
+    if (btn) btn.textContent = '🎨 Hide colours';
+  } else {
+    document.body.classList.add('hide-cycle-colours');
+    if (btn) btn.textContent = '🎨 Show colours';
+  }
+  localStorage.setItem('jas_cycleColours', _cycleColoursOn ? '1' : '0');
+}
+function initCycleColours() {
+  if (localStorage.getItem('jas_cycleColours') === '0') toggleCycleColours();
+}
+// ===== CYCLE PANEL TOGGLE =====
+var _cycleVisible = true;
+function toggleCyclePanel() {
+  _cycleVisible = !_cycleVisible;
+  var body = document.getElementById('cyclePanelBody');
+  var btn = document.getElementById('cyclePanelToggle');
+  var panel = document.getElementById('cyclePanel');
+  if (body) body.style.display = _cycleVisible ? '' : 'none';
+  if (btn) btn.textContent = _cycleVisible ? 'Hide 🙈' : 'Show 🌸';
+  if (panel) panel.style.background = _cycleVisible ? '' : 'none';
+  if (panel) panel.style.border = _cycleVisible ? '' : 'none';
+  if (panel) panel.style.padding = _cycleVisible ? '' : '0';
+  if (panel) panel.style.marginBottom = _cycleVisible ? '' : '0.5rem';
+  localStorage.setItem('jas_cycleVisible', _cycleVisible ? '1' : '0');
+}
+function initCyclePanel() {
+  var stored = localStorage.getItem('jas_cycleVisible');
+  if (stored === '0') toggleCyclePanel();
+}
 // ===== CALENDAR =====
 function renderCalendar() {
   const year = state.calYear, month = state.calMonth;
@@ -1085,19 +1518,44 @@ function renderCalendar() {
   }
   renderEvents();
   paintCycleDays();
+  updateCyclePredictions();
 }
 function renderEvents() {
   const list = document.getElementById('eventsList');
   const sorted = [...state.events].sort((a,b) => new Date(a.date) - new Date(b.date));
   list.innerHTML = '';
-  sorted.forEach(ev => { const d = new Date(ev.date); const div = document.createElement('div'); div.className = 'event-item'; div.innerHTML = `<span class="event-date-badge">${d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</span><span>${ev.title}</span>`; list.appendChild(div); });
+  sorted.forEach((ev, i) => {
+    const d = new Date(ev.date);
+    const div = document.createElement('div');
+    div.className = 'event-item';
+    div.style.cssText = 'display:flex;align-items:center;gap:0.5rem;';
+    div.innerHTML = `<span class="event-date-badge">${d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</span>
+      <span style="flex:1">${ev.title}</span>
+      <button onclick="editEvent(${i})" style="background:none;border:none;cursor:pointer;font-size:0.8rem;color:var(--text-soft);padding:0.2rem 0.4rem;" title="Edit">✏️</button>
+      <button onclick="deleteEvent(${i})" style="background:none;border:none;cursor:pointer;font-size:0.8rem;color:var(--text-soft);padding:0.2rem 0.4rem;" title="Delete">✕</button>`;
+    list.appendChild(div);
+  });
+}
+function deleteEvent(i) {
+  if (!confirm('Delete this event?')) return;
+  state.events.splice(i, 1);
+  renderCalendar(); saveToLocal();
+}
+function editEvent(i) {
+  const ev = state.events[i];
+  const newTitle = prompt('Edit event title:', ev.title);
+  if (newTitle === null) return;
+  const newDate = prompt('Edit date (YYYY-MM-DD):', ev.date);
+  if (newDate === null) return;
+  state.events[i] = { date: newDate, title: newTitle.trim() || ev.title };
+  renderCalendar(); saveToLocal();
 }
 function prevMonth() { state.calMonth--; if (state.calMonth < 0) { state.calMonth = 11; state.calYear--; } renderCalendar(); }
 function nextMonth() { state.calMonth++; if (state.calMonth > 11) { state.calMonth = 0; state.calYear++; } renderCalendar(); }
 function addEvent() {
   const date = document.getElementById('eventDate').value, title = document.getElementById('eventTitle').value.trim();
   if (!date || !title) return;
-  if(window.fbSave)fbSave();
+  saveToLocal();
   state.events.push({ date, title });
   document.getElementById('eventDate').value = ''; document.getElementById('eventTitle').value = '';
   renderCalendar();
@@ -1106,7 +1564,7 @@ function addEvent() {
 // ===== CYCLE TRACKER =====
 function saveCycle() {
   _cycle = { start: document.getElementById('periodStart')?.value, len: +document.getElementById('cycleLen')?.value || 28, dur: +document.getElementById('periodDur')?.value || 5 };
-  paintCycleDays(); spawnHearts(); if(window.fbSave)fbSave();
+  paintCycleDays(); spawnHearts();
 }
 function paintCycleDays() {
   if (!_cycle.start) return;
@@ -1132,23 +1590,6 @@ function paintCycleDays() {
   });
 }
 
-// ===== HABITS =====
-function renderHabits() {
-  ['joint','jai','shrey'].forEach(type => {
-    const list = document.getElementById(type + 'HabitsList'); list.innerHTML = '';
-    state.habits[type].forEach((habit, i) => {
-      const streak = habit.days.filter(Boolean).length;
-      const div = document.createElement('div'); div.className = 'habit-item';
-      div.innerHTML = `<div style="flex:1"><div style="font-size:0.88rem;margin-bottom:0.4rem;">${habit.text}</div><div class="habit-days">${habit.days.map((done, di) => `<div class="habit-day ${done ? 'done' : ''}" onclick="toggleHabitDay('${type}',${i},${di})"></div>`).join('')}</div></div>
-        <span class="habit-streak">🔥 ${streak} days</span>
-        <button onclick="deleteHabit('${type}',${i})" style="background:none;border:none;cursor:pointer;color:var(--text-soft);font-size:0.75rem;margin-left:0.5rem;">✕</button>`;
-      list.appendChild(div);
-    });
-  });
-}
-function toggleHabitDay(type, i, di) { state.habits[type][i].days[di] = !state.habits[type][i].days[di]; renderHabits(); if(window.fbSave)fbSave(); }
-function addHabit(type) { const input = document.getElementById(type+'HabitInput'); if (!input.value.trim()) return; state.habits[type].push({ id: Date.now(), text: input.value.trim(), days: [false,false,false,false,false,false,false] }); input.value = ''; renderHabits(); if(window.fbSave)fbSave(); }
-function deleteHabit(type, i) { state.habits[type].splice(i, 1); renderHabits(); if(window.fbSave)fbSave(); }
 
 // ===== MOOD =====
 function selectMood(person, emoji, el) {
@@ -1160,7 +1601,7 @@ function selectMood(person, emoji, el) {
 function saveMood(person) {
   const note = document.getElementById(person + 'MoodNote').value;
   const emoji = state.moodData[person]?.emoji || '😌';
-  if(window.fbSave)fbSave();
+  saveToLocal();
   state.moods.unshift({ person, emoji, note, date: new Date().toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}) });
   state.moodData[person] = { emoji, note };
   document.getElementById(person + 'MoodNote').value = '';
@@ -1175,26 +1616,10 @@ function renderMoodHistory() {
   });
 }
 
-// ===== GRATITUDE =====
-function renderGratitude() {
-  const list = document.getElementById('gratitudeList'); list.innerHTML = '';
-  state.gratitude.forEach(g => {
-    const div = document.createElement('div'); div.className = 'gratitude-entry';
-    div.innerHTML = `<div class="date">${g.date}</div><span class="author ${g.author}">${g.author === 'jai' ? '💜 Jai' : '🌊 Shrey'} ${g.privacy==='private'?'🔒':''}</span><p style="font-size:0.88rem;line-height:1.6;">${g.text}</p>`;
-    list.appendChild(div);
-  });
-}
-function addGratitude() {
-  const text = document.getElementById('gratitudeText').value.trim();
-  if (!text) return;
-  if(window.fbSave)fbSave();
-  state.gratitude.unshift({ author: document.getElementById('gratitudeAuthor').value, text, privacy: document.getElementById('gratitudePrivacy').value, date: new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short'}) });
-  document.getElementById('gratitudeText').value = '';
-  renderGratitude(); spawnHearts();
-}
 
 // ===== LOVE =====
 function renderLove() {
+  renderBucketList();
   document.getElementById('challengeText').textContent = dateIdeas[state.currentChallengeIndex];
   const list = document.getElementById('loveLangList'); list.innerHTML = '';
   loveLangIdeas.forEach(l => {
@@ -1222,35 +1647,18 @@ function renderPhotos() {
   const grid = document.getElementById('photosGrid'); grid.innerHTML = '';
   state.photos.forEach((photo, i) => {
     const slot = document.createElement('div'); slot.className = 'photo-slot';
-    if (photo && photo.loading) { slot.innerHTML = `<span style="font-size:1.2rem;opacity:0.5;">⏳</span>`; }
-    else if (photo && photo.src) { slot.innerHTML = `<img src="${photo.src}" alt="Memory"><div class="photo-caption">${photo.caption||''}</div><button class="photo-delete" onclick="deletePhoto(${i},event)">✕</button>`; }
+    if (photo) { slot.innerHTML = `<img src="${photo.src}" alt="Memory"><div class="photo-caption">${photo.caption||''}</div><button class="photo-delete" onclick="deletePhoto(${i},event)">✕</button>`; }
     else { slot.innerHTML = `<span class="add-icon">+</span>`; slot.onclick = () => { state.currentPhotoSlot = i; document.getElementById('photoUpload').click(); }; }
     grid.appendChild(slot);
   });
 }
 function handlePhotoUpload(event) {
   const file = event.target.files[0]; if (!file) return;
-  const slot = state.currentPhotoSlot;
-  if (!window._storage) {
-    const reader = new FileReader();
-    reader.onload = e => { state.photos[slot] = { src: e.target.result, caption: '' }; renderPhotos(); };
-    reader.readAsDataURL(file);
-  } else {
-    const path = 'photos/slot_' + slot + '_' + Date.now();
-    state.photos[slot] = { src: null, url: null, caption: '', loading: true }; renderPhotos();
-    window._storage.uploadPhoto(file, path).then(url => {
-      state.photos[slot] = { src: url, url: url, caption: '', path: path };
-      renderPhotos(); if(window.fbSave)fbSave();
-    }).catch(err => { state.photos[slot] = null; renderPhotos(); });
-  }
-  event.target.value = '';
+  const reader = new FileReader();
+  reader.onload = e => { state.photos[state.currentPhotoSlot] = { src: e.target.result, caption: '' }; renderPhotos(); };
+  reader.readAsDataURL(file); event.target.value = '';
 }
-function deletePhoto(i, e) {
-  e.stopPropagation();
-  const photo = state.photos[i];
-  if (photo && photo.path && window._storage) window._storage.deletePhoto_storage(photo.path);
-  state.photos[i] = null; renderPhotos(); if(window.fbSave)fbSave();
-}
+function deletePhoto(i, e) { e.stopPropagation(); state.photos[i] = null; renderPhotos(); }
 
 // ===== OUR PLACE =====
 function switchOP(e, sec) {
@@ -1259,10 +1667,11 @@ function switchOP(e, sec) {
   document.getElementById('op-' + sec).classList.add('active');
   e.target.classList.add('active');
   if (sec === 'watchlist') renderWatchlist();
+  if (sec === 'books') renderBooks();
   if (sec === 'music') renderMusic();
   if (sec === 'ratings') renderRatings();
 }
-function renderOP() { renderWatchlist(); }
+function renderOP() { renderWatchlist(); renderBooks(); }
 function addWatch() {
   const title = document.getElementById('wTitle')?.value.trim(); if (!title) return;
   _op.watchlist.unshift({ id: Date.now(), emoji: document.getElementById('wType')?.value||'🎬', title, status: document.getElementById('wStatus')?.value||'want', who: document.getElementById('wWho')?.value||'both', jr:0, sr:0 });
@@ -1360,7 +1769,7 @@ function createConfetti() {
   }
 }
 function openPresent() {
-  state.birthdayOpened = true; if(window.fbSave)fbSave();
+  state.birthdayOpened = true; saveToLocal();
   document.getElementById('presentBox').style.animation = 'none';
   document.getElementById('presentBox').style.transform = 'scale(0.85) rotate(20deg)';
   document.getElementById('birthdayReveal').classList.add('show');
@@ -1369,22 +1778,11 @@ function openPresent() {
 }
 function handleBirthdayPhotoUpload(event) {
   const file = event.target.files[0]; if (!file) return;
-  const slot = state.currentBirthdaySlot;
-  if (!window._storage) {
-    const reader = new FileReader();
-    reader.onload = e => { state.birthdayPhotos[slot] = e.target.result; renderBirthday(); };
-    reader.readAsDataURL(file);
-  } else {
-    const path = 'birthday/slot_' + slot + '_' + Date.now();
-    state.birthdayPhotos[slot] = 'loading'; renderBirthday();
-    window._storage.uploadPhoto(file, path).then(url => {
-      state.birthdayPhotos[slot] = url;
-      renderBirthday(); if(window.fbSave)fbSave();
-    }).catch(err => { state.birthdayPhotos[slot] = null; renderBirthday(); });
-  }
-  event.target.value = '';
+  const reader = new FileReader();
+  reader.onload = e => { state.birthdayPhotos[state.currentBirthdaySlot] = e.target.result; renderBirthday(); };
+  reader.readAsDataURL(file); event.target.value = '';
 }
-function saveBirthdayCard() { state.birthdayCard = document.getElementById('birthdayCardText').value; document.getElementById('cardPreviewText').textContent = state.birthdayCard; if(window.fbSave)fbSave(); spawnHearts(); alert('Card saved 💌 She\'ll love it!'); }
+function saveBirthdayCard() { state.birthdayCard = document.getElementById('birthdayCardText').value; document.getElementById('cardPreviewText').textContent = state.birthdayCard; saveToLocal(); spawnHearts(); alert('Card saved 💌 She\'ll love it!'); }
 function toggleCardMode() {
   const editMode = document.getElementById('cardEditMode'), previewMode = document.getElementById('cardPreviewMode');
   if (editMode.style.display === 'none') { editMode.style.display = 'block'; previewMode.style.display = 'none'; }
@@ -1401,7 +1799,7 @@ function renderArchive() {
   const today = new Date();
   if (!(today.getMonth()===2 && today.getDate()===5) && !(today.getMonth()===9 && today.getDate()===4) && state.birthdayCard) {
     const bdiv = document.createElement('div'); bdiv.className = 'archive-item'; bdiv.style.borderLeft = '3px solid #f9c0cb';
-    bdiv.innerHTML = `<span class="archive-date">Mar 5 / Oct 4</span><span class="archive-title">🎂 Birthday Cards & Memories</span><span class="archive-type" style="background:rgba(249,192,203,0.2);color:#c96080;">Birthday</span>`;
+    bdiv.innerHTML = `<span class="archive-date">Mar 5</span><span class="archive-title">🎂 Shrey's Birthday Card & Memories</span><span class="archive-type" style="background:rgba(249,192,203,0.2);color:#c96080;">Birthday</span>`;
     bdiv.onclick = () => showPage('birthday'); list.appendChild(bdiv);
   }
 }
@@ -1421,7 +1819,11 @@ function spawnHearts() {
 
 // ===== INIT =====
 function init() {
+  loadFromLocal();
   setDailyQuote();
+  renderGoals();
+  initCyclePanel();
+  initCycleColours();
   checkBirthday();
   renderHome();
   renderFitnessCards();
@@ -1430,6 +1832,132 @@ function init() {
 }
 
 init();
+</script>
+
+<!-- Firebase sync -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey:"AIzaSyCCJmqDDYGtfnKsFdfy5fUwaoJkgZYjf0E",
+  authDomain:"shrai-app.firebaseapp.com",
+  databaseURL:"https://shrai-app-default-rtdb.firebaseio.com",
+  projectId:"shrai-app",
+  storageBucket:"shrai-app.firebasestorage.app",
+  messagingSenderId:"452266524844",
+  appId:"1:452266524844:web:d2f27864738ca3bd661f09"
+});
+var _db = firebase.database();
+var _fbStorage = firebase.storage();
+
+window._storage = {
+  uploadPhoto: function(file, path) {
+    var r = _fbStorage.ref(path);
+    return r.put(file).then(function(){ return r.getDownloadURL(); });
+  },
+  deletePhoto_storage: function(path) {
+    return _fbStorage.ref(path).delete().catch(function(){});
+  }
+};
+
+function _fbSerialize() {
+  return {
+    goals: state.goals,
+    events: state.events,
+    moods: state.moods,
+    moodData: state.moodData,
+    completedChallenges: state.completedChallenges,
+    bucketList: state.bucketList,
+    birthdayCard: state.birthdayCard,
+    birthdayOpened: state.birthdayOpened,
+    archive: state.archive,
+    photoUrls: state.photos.map(function(p){ return p ? {url:p.url||null,caption:p.caption||''} : null; }),
+    birthdayPhotoUrls: state.birthdayPhotos.map(function(p){ return p ? (typeof p==='string'?p:p.url||null) : null; })
+  };
+}
+
+var _fbTimer = null;
+window.fbSave = function() {
+  clearTimeout(_fbTimer);
+  _fbTimer = setTimeout(function() {
+    _db.ref('app/state').set(_fbSerialize()).catch(console.error);
+    _db.ref('app/fitness').set(_fitness).catch(console.error);
+    _db.ref('app/cycle').set(_cycle).catch(console.error);
+    _db.ref('app/watchlist').set(_op.watchlist).catch(console.error);
+    _db.ref('app/books').set(_op.books).catch(console.error);
+    _db.ref('app/music').set(_music).catch(console.error);
+    _db.ref('app/study').set(_studySessions).catch(console.error);
+  }, 800);
+};
+
+// Patch saveToLocal to also call fbSave
+var _origSaveToLocal = saveToLocal;
+saveToLocal = function() { _origSaveToLocal(); fbSave(); };
+
+_db.ref('app').on('value', function(snap) {
+  var data = snap.val(); if (!data) return;
+  if (data.state) {
+    var s = data.state;
+    if (s.goals) state.goals = s.goals;
+    if (s.events) state.events = s.events;
+    if (s.moods) state.moods = s.moods;
+    if (s.moodData) state.moodData = s.moodData;
+    if (s.completedChallenges) state.completedChallenges = s.completedChallenges;
+    if (s.bucketList) state.bucketList = s.bucketList;
+    if (s.birthdayCard !== undefined) state.birthdayCard = s.birthdayCard;
+    if (s.birthdayOpened !== undefined) state.birthdayOpened = s.birthdayOpened;
+    if (s.archive) state.archive = s.archive;
+    if (s.photoUrls) state.photos = s.photoUrls.map(function(p){ return p&&p.url?{src:p.url,url:p.url,caption:p.caption||''}:null; });
+    if (s.birthdayPhotoUrls) state.birthdayPhotos = s.birthdayPhotoUrls.map(function(u){ return u||null; });
+  }
+  if (data.fitness) Object.assign(_fitness, data.fitness);
+  if (data.cycle) { Object.assign(_cycle, data.cycle); }
+  if (data.watchlist) _op.watchlist = data.watchlist;
+  if (data.books) _op.books = data.books;
+  if (data.music) { _music.length=0; data.music.forEach(function(m){_music.push(m);}); }
+  if (data.study) { _studySessions.length=0; data.study.forEach(function(s){_studySessions.push(s);}); }
+  // re-render active page
+  var pg = (document.querySelector('.page.active')||{}).id;
+  if (!pg) return;
+  var renders = {
+    goals: renderGoals, mood: renderMoodHistory, calendar: renderCalendar,
+    home: renderHome, ourplace: renderOP, love: renderLove,
+    study: function(){ renderStudyStats(); renderStudyLog(); },
+    health: renderFitnessCards, photos: renderPhotos
+  };
+  if (renders[pg]) try { renders[pg](); } catch(e){}
+});
+
+// Photo upload patched to use Firebase Storage
+function handlePhotoUpload(event) {
+  var file = event.target.files[0]; if (!file) return;
+  var slot = state.currentPhotoSlot;
+  if (!window._storage) { var rd=new FileReader(); rd.onload=function(e){state.photos[slot]={src:e.target.result,caption:''};renderPhotos();}; rd.readAsDataURL(file); }
+  else {
+    var path='photos/slot_'+slot+'_'+Date.now();
+    state.photos[slot]={src:null,url:null,caption:'',loading:true}; renderPhotos();
+    window._storage.uploadPhoto(file,path).then(function(url){
+      state.photos[slot]={src:url,url:url,caption:'',path:path}; renderPhotos(); saveToLocal();
+    }).catch(function(){ state.photos[slot]=null; renderPhotos(); });
+  }
+  event.target.value='';
+}
+function handleBirthdayPhotoUpload(event) {
+  var file = event.target.files[0]; if (!file) return;
+  var slot = state.currentBirthdaySlot;
+  if (!window._storage) { var rd=new FileReader(); rd.onload=function(e){state.birthdayPhotos[slot]=e.target.result;renderBirthday();}; rd.readAsDataURL(file); }
+  else {
+    var path='birthday/slot_'+slot+'_'+Date.now();
+    state.birthdayPhotos[slot]='loading'; renderBirthday();
+    window._storage.uploadPhoto(file,path).then(function(url){
+      state.birthdayPhotos[slot]=url; renderBirthday(); saveToLocal();
+    }).catch(function(){ state.birthdayPhotos[slot]=null; renderBirthday(); });
+  }
+  event.target.value='';
+}
+
+console.log('Firebase ready ✅');
 </script>
 </body>
 </html>
