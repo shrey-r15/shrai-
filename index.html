@@ -284,11 +284,11 @@
 </style>
 
   <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getDatabase, ref, set, get, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-    import { getStorage, ref as sref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
-
+  <!-- Firebase compat SDKs (no module scope issues) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCCJmqDDYGtfnKsFdfy5fUwaoJkgZYjf0E",
       authDomain: "shrai-app.firebaseapp.com",
@@ -298,27 +298,22 @@
       messagingSenderId: "452266524844",
       appId: "1:452266524844:web:d2f27864738ca3bd661f09"
     };
+    firebase.initializeApp(firebaseConfig);
+    const _db = firebase.database();
+    const _fbStorage = firebase.storage();
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const storage = getStorage(app);
+    // Storage helpers
+    window._storage = {
+      uploadPhoto: async function(file, path) {
+        const ref = _fbStorage.ref(path);
+        await ref.put(file);
+        return await ref.getDownloadURL();
+      },
+      deletePhoto_storage: async function(path) {
+        try { await _fbStorage.ref(path).delete(); } catch(e) { console.warn('delete:', e); }
+      }
+    };
 
-    // ── Storage helpers ──
-    async function uploadPhoto(file, path) {
-      const storageRef = sref(storage, path);
-      await uploadBytes(storageRef, file);
-      return await getDownloadURL(storageRef);
-    }
-    async function deletePhoto_storage(path) {
-      try { await deleteObject(sref(storage, path)); } catch(e) { console.warn('delete:', e); }
-    }
-    window._storage = { uploadPhoto, deletePhoto_storage };
-
-    // ── helpers ──
-    function dbSet(path, data) { return set(ref(db, path), data); }
-    function dbUpdate(path, data) { return update(ref(db, path), data); }
-
-    // ── serialise state (photos are large — keep them local only) ──
     function serializeState() {
       return {
         goals: state.goals,
@@ -336,32 +331,27 @@
       };
     }
 
-    // ── write to Firebase (debounced) ──
     let _saveTimer = null;
     window.fbSave = function() {
       clearTimeout(_saveTimer);
       _saveTimer = setTimeout(() => {
-        dbSet('app/state', serializeState()).catch(console.error);
-        dbSet('app/fitness', _fitness).catch(console.error);
-        dbSet('app/cycle', _cycle).catch(console.error);
-        // watchlist & music (no large blobs)
-        dbSet('app/watchlist', _op.watchlist).catch(console.error);
-        dbSet('app/music', _music).catch(console.error);
+        _db.ref('app/state').set(serializeState()).catch(console.error);
+        _db.ref('app/fitness').set(_fitness).catch(console.error);
+        _db.ref('app/cycle').set(_cycle).catch(console.error);
+        _db.ref('app/watchlist').set(_op.watchlist).catch(console.error);
+        _db.ref('app/music').set(_music).catch(console.error);
       }, 600);
     };
 
-    // ── listen for changes from other device ──
-    onValue(ref(db, 'app'), (snapshot) => {
+    // Listen for realtime changes
+    _db.ref('app').on('value', (snapshot) => {
       const data = snapshot.val();
       if (!data) return;
-
       if (data.state) {
         const s = data.state;
         Object.assign(state, s);
-        // restore photos from URLs
         if (s.photoUrls) state.photos = s.photoUrls.map(p => p && p.url ? { src: p.url, url: p.url, caption: p.caption || '' } : null);
         if (s.birthdayPhotoUrls) state.birthdayPhotos = s.birthdayPhotoUrls.map(u => u || null);
-        // keep calendar position
         state.calYear = state.calYear || new Date().getFullYear();
         state.calMonth = state.calMonth || new Date().getMonth();
       }
@@ -370,7 +360,6 @@
       if (data.watchlist) _op.watchlist = data.watchlist;
       if (data.music) { _music.length = 0; data.music.forEach(m => _music.push(m)); }
 
-      // re-render current page
       const activePage = document.querySelector('.page.active')?.id;
       if (activePage) {
         const renders = {
@@ -379,16 +368,15 @@
           mood: () => typeof renderMoodHistory === 'function' && renderMoodHistory(),
           gratitude: () => typeof renderGratitude === 'function' && renderGratitude(),
           calendar: () => typeof renderCalendar === 'function' && renderCalendar(),
-          ourplace: () => typeof renderWatchlist === 'function' && renderWatchlist() && renderMusicList && renderMusicList(),
+          ourplace: () => typeof renderWatchlist === 'function' && renderWatchlist(),
           home: () => typeof renderHome === 'function' && renderHome(),
         };
         if (renders[activePage]) renders[activePage]();
       }
     });
 
-    // expose so non-module code can call fbSave()
     window._fbReady = true;
-    console.log('Firebase connected ✅ (Storage + Realtime DB)');
+    console.log('Firebase connected ✅');
   </script>
 </head>
 <body>
