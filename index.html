@@ -20,6 +20,16 @@
     --gradient: linear-gradient(135deg, #c9b3e8 0%, #a8c8e8 40%, #6bbfb5 100%);
     --gradient-soft: linear-gradient(160deg, #f0e8ff 0%, #e0f0f8 50%, #c8eae6 100%);
   }
+
+  #passwordScreen { position: fixed; inset: 0; z-index: 9999; background: var(--gradient-soft); display: flex; align-items: center; justify-content: center; }
+  .password-card { background: var(--card); backdrop-filter: blur(20px); border: 1px solid rgba(201,179,232,0.3); border-radius: 24px; padding: 2.5rem 2rem; text-align: center; max-width: 320px; width: 90%; box-shadow: 0 8px 40px rgba(157,125,199,0.15); }
+  .password-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-style: italic; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.4rem; }
+  .password-subtitle { font-size: 0.82rem; color: var(--text-soft); margin-bottom: 1.8rem; }
+  .password-input { width: 100%; padding: 0.75rem 1rem; border: 1.5px solid rgba(201,179,232,0.4); border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; background: rgba(255,255,255,0.6); color: var(--text); outline: none; text-align: center; letter-spacing: 0.05em; transition: border-color 0.2s; margin-bottom: 1rem; }
+  .password-input:focus { border-color: var(--lilac-dark); }
+  .password-input.wrong { border-color: #e07070; animation: shake 0.4s ease; }
+  .password-error { font-size: 0.78rem; color: #c06060; margin-top: -0.5rem; margin-bottom: 0.8rem; min-height: 1.2rem; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'DM Sans', sans-serif; background: var(--gradient-soft); min-height: 100vh; color: var(--text); overflow-x: hidden; }
 
@@ -277,6 +287,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getDatabase, ref, set, get, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    import { getStorage, ref as sref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCCJmqDDYGtfnKsFdfy5fUwaoJkgZYjf0E",
@@ -290,6 +301,18 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    const storage = getStorage(app);
+
+    // ── Storage helpers ──
+    async function uploadPhoto(file, path) {
+      const storageRef = sref(storage, path);
+      await uploadBytes(storageRef, file);
+      return await getDownloadURL(storageRef);
+    }
+    async function deletePhoto_storage(path) {
+      try { await deleteObject(sref(storage, path)); } catch(e) { console.warn('delete:', e); }
+    }
+    window._storage = { uploadPhoto, deletePhoto_storage };
 
     // ── helpers ──
     function dbSet(path, data) { return set(ref(db, path), data); }
@@ -308,6 +331,8 @@
         birthdayCard: state.birthdayCard,
         birthdayOpened: state.birthdayOpened,
         archive: state.archive,
+        photoUrls: state.photos.map(p => p ? { url: p.url || null, caption: p.caption || '' } : null),
+        birthdayPhotoUrls: state.birthdayPhotos.map(p => p ? (typeof p === 'string' ? p : p.url || null) : null),
       };
     }
 
@@ -332,12 +357,10 @@
 
       if (data.state) {
         const s = data.state;
-        // merge carefully — preserve local photos
-        const savedPhotos = state.photos;
-        const savedBdPhotos = state.birthdayPhotos;
         Object.assign(state, s);
-        state.photos = savedPhotos;
-        state.birthdayPhotos = savedBdPhotos;
+        // restore photos from URLs
+        if (s.photoUrls) state.photos = s.photoUrls.map(p => p && p.url ? { src: p.url, url: p.url, caption: p.caption || '' } : null);
+        if (s.birthdayPhotoUrls) state.birthdayPhotos = s.birthdayPhotoUrls.map(u => u || null);
         // keep calendar position
         state.calYear = state.calYear || new Date().getFullYear();
         state.calMonth = state.calMonth || new Date().getMonth();
@@ -365,11 +388,22 @@
 
     // expose so non-module code can call fbSave()
     window._fbReady = true;
-    console.log('Firebase connected ✅');
+    console.log('Firebase connected ✅ (Storage + Realtime DB)');
   </script>
 </head>
 <body>
 
+
+<div id="passwordScreen">
+  <div class="password-card">
+    <div style="font-size:2.5rem;margin-bottom:0.8rem;">💜</div>
+    <div class="password-title">Jai & Shrey</div>
+    <div class="password-subtitle">enter the password to continue 🌸</div>
+    <input class="password-input" id="passwordInput" type="password" placeholder="password" onkeydown="if(event.key==='Enter')checkPassword()">
+    <div class="password-error" id="passwordError"></div>
+    <button class="btn" style="width:100%;" onclick="checkPassword()">Enter ✨</button>
+  </div>
+</div>
 <div class="bg-blobs">
   <div class="blob blob-1"></div>
   <div class="blob blob-2"></div>
@@ -799,14 +833,15 @@ let state = {
     ]
   },
   events: [
-    { date: "2026-03-05", title: "🎂 Shrey's Birthday! 💜" },
+    { date: "2026-03-05", title: "🎂 Jai's Birthday! 💜" },
+    { date: "2026-10-04", title: "🎂 Shrey's Birthday! 💜" },
     { date: "2026-03-14", title: "Date night 💌" },
     { date: "2026-04-01", title: "Monthly goals review" },
   ],
   moods: [],
   gratitude: [
-    { author: "jai", text: "Grateful for Shrey's laughter and the way she makes every moment feel special 💜", date: "Mar 3", privacy: "shared" },
-    { author: "shrey", text: "Grateful for Jai and all the little ways he shows up for me 🌊", date: "Mar 3", privacy: "shared" },
+    { author: "jai", text: "Grateful for Shrey and the way he makes every moment feel special 💜", date: "Mar 3", privacy: "shared" },
+    { author: "shrey", text: "Grateful for Jai and all the little ways she shows up for me 🌊", date: "Mar 3", privacy: "shared" },
   ],
   moodData: { jai: null, shrey: null },
   currentChallengeIndex: 0,
@@ -1251,18 +1286,37 @@ function renderPhotos() {
   const grid = document.getElementById('photosGrid'); grid.innerHTML = '';
   state.photos.forEach((photo, i) => {
     const slot = document.createElement('div'); slot.className = 'photo-slot';
-    if (photo) { slot.innerHTML = `<img src="${photo.src}" alt="Memory"><div class="photo-caption">${photo.caption||''}</div><button class="photo-delete" onclick="deletePhoto(${i},event)">✕</button>`; }
+    if (photo && photo.loading) { slot.innerHTML = `<span style="font-size:1.2rem;opacity:0.5;">⏳</span>`; }
+    else if (photo && photo.src) { slot.innerHTML = `<img src="${photo.src}" alt="Memory"><div class="photo-caption">${photo.caption||''}</div><button class="photo-delete" onclick="deletePhoto(${i},event)">✕</button>`; }
     else { slot.innerHTML = `<span class="add-icon">+</span>`; slot.onclick = () => { state.currentPhotoSlot = i; document.getElementById('photoUpload').click(); }; }
     grid.appendChild(slot);
   });
 }
 function handlePhotoUpload(event) {
   const file = event.target.files[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => { state.photos[state.currentPhotoSlot] = { src: e.target.result, caption: '' }; renderPhotos(); };
-  reader.readAsDataURL(file); event.target.value = '';
+  const slot = state.currentPhotoSlot;
+  if (!window._storage) {
+    // fallback to local if storage not ready
+    const reader = new FileReader();
+    reader.onload = e => { state.photos[slot] = { src: e.target.result, caption: '' }; renderPhotos(); };
+    reader.readAsDataURL(file);
+  } else {
+    const path = `photos/slot_${slot}_${Date.now()}`;
+    // show loading state
+    state.photos[slot] = { src: null, url: null, caption: '', loading: true }; renderPhotos();
+    window._storage.uploadPhoto(file, path).then(url => {
+      state.photos[slot] = { src: url, url: url, caption: '', path: path };
+      renderPhotos(); if(window.fbSave)fbSave();
+    }).catch(err => { console.error(err); state.photos[slot] = null; renderPhotos(); });
+  }
+  event.target.value = '';
 }
-function deletePhoto(i, e) { e.stopPropagation(); state.photos[i] = null; renderPhotos(); }
+function deletePhoto(i, e) {
+  e.stopPropagation();
+  const photo = state.photos[i];
+  if (photo && photo.path && window._storage) window._storage.deletePhoto_storage(photo.path);
+  state.photos[i] = null; renderPhotos(); if(window.fbSave)fbSave();
+}
 
 // ===== OUR PLACE =====
 function switchOP(e, sec) {
@@ -1342,7 +1396,13 @@ function renderRatings() {
 // ===== BIRTHDAY =====
 function checkBirthday() {
   const today = new Date();
-  const isBirthday = today.getMonth() === 2 && today.getDate() === 5;
+  const isJaiBirthday = today.getMonth() === 2 && today.getDate() === 5;
+  const isShreyBirthday = today.getMonth() === 9 && today.getDate() === 4;
+  const isBirthday = isJaiBirthday || isShreyBirthday;
+  // update tab label based on whose birthday it is
+  const tab2 = document.getElementById('birthdayTab');
+  if (isJaiBirthday) tab2.textContent = '🎂 Her Day';
+  if (isShreyBirthday) tab2.textContent = '🎂 Your Day';
   const tab = document.getElementById('birthdayTab');
   tab.style.display = isBirthday ? 'flex' : 'none';
   if (isBirthday) setTimeout(() => showPage('birthday'), 500);
@@ -1352,7 +1412,8 @@ function renderBirthday() {
   const grid = document.getElementById('birthdayPhotoGrid'); grid.innerHTML = '';
   state.birthdayPhotos.forEach((photo, i) => {
     const slot = document.createElement('div'); slot.className = 'birthday-photo-slot';
-    if (photo) { slot.innerHTML = `<img src="${photo}" alt="">`; }
+    if (photo === 'loading') { slot.innerHTML = `<span style="font-size:1.2rem;opacity:0.5;">⏳</span>`; }
+    else if (photo) { slot.innerHTML = `<img src="${photo}" alt="">`; }
     else { slot.textContent = '+'; slot.onclick = () => { state.currentBirthdaySlot = i; document.getElementById('birthdayPhotoUpload').click(); }; }
     grid.appendChild(slot);
   });
@@ -1378,9 +1439,20 @@ function openPresent() {
 }
 function handleBirthdayPhotoUpload(event) {
   const file = event.target.files[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => { state.birthdayPhotos[state.currentBirthdaySlot] = e.target.result; renderBirthday(); };
-  reader.readAsDataURL(file); event.target.value = '';
+  const slot = state.currentBirthdaySlot;
+  if (!window._storage) {
+    const reader = new FileReader();
+    reader.onload = e => { state.birthdayPhotos[slot] = e.target.result; renderBirthday(); };
+    reader.readAsDataURL(file);
+  } else {
+    const path = `birthday/slot_${slot}_${Date.now()}`;
+    state.birthdayPhotos[slot] = 'loading'; renderBirthday();
+    window._storage.uploadPhoto(file, path).then(url => {
+      state.birthdayPhotos[slot] = url;
+      renderBirthday(); if(window.fbSave)fbSave();
+    }).catch(err => { console.error(err); state.birthdayPhotos[slot] = null; renderBirthday(); });
+  }
+  event.target.value = '';
 }
 function saveBirthdayCard() { state.birthdayCard = document.getElementById('birthdayCardText').value; document.getElementById('cardPreviewText').textContent = state.birthdayCard; if(window.fbSave)fbSave(); spawnHearts(); alert('Card saved 💌 She\'ll love it!'); }
 function toggleCardMode() {
@@ -1397,9 +1469,9 @@ function renderArchive() {
   empty.style.display = 'none';
   state.archive.forEach(a => { const div = document.createElement('div'); div.className = 'archive-item'; div.innerHTML = `<span class="archive-date">${a.date}</span><span class="archive-title">${a.title}</span><span class="archive-type">${a.type}</span>`; list.appendChild(div); });
   const today = new Date();
-  if (!(today.getMonth()===2 && today.getDate()===5) && state.birthdayCard) {
+  if (!(today.getMonth()===2 && today.getDate()===5) && !(today.getMonth()===9 && today.getDate()===4) && state.birthdayCard) {
     const bdiv = document.createElement('div'); bdiv.className = 'archive-item'; bdiv.style.borderLeft = '3px solid #f9c0cb';
-    bdiv.innerHTML = `<span class="archive-date">Mar 5</span><span class="archive-title">🎂 Shrey's Birthday Card & Memories</span><span class="archive-type" style="background:rgba(249,192,203,0.2);color:#c96080;">Birthday</span>`;
+    bdiv.innerHTML = `<span class="archive-date">Mar 5 / Oct 4</span><span class="archive-title">🎂 Birthday Cards & Memories</span><span class="archive-type" style="background:rgba(249,192,203,0.2);color:#c96080;">Birthday</span>`;
     bdiv.onclick = () => showPage('birthday'); list.appendChild(bdiv);
   }
 }
@@ -1417,6 +1489,28 @@ function spawnHearts() {
   }
 }
 
+
+// ===== PASSWORD =====
+function checkPassword() {
+  const val = document.getElementById('passwordInput').value;
+  const input = document.getElementById('passwordInput');
+  const error = document.getElementById('passwordError');
+  if (val === 'jaiisthequeen') {
+    document.getElementById('passwordScreen').style.display = 'none';
+    sessionStorage.setItem('auth', '1');
+  } else {
+    input.classList.add('wrong');
+    error.textContent = 'wrong password, try again 💜';
+    setTimeout(() => { input.classList.remove('wrong'); input.value = ''; }, 600);
+  }
+}
+// auto-unlock if already authenticated this session
+if (sessionStorage.getItem('auth') === '1') {
+  document.addEventListener('DOMContentLoaded', () => {
+    const s = document.getElementById('passwordScreen');
+    if (s) s.style.display = 'none';
+  });
+}
 // ===== INIT =====
 function init() {
   setDailyQuote();
