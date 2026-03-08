@@ -2412,9 +2412,9 @@ init();
 </script>
 
 <!-- Firebase sync -->
-<script src="https://cdn.jsdelivr.net/npm/firebase@9.23.0/compat/app/dist/index.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/firebase@9.23.0/compat/database/dist/index.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/firebase@9.23.0/compat/storage/dist/index.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.0/firebase-app-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.0/firebase-database-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.0/firebase-storage-compat.min.js"></script>
 <script>
 function _initFirebase() {
   if (typeof firebase === 'undefined' || !firebase.database) {
@@ -2478,52 +2478,67 @@ window.fbSave = function() {
 // Patch saveToLocal to also call fbSave
 var _origSaveToLocal = saveToLocal;
 saveToLocal = function() { _origSaveToLocal(); if(window.fbSave) fbSave(); };
-} // end _initFirebase
-// Call after a short delay to ensure Firebase SDKs are ready
-setTimeout(_initFirebase, 100);
 
-var _fbListenerReady = false;
-_db.ref('app').on('value', function(snap) {
-  var data = snap.val(); if (!data) return;
-  if (data.state) {
-    var s = data.state;
-    if (s.goals) state.goals = s.goals;
-    if (s.events) state.events = s.events;
-    if (s.moods) state.moods = s.moods;
-    if (s.moodData) state.moodData = s.moodData;
-    if (s.completedChallenges) state.completedChallenges = s.completedChallenges;
-    if (s.bucketList) state.bucketList = s.bucketList;
-    if (s.birthdayCard !== undefined) state.birthdayCard = s.birthdayCard;
-    if (s.birthdayOpened !== undefined) state.birthdayOpened = s.birthdayOpened;
-    if (s.archive) state.archive = s.archive;
-    if (s.photoUrls) state.photos = s.photoUrls.map(function(p){ return p&&p.url?{src:p.url,url:p.url,caption:p.caption||''}:null; });
-    if (s.birthdayPhotoUrls) state.birthdayPhotos = s.birthdayPhotoUrls.map(function(u){ return u||null; });
+  // Bug 1 fix: _db listener moved INSIDE _initFirebase so _db is in scope
+  // Bug 3 fix: _fbListenerReady also moved inside so it's co-located with listener
+  var _fbListenerReady = false;
+  _db.ref('app').on('value', function(snap) {
+    var data = snap.val(); if (!data) return;
+    if (data.state) {
+      var s = data.state;
+      if (s.goals) state.goals = s.goals;
+      if (s.events) state.events = s.events;
+      if (s.moods) state.moods = s.moods;
+      if (s.moodData) state.moodData = s.moodData;
+      if (s.completedChallenges) state.completedChallenges = s.completedChallenges;
+      if (s.bucketList) state.bucketList = s.bucketList;
+      if (s.birthdayCard !== undefined) state.birthdayCard = s.birthdayCard;
+      if (s.birthdayOpened !== undefined) state.birthdayOpened = s.birthdayOpened;
+      if (s.archive) state.archive = s.archive;
+      if (s.photoUrls) state.photos = s.photoUrls.map(function(p){ return p&&p.url?{src:p.url,url:p.url,caption:p.caption||''}:null; });
+      if (s.birthdayPhotoUrls) state.birthdayPhotos = s.birthdayPhotoUrls.map(function(u){ return u||null; });
+    }
+    if (data.fitness) { Object.assign(_fitness, data.fitness); }
+    if (data.workoutHistory) { Object.assign(_workoutHistory, data.workoutHistory); }
+    if (data.cycle) { Object.assign(_cycle, data.cycle); }
+    if (data.watchlist) { _op.watchlist = data.watchlist; }
+    if (data.books) { _op.books = data.books; }
+    if (data.music) { _music.length=0; data.music.forEach(function(m){_music.push(m);}); }
+    if (data.study) { _studySessions.length=0; data.study.forEach(function(s){_studySessions.push(s);}); }
+    // Skip re-render on first load (init() handles that)
+    if (!_fbListenerReady) { _fbListenerReady = true; return; }
+    // Re-render whatever page is active
+    var pg = (document.querySelector('.page.active')||{}).id;
+    if (!pg) return;
+    var pageRenders = {
+      'page-goals':    function(){ try{renderGoals();}catch(e){} },
+      'page-mood':     function(){ try{renderMoodHistory();}catch(e){} },
+      'page-calendar': function(){ try{renderCalendar();}catch(e){} },
+      'page-love':     function(){ try{renderLove();}catch(e){} },
+      'page-photos':   function(){ try{renderPhotos();}catch(e){} },
+      'page-ourplace': function(){ try{renderOP();}catch(e){} },
+      'page-study':    function(){ try{renderStudyStats();renderStudyLog();}catch(e){} },
+      'page-health':   function(){ try{renderFitnessCards();}catch(e){} },
+      'page-archive':  function(){ try{renderArchive();}catch(e){} }
+    };
+    if (pageRenders[pg]) pageRenders[pg]();
+  });
+
+} // end _initFirebase
+
+// Bug 2 fix: replace fragile 100ms setTimeout with a retry loop
+// Retries every 300ms up to 10 times (~3 seconds) before giving up
+function _tryInitFirebase(attempts) {
+  if (typeof firebase !== 'undefined' && firebase.database) {
+    _initFirebase();
+  } else if (attempts > 0) {
+    setTimeout(function(){ _tryInitFirebase(attempts - 1); }, 300);
+  } else {
+    console.warn('Firebase failed to load after retries — running in offline mode');
+    window.fbSave = function(){};
   }
-  if (data.fitness) { Object.assign(_fitness, data.fitness); }
-  if (data.workoutHistory) { Object.assign(_workoutHistory, data.workoutHistory); }
-  if (data.cycle) { Object.assign(_cycle, data.cycle); }
-  if (data.watchlist) { _op.watchlist = data.watchlist; }
-  if (data.books) { _op.books = data.books; }
-  if (data.music) { _music.length=0; data.music.forEach(function(m){_music.push(m);}); }
-  if (data.study) { _studySessions.length=0; data.study.forEach(function(s){_studySessions.push(s);}); }
-  // Skip re-render on first load (init() handles that)
-  if (!_fbListenerReady) { _fbListenerReady = true; return; }
-  // Re-render whatever page is active
-  var pg = (document.querySelector('.page.active')||{}).id;
-  if (!pg) return;
-  var pageRenders = {
-    'page-goals':    function(){ try{renderGoals();}catch(e){} },
-    'page-mood':     function(){ try{renderMoodHistory();}catch(e){} },
-    'page-calendar': function(){ try{renderCalendar();}catch(e){} },
-    'page-love':     function(){ try{renderLove();}catch(e){} },
-    'page-photos':   function(){ try{renderPhotos();}catch(e){} },
-    'page-ourplace': function(){ try{renderOP();}catch(e){} },
-    'page-study':    function(){ try{renderStudyStats();renderStudyLog();}catch(e){} },
-    'page-health':   function(){ try{renderFitnessCards();}catch(e){} },
-    'page-archive':  function(){ try{renderArchive();}catch(e){} }
-  };
-  if (pageRenders[pg]) pageRenders[pg]();
-});
+}
+_tryInitFirebase(10);
 
 // Photo upload patched to use Firebase Storage
 function handlePhotoUpload(event) {
