@@ -2577,8 +2577,10 @@ function _fbSerialize() {
 }
 
 var _fbTimer = null;
+var _fbIgnoreUntil = 0;
 window.fbSave = function() {
   clearTimeout(_fbTimer);
+  _fbIgnoreUntil = Date.now() + 3000; // ignore incoming syncs for 3s after saving
   _fbTimer = setTimeout(function() {
     _db.ref('app/state').set(_fbSerialize()).catch(console.error);
     _db.ref('app/fitness').set(_fitness).catch(console.error);
@@ -2600,6 +2602,7 @@ saveToLocal = function() { _origSaveToLocal(); if(window.fbSave) fbSave(); };
   var _fbListenerReady = false;
   _db.ref('app').on('value', function(snap) {
     var data = snap.val(); if (!data) return;
+    if (_fbListenerReady && Date.now() < _fbIgnoreUntil) return; // skip bounce-back from our own save
     if (data.state) {
       var s = data.state;
       if (s.goals) state.goals = s.goals;
