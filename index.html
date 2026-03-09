@@ -1494,6 +1494,7 @@ function studyStop() {
     dateLabel: new Date().toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})
   });
   localStorage.setItem('jas_study', JSON.stringify(_studySessions));
+  if (window.fbSave) fbSave();
   _studySeconds = 0;
   document.getElementById('timerDisplay').textContent = '00:00:00';
   document.getElementById('studyStartBtn').style.display = '';
@@ -2163,7 +2164,7 @@ function addEvent() {
 // ===== CYCLE TRACKER =====
 function saveCycle() {
   _cycle = { start: document.getElementById('periodStart')?.value, len: +document.getElementById('cycleLen')?.value || 28, dur: +document.getElementById('periodDur')?.value || 5 };
-  paintCycleDays(); spawnHearts();
+  paintCycleDays(); spawnHearts(); saveToLocal();
 }
 function paintCycleDays() {
   if (!_cycle.start) return;
@@ -2200,9 +2201,9 @@ function selectMood(person, emoji, el) {
 function saveMood(person) {
   const note = document.getElementById(person + 'MoodNote').value;
   const emoji = state.moodData[person]?.emoji || '😌';
-  saveToLocal();
   state.moods.unshift({ person, emoji, note, date: new Date().toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}) });
   state.moodData[person] = { emoji, note };
+  saveToLocal();
   document.getElementById(person + 'MoodNote').value = '';
   renderMoodHistory(); spawnHearts();
 }
@@ -2275,11 +2276,11 @@ function renderOP() { renderWatchlist(); renderBooks(); }
 function addWatch() {
   const title = document.getElementById('wTitle')?.value.trim(); if (!title) return;
   _op.watchlist.unshift({ id: Date.now(), emoji: document.getElementById('wType')?.value||'🎬', title, status: document.getElementById('wStatus')?.value||'want', who: document.getElementById('wWho')?.value||'both', jr:0, sr:0 });
-  document.getElementById('wTitle').value = ''; renderWatchlist();
+  document.getElementById('wTitle').value = ''; renderWatchlist(); saveToLocal();
 }
 function wFilter(f) { _op.wf = f; renderWatchlist(); }
-function setWS(id, v) { const it = _op.watchlist.find(w => w.id===id); if(it) it.status=v; renderWatchlist(); }
-function delWatch(id) { _op.watchlist = _op.watchlist.filter(w => w.id!==id); renderWatchlist(); }
+function setWS(id, v) { const it = _op.watchlist.find(w => w.id===id); if(it) it.status=v; renderWatchlist(); saveToLocal(); }
+function delWatch(id) { _op.watchlist = _op.watchlist.filter(w => w.id!==id); renderWatchlist(); saveToLocal(); }
 function renderWatchlist() {
   const el = document.getElementById('watchList'); if (!el) return;
   const filtered = _op.wf === 'all' ? _op.watchlist : _op.watchlist.filter(w => w.status === _op.wf);
@@ -2305,9 +2306,9 @@ function addMusic() {
   const title = document.getElementById('mTitle')?.value.trim(); if (!title) return;
   _music.unshift({ id: Date.now(), title, artist: document.getElementById('mArtist')?.value.trim()||'', who: document.getElementById('mWho')?.value||'both', mood: document.getElementById('mMood')?.value||'🎵' });
   document.getElementById('mTitle').value = ''; document.getElementById('mArtist').value = '';
-  renderMusic();
+  renderMusic(); saveToLocal();
 }
-function delMusic(id) { _music = _music.filter(m => m.id !== id); renderMusic(); }
+function delMusic(id) { _music = _music.filter(m => m.id !== id); renderMusic(); saveToLocal(); }
 function renderMusic() {
   const el = document.getElementById('musicList'); if (!el) return;
   if (!_music.length) { el.innerHTML = '<p style="font-size:0.82rem;color:var(--text-soft);padding:1rem 0;text-align:center;">Add songs you want to share 🎵</p>'; return; }
@@ -2319,7 +2320,7 @@ function renderMusic() {
     el.appendChild(d);
   });
 }
-function setRating(id, p, v) { const it = _op.watchlist.find(w => w.id===id); if(it) it[p]=v; renderRatings(); }
+function setRating(id, p, v) { const it = _op.watchlist.find(w => w.id===id); if(it) it[p]=v; renderRatings(); saveToLocal(); }
 function starHTML(id, p, r) { return Array.from({length:5},(_,i) => `<span class="star ${i<r?'on':'off'}" onclick="setRating(${id},'${p}',${i+1})">${i<r?'★':'☆'}</span>`).join(''); }
 function renderRatings() {
   const el = document.getElementById('ratingsList'); if (!el) return;
@@ -2500,7 +2501,16 @@ saveToLocal = function() { _origSaveToLocal(); if(window.fbSave) fbSave(); };
     }
     if (data.fitness) { Object.assign(_fitness, data.fitness); }
     if (data.workoutHistory) { Object.assign(_workoutHistory, data.workoutHistory); }
-    if (data.cycle) { Object.assign(_cycle, data.cycle); }
+    if (data.cycle) {
+      Object.assign(_cycle, data.cycle);
+      // Update the input fields so the UI reflects the synced values
+      var psEl = document.getElementById('periodStart');
+      var clEl = document.getElementById('cycleLen');
+      var pdEl = document.getElementById('periodDur');
+      if (psEl && _cycle.start) psEl.value = _cycle.start;
+      if (clEl && _cycle.len)   clEl.value = _cycle.len;
+      if (pdEl && _cycle.dur)   pdEl.value = _cycle.dur;
+    }
     if (data.watchlist) { _op.watchlist = data.watchlist; }
     if (data.books) { _op.books = data.books; }
     if (data.music) { _music.length=0; data.music.forEach(function(m){_music.push(m);}); }
@@ -2513,10 +2523,10 @@ saveToLocal = function() { _origSaveToLocal(); if(window.fbSave) fbSave(); };
     var pageRenders = {
       'page-goals':    function(){ try{renderGoals();}catch(e){} },
       'page-mood':     function(){ try{renderMoodHistory();}catch(e){} },
-      'page-calendar': function(){ try{renderCalendar();}catch(e){} },
-      'page-love':     function(){ try{renderLove();}catch(e){} },
+      'page-calendar': function(){ try{renderCalendar(); paintCycleDays();}catch(e){} },
+      'page-love':     function(){ try{renderLove(); renderBucketList();}catch(e){} },
       'page-photos':   function(){ try{renderPhotos();}catch(e){} },
-      'page-ourplace': function(){ try{renderOP();}catch(e){} },
+      'page-ourplace': function(){ try{renderOP(); renderMusic(); renderRatings();}catch(e){} },
       'page-study':    function(){ try{renderStudyStats();renderStudyLog();}catch(e){} },
       'page-health':   function(){ try{renderFitnessCards();}catch(e){} },
       'page-archive':  function(){ try{renderArchive();}catch(e){} }
