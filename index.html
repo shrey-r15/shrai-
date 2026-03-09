@@ -2615,8 +2615,21 @@ saveToLocal = function() { _origSaveToLocal(); if(window.fbSave) fbSave(); };
       if (s.photoUrls) state.photos = s.photoUrls.map(function(p){ return p&&p.url?{src:p.url,url:p.url,caption:p.caption||''}:null; });
       if (s.birthdayPhotoUrls) state.birthdayPhotos = s.birthdayPhotoUrls.map(function(u){ return u||null; });
     }
-    if (data.fitness) { Object.assign(_fitness, data.fitness); }
-    if (data.workoutHistory) { Object.assign(_workoutHistory, data.workoutHistory); }
+    if (data.fitness) {
+      ['j','s'].forEach(function(p) {
+        if (data.fitness[p]) {
+          _fitness[p].cal  = data.fitness[p].cal  || 0;
+          _fitness[p].pro  = data.fitness[p].pro  || 0;
+          _fitness[p].carb = data.fitness[p].carb || 0;
+          _fitness[p].fat  = data.fitness[p].fat  || 0;
+          _fitness[p].workouts = Array.isArray(data.fitness[p].workouts) ? data.fitness[p].workouts : [];
+        }
+      });
+    }
+    if (data.workoutHistory) {
+      if (Array.isArray(data.workoutHistory.j)) _workoutHistory.j = data.workoutHistory.j;
+      if (Array.isArray(data.workoutHistory.s)) _workoutHistory.s = data.workoutHistory.s;
+    }
     if (data.cycle) {
       Object.assign(_cycle, data.cycle);
       // Update the input fields so the UI reflects the synced values
