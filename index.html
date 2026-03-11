@@ -489,56 +489,47 @@
 <!-- HEALTH -->
 <div class="page" id="page-health">
   <div class="section-title">Health 💪</div>
-  <!-- FITNESS TRACKER -->
-  <div class="card" style="border-color:rgba(107,191,181,0.3);" id="fitnessCard">
-    <div class="pill" style="background:linear-gradient(135deg,rgba(107,191,181,0.26),rgba(201,179,232,0.18));border-color:rgba(107,191,181,0.4);">💪 Workout & Nutrition Tracker</div>
-    <div class="fitness-person-hdr">💜 Jai's Day</div>
-    <div class="macro-grid">
-      <div class="macro-box"><div class="macro-val" id="j-cal">0</div><div class="macro-lbl">Calories</div><div class="macro-bar"><div class="macro-fill" id="j-cal-b" style="background:linear-gradient(90deg,#c9b3e8,#9d7dc7);width:0%"></div></div></div>
-      <div class="macro-box"><div class="macro-val" id="j-pro">0g</div><div class="macro-lbl">Protein</div><div class="macro-bar"><div class="macro-fill" id="j-pro-b" style="width:0%"></div></div></div>
-      <div class="macro-box"><div class="macro-val" id="j-carb">0g</div><div class="macro-lbl">Carbs</div><div class="macro-bar"><div class="macro-fill" id="j-carb-b" style="background:linear-gradient(90deg,#6bbfb5,#3d9e93);width:0%"></div></div></div>
-      <div class="macro-box"><div class="macro-val" id="j-fat">0g</div><div class="macro-lbl">Fats</div><div class="macro-bar"><div class="macro-fill" id="j-fat-b" style="background:linear-gradient(90deg,#f5c842,#d4a017);width:0%"></div></div></div>
+
+  <!-- JAI -->
+  <div class="card" style="border-color:rgba(201,179,232,0.4);margin-bottom:1rem;">
+    <div class="pill">💜 Jai — End of Day</div>
+    <div class="add-row" style="margin-bottom:0.5rem;">
+      <input type="number" id="j-cal-in" placeholder="Calories" style="flex:1;"/>
+      <input type="number" id="j-pro-in" placeholder="Protein g" style="flex:1;"/>
+      <input type="number" id="j-carb-in" placeholder="Carbs g" style="flex:1;"/>
+      <input type="number" id="j-fat-in" placeholder="Fat g" style="flex:1;"/>
     </div>
-    <div class="add-row" style="margin-bottom:0.65rem;">
-      <input type="number" id="j-cal-in" placeholder="Calories" style="max-width:108px;"/>
-      <input type="number" id="j-pro-in" placeholder="Protein g" style="max-width:98px;"/>
-      <input type="number" id="j-carb-in" placeholder="Carbs g" style="max-width:98px;"/>
-      <input type="number" id="j-fat-in" placeholder="Fat g" style="max-width:88px;"/>
-      <button class="btn" onclick="logMacros('j')">Log</button>
+    <div class="add-row" style="margin-bottom:0.8rem;">
+      <input type="text" id="j-wd" placeholder="Workout — e.g. chest day, 5km run..." style="flex:2;"/>
+      <select id="j-wt"><option value="none">No workout</option><option value="cardio">Cardio</option><option value="strength">Strength</option><option value="yoga">Yoga</option><option value="other">Other</option></select>
+      <input type="number" id="j-wm" placeholder="mins" style="max-width:70px;"/>
     </div>
-    <div class="add-row" style="margin-bottom:1rem;">
-      <input type="text" id="j-wd" placeholder="Workout (e.g. 5km run, chest day...)"/>
-      <select id="j-wt" style="max-width:108px;"><option value="cardio">Cardio</option><option value="strength">Strength</option><option value="yoga">Yoga</option><option value="other">Other</option></select>
-      <input type="number" id="j-wm" placeholder="mins" style="max-width:78px;"/>
-      <button class="btn" onclick="logWorkout('j')">Log</button>
+    <button class="btn" style="width:100%;padding:0.65rem;" onclick="saveDayLog('j')">✓ Save Jai's Day</button>
+  </div>
+
+  <!-- SHREY -->
+  <div class="card" style="border-color:rgba(107,191,181,0.4);margin-bottom:1rem;">
+    <div class="pill" style="background:linear-gradient(135deg,rgba(107,191,181,0.2),rgba(107,191,181,0.08));border-color:rgba(107,191,181,0.4);">🌊 Shrey — End of Day</div>
+    <div class="add-row" style="margin-bottom:0.5rem;">
+      <input type="number" id="s-cal-in" placeholder="Calories" style="flex:1;"/>
+      <input type="number" id="s-pro-in" placeholder="Protein g" style="flex:1;"/>
+      <input type="number" id="s-carb-in" placeholder="Carbs g" style="flex:1;"/>
+      <input type="number" id="s-fat-in" placeholder="Fat g" style="flex:1;"/>
     </div>
-    <div style="font-size:0.72rem;color:var(--text-soft);margin:0.6rem 0 0.3rem;font-weight:500;">📋 Workout History</div>
-    <div id="j-wlog"></div>
-    <button onclick="resetDay('j')" style="background:none;border:1px solid rgba(201,179,232,0.3);border-radius:8px;padding:0.3rem 0.8rem;font-size:0.72rem;color:var(--text-soft);cursor:pointer;margin-top:0.5rem;width:100%;">↺ Reset Jai's Day</button>
-    <hr style="border:none;border-top:1px solid rgba(201,179,232,0.2);margin:1rem 0;"/>
-    <div class="fitness-person-hdr">🌊 Shrey's Day</div>
-    <div class="macro-grid">
-      <div class="macro-box"><div class="macro-val" id="s-cal">0</div><div class="macro-lbl">Calories</div><div class="macro-bar"><div class="macro-fill" id="s-cal-b" style="background:linear-gradient(90deg,#c9b3e8,#9d7dc7);width:0%"></div></div></div>
-      <div class="macro-box"><div class="macro-val" id="s-pro">0g</div><div class="macro-lbl">Protein</div><div class="macro-bar"><div class="macro-fill" id="s-pro-b" style="width:0%"></div></div></div>
-      <div class="macro-box"><div class="macro-val" id="s-carb">0g</div><div class="macro-lbl">Carbs</div><div class="macro-bar"><div class="macro-fill" id="s-carb-b" style="background:linear-gradient(90deg,#6bbfb5,#3d9e93);width:0%"></div></div></div>
-      <div class="macro-box"><div class="macro-val" id="s-fat">0g</div><div class="macro-lbl">Fats</div><div class="macro-bar"><div class="macro-fill" id="s-fat-b" style="background:linear-gradient(90deg,#f5c842,#d4a017);width:0%"></div></div></div>
+    <div class="add-row" style="margin-bottom:0.8rem;">
+      <input type="text" id="s-wd" placeholder="Workout — e.g. pilates, leg day..." style="flex:2;"/>
+      <select id="s-wt"><option value="none">No workout</option><option value="cardio">Cardio</option><option value="strength">Strength</option><option value="yoga">Yoga</option><option value="other">Other</option></select>
+      <input type="number" id="s-wm" placeholder="mins" style="max-width:70px;"/>
     </div>
-    <div class="add-row" style="margin-bottom:0.65rem;">
-      <input type="number" id="s-cal-in" placeholder="Calories" style="max-width:108px;"/>
-      <input type="number" id="s-pro-in" placeholder="Protein g" style="max-width:98px;"/>
-      <input type="number" id="s-carb-in" placeholder="Carbs g" style="max-width:98px;"/>
-      <input type="number" id="s-fat-in" placeholder="Fat g" style="max-width:88px;"/>
-      <button class="btn" onclick="logMacros('s')">Log</button>
+    <button class="btn" style="width:100%;padding:0.65rem;background:linear-gradient(135deg,#6bbfb5,#3d9e93);" onclick="saveDayLog('s')">✓ Save Shrey's Day</button>
+  </div>
+
+  <!-- HISTORY LOG -->
+  <div class="card">
+    <div class="pill">📋 Health Log</div>
+    <div id="collatedLog">
+      <p style="font-size:0.82rem;color:var(--text-soft);text-align:center;padding:1rem 0;">No entries yet — save your first day above 💪</p>
     </div>
-    <div class="add-row">
-      <input type="text" id="s-wd" placeholder="Workout (e.g. pilates, leg day...)"/>
-      <select id="s-wt" style="max-width:108px;"><option value="cardio">Cardio</option><option value="strength">Strength</option><option value="yoga">Yoga</option><option value="other">Other</option></select>
-      <input type="number" id="s-wm" placeholder="mins" style="max-width:78px;"/>
-      <button class="btn" onclick="logWorkout('s')">Log</button>
-    </div>
-    <div style="font-size:0.72rem;color:var(--text-soft);margin:0.6rem 0 0.3rem;font-weight:500;">📋 Workout History</div>
-    <div id="s-wlog"></div>
-    <button onclick="resetDay('s')" style="background:none;border:1px solid rgba(107,191,181,0.3);border-radius:8px;padding:0.3rem 0.8rem;font-size:0.72rem;color:var(--text-soft);cursor:pointer;margin-top:0.5rem;width:100%;">↺ Reset Shrey's Day</button>
   </div>
 </div>
 
@@ -939,6 +930,11 @@
 <!-- ARCHIVE -->
 <div class="page" id="page-archive">
   <div class="section-title">Archive 🗂️</div>
+  <div class="card" id="dailyFoldersCard" style="margin-bottom:1rem;">
+    <div class="pill">📅 Daily Goals History</div>
+    <div id="dailyFoldersList"></div>
+    <p id="dailyFoldersEmpty" style="font-size:0.85rem;color:var(--text-soft);text-align:center;padding:1rem 0;">Daily goals will appear here at the end of each day ✨</p>
+  </div>
   <div class="card">
     <div class="pill">Completed Goals & Milestones</div>
     <div id="archiveList"></div>
@@ -995,6 +991,7 @@ let state = {
   birthdayCard: "",
   birthdayOpened: false,
   archive: [],
+  dailyGoalFolders: [],
   calYear: new Date().getFullYear(),
   calMonth: new Date().getMonth(),
   currentPhotoSlot: null,
@@ -1004,6 +1001,7 @@ let state = {
 // Fitness & Our Place state
 let _fitness = { j:{cal:0,pro:0,carb:0,fat:0,workouts:[]}, s:{cal:0,pro:0,carb:0,fat:0,workouts:[]} };
 var _workoutHistory = { j:[], s:[] };
+var _healthLog = JSON.parse(localStorage.getItem('jas_healthLog') || '[]'); // [{type:'meal'|'workout', person:'j'|'s', time, ...data}]
 let _op = {
   books: [],
   watchlist: [
@@ -1150,7 +1148,7 @@ function showPage(page) {
   if (page === 'goals') renderGoals();
   if (page === 'mood') { renderMoodHistory(); renderMoodInputs(); }
   if (page === 'love') renderLove();
-  if (page === 'health') renderFitnessCards();
+  if (page === 'health') { renderFitnessCards(); renderCollatedLog(); }
   if (page === 'study') { renderStudyStats(); renderStudyLog(); updateGiraffe(); }
   if (page === 'calendar') renderCalendar();
   if (page === 'photos') renderPhotos();
@@ -1167,7 +1165,8 @@ function saveToLocal() {
       goals: state.goals, events: state.events, moods: state.moods,
       moodData: state.moodData, completedChallenges: state.completedChallenges, bucketList: state.bucketList,
       birthdayCard: state.birthdayCard, birthdayOpened: state.birthdayOpened,
-      archive: state.archive, currentChallengeIndex: state.currentChallengeIndex
+      archive: state.archive, currentChallengeIndex: state.currentChallengeIndex,
+      dailyGoalFolders: state.dailyGoalFolders
     }));
     localStorage.setItem('jas_fitness', JSON.stringify(_fitness));
     localStorage.setItem('jas_wh', JSON.stringify(_workoutHistory));
@@ -1293,68 +1292,107 @@ function addGoal() {
 function deleteGoal(period, i) { state.goals[period].splice(i, 1); renderGoals(); saveToLocal(); }
 
 // ===== FITNESS =====
-function logMacros(p) {
-  const f = _fitness[p];
-  f.cal += +document.getElementById(p+'-cal-in').value || 0;
-  f.pro += +document.getElementById(p+'-pro-in').value || 0;
-  f.carb += +document.getElementById(p+'-carb-in').value || 0;
-  f.fat += +document.getElementById(p+'-fat-in').value || 0;
-  ['-cal-in','-pro-in','-carb-in','-fat-in'].forEach(s => { const el=document.getElementById(p+s); if(el) el.value=''; });
-  renderFitnessCards(); spawnHearts(); saveToLocal();
-}
-function logWorkout(p) {
-  var descEl = document.getElementById(p+'-wd'); if (!descEl) return;
-  var desc = descEl.value.trim(); if (!desc) return;
-  var type = (document.getElementById(p+'-wt')||{}).value || 'other';
+function saveDayLog(p) {
+  var cal  = +document.getElementById(p+'-cal-in').value  || 0;
+  var pro  = +document.getElementById(p+'-pro-in').value  || 0;
+  var carb = +document.getElementById(p+'-carb-in').value || 0;
+  var fat  = +document.getElementById(p+'-fat-in').value  || 0;
+  var desc = ((document.getElementById(p+'-wd')||{}).value||'').trim();
+  var wtype = (document.getElementById(p+'-wt')||{}).value || 'none';
   var mins = +(document.getElementById(p+'-wm')||{}).value || 0;
-  var entry = { desc:desc, type:type, mins:mins,
-    time: new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),
-    date: new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short'}) };
-  _fitness[p].workouts.unshift(entry);
-  _workoutHistory[p].unshift(entry);
-  if (_workoutHistory[p].length > 50) _workoutHistory[p].pop(); // keep last 50
-  descEl.value = '';
-  var mEl = document.getElementById(p+'-wm'); if(mEl) mEl.value = '';
-  renderFitnessCards(); spawnHearts(); saveToLocal();
+  if (!cal && !pro && !carb && !fat && !desc) return;
+
+  var todayKey = new Date().toISOString().slice(0,10); // YYYY-MM-DD
+  var dateLabel = new Date().toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+
+  // Upsert — if entry exists for this person today, overwrite it
+  var idx = _healthLog.findIndex(function(e){ return e.person===p && e.dateKey===todayKey; });
+  var entry = { person:p, dateKey:todayKey, dateLabel:dateLabel, cal:cal, pro:pro, carb:carb, fat:fat,
+    desc: desc||null, wtype: wtype==='none'?null:wtype, mins: mins||null, ts: Date.now() };
+  if (idx >= 0) { _healthLog[idx] = entry; } else { _healthLog.unshift(entry); }
+  _healthLog.sort(function(a,b){ return b.ts - a.ts; });
+
+  localStorage.setItem('jas_healthLog', JSON.stringify(_healthLog));
+
+  // Clear inputs
+  [p+'-cal-in',p+'-pro-in',p+'-carb-in',p+'-fat-in',p+'-wm'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value='';
+  });
+  var wdEl=document.getElementById(p+'-wd'); if(wdEl) wdEl.value='';
+  var wtEl=document.getElementById(p+'-wt'); if(wtEl) wtEl.value='none';
+
+  renderCollatedLog(); spawnHearts(); saveToLocal();
 }
+// aliases so old code doesn't break
+function logDayEntry(p) { saveDayLog(p); }
+function logMacros(p)   { saveDayLog(p); }
+function logWorkout(p)  { saveDayLog(p); }
+
 function resetDay(p) {
-  if (!confirm('Reset ' + (p==='j'?"Jai's":"Shrey's") + ' daily macros? Workout history is kept.')) return;
-  _fitness[p] = {cal:0,pro:0,carb:0,fat:0,workouts:[]};
-  renderFitnessCards(); saveToLocal();
+  if (!confirm('Delete today\'s entry for ' + (p==='j'?'Jai':'Shrey') + '?')) return;
+  var todayKey = new Date().toISOString().slice(0,10);
+  _healthLog = _healthLog.filter(function(e){ return !(e.person===p && e.dateKey===todayKey); });
+  localStorage.setItem('jas_healthLog', JSON.stringify(_healthLog));
+  renderCollatedLog(); saveToLocal();
 }
-function renderFitnessCards() {
-  ['j','s'].forEach(p => {
-    const f = _fitness[p];
-    const goals = { cal:2000, pro:150, carb:250, fat:65 };
-    const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-    const setW = (id, pct) => { const el = document.getElementById(id); if (el) el.style.width = Math.min(100,pct) + '%'; };
-    setEl(p+'-cal', f.cal); setEl(p+'-pro', f.pro+'g'); setEl(p+'-carb', f.carb+'g'); setEl(p+'-fat', f.fat+'g');
-    setW(p+'-cal-b', f.cal/goals.cal*100); setW(p+'-pro-b', f.pro/goals.pro*100);
-    setW(p+'-carb-b', f.carb/goals.carb*100); setW(p+'-fat-b', f.fat/goals.fat*100);
-    var logEl = document.getElementById(p+'-wlog');
-    if (logEl) {
-      logEl.innerHTML = '';
-      var history = _workoutHistory[p] || [];
-      if (!history.length) {
-        logEl.innerHTML = '<p style="font-size:0.78rem;color:var(--text-soft);text-align:center;padding:0.5rem;">No workouts logged yet 💪</p>';
-      } else {
-        history.slice(0,10).forEach(function(w) {
-          var d = document.createElement('div');
-          d.className = 'workout-entry';
-          d.innerHTML = '<span class="wtag wtag-' + w.type + '">' + w.type + '</span>'
-            + '<span style="flex:1">' + w.desc + '</span>'
-            + (w.mins ? '<span style="font-size:0.7rem;color:var(--text-soft);">' + w.mins + 'min</span>' : '')
-            + '<span style="font-size:0.67rem;color:var(--text-soft);">' + (w.date||'') + ' ' + (w.time||'') + '</span>';
-          logEl.appendChild(d);
-        });
-        if (history.length > 10) {
-          var more = document.createElement('p');
-          more.style.cssText = 'font-size:0.72rem;color:var(--text-soft);text-align:center;margin-top:0.4rem;';
-          more.textContent = '+ ' + (history.length - 10) + ' more sessions';
-          logEl.appendChild(more);
-        }
+
+function renderFitnessCards() { /* macro bars removed — kept for compat */ }
+
+function renderCollatedLog() {
+  var el = document.getElementById('collatedLog'); if (!el) return;
+  if (!_healthLog.length) {
+    el.innerHTML = '<p style="font-size:0.82rem;color:var(--text-soft);text-align:center;padding:1rem 0;">No entries yet — save your first day above 💪</p>';
+    return;
+  }
+  // Group by dateKey
+  var days = {};
+  var order = [];
+  _healthLog.forEach(function(e) {
+    if (!days[e.dateKey]) { days[e.dateKey] = { label: e.dateLabel, j: null, s: null }; order.push(e.dateKey); }
+    if (e.person==='j') days[e.dateKey].j = e;
+    else                days[e.dateKey].s = e;
+  });
+  el.innerHTML = '';
+  var typeColors = {cardio:'#6bbfb5',strength:'#9d7dc7',yoga:'#f5c842',other:'#aaa'};
+  order.forEach(function(dk) {
+    var day = days[dk];
+    var wrap = document.createElement('div');
+    wrap.style.cssText = 'margin-bottom:1rem;';
+    // Date header
+    var hdr = document.createElement('div');
+    hdr.style.cssText = 'font-size:0.75rem;font-weight:600;color:var(--text-soft);letter-spacing:0.04em;text-transform:uppercase;margin-bottom:0.45rem;padding:0 0.2rem;';
+    hdr.textContent = day.label;
+    wrap.appendChild(hdr);
+    // Entry card for each person
+    ['j','s'].forEach(function(p) {
+      var e = day[p]; if (!e) return;
+      var isJai = p==='j';
+      var personLabel = isJai ? '💜 Jai' : '🌊 Shrey';
+      var borderColor = isJai ? 'rgba(201,179,232,0.45)' : 'rgba(107,191,181,0.45)';
+      var bgColor     = isJai ? 'rgba(201,179,232,0.09)' : 'rgba(107,191,181,0.09)';
+      var card = document.createElement('div');
+      card.style.cssText = 'border-radius:14px;background:'+bgColor+';border:1px solid '+borderColor+';padding:0.8rem 1rem;margin-bottom:0.4rem;';
+      // Person label
+      var personRow = '<div style="font-weight:600;font-size:0.85rem;margin-bottom:0.5rem;">'+personLabel+'</div>';
+      // Macros row
+      var macros = [];
+      if (e.cal)  macros.push('<b>'+e.cal+'</b> kcal');
+      if (e.pro)  macros.push('<b>'+e.pro+'g</b> protein');
+      if (e.carb) macros.push('<b>'+e.carb+'g</b> carbs');
+      if (e.fat)  macros.push('<b>'+e.fat+'g</b> fat');
+      var macroRow = macros.length ? '<div style="font-size:0.8rem;margin-bottom:'+(e.wtype?'0.4rem':'0')+';">🍽️ '+macros.join(' &middot; ')+'</div>' : '';
+      // Workout row
+      var wRow = '';
+      if (e.wtype) {
+        wRow = '<div style="font-size:0.8rem;">🏋️ <span style="padding:0.1rem 0.4rem;border-radius:6px;font-size:0.7rem;background:'+(typeColors[e.wtype]||'#aaa')+'22;color:'+(typeColors[e.wtype]||'#888')+';font-weight:600;">'+e.wtype+'</span> '
+          +(e.desc||'')+(e.mins?' <span style="color:var(--text-soft);font-size:0.75rem;">&middot; '+e.mins+'min</span>':'')+'</div>';
+      } else if (e.desc) {
+        wRow = '<div style="font-size:0.8rem;">🏋️ '+e.desc+'</div>';
       }
-    }
+      card.innerHTML = personRow + macroRow + wRow;
+      wrap.appendChild(card);
+    });
+    el.appendChild(wrap);
   });
 }
 
@@ -2451,17 +2489,70 @@ function renderRatings() {
 
 // ===== ARCHIVE =====
 function renderArchive() {
+  // Daily goal folders
+  var folders = state.dailyGoalFolders || [];
+  var flist = document.getElementById('dailyFoldersList');
+  var fempty = document.getElementById('dailyFoldersEmpty');
+  if (flist) {
+    flist.innerHTML = '';
+    if (!folders.length) {
+      if (fempty) fempty.style.display = 'block';
+    } else {
+      if (fempty) fempty.style.display = 'none';
+      folders.forEach(function(folder, fi) {
+        var folderId = 'dgfolder-' + fi;
+        var div = document.createElement('div');
+        div.style.cssText = 'margin-bottom:0.5rem;border-radius:12px;overflow:hidden;border:1px solid rgba(201,179,232,0.2);';
+        var doneCount = folder.goals.filter(function(g){ return g.done; }).length;
+        var allDone = doneCount === folder.goals.length;
+        div.innerHTML = '<div onclick="toggleDailyFolder(\'' + folderId + '\')" style="display:flex;align-items:center;gap:0.6rem;padding:0.75rem 1rem;background:rgba(255,255,255,0.6);cursor:pointer;">'
+          + '<span style="font-size:1rem;">' + (allDone ? '✅' : '📋') + '</span>'
+          + '<span style="flex:1;font-size:0.88rem;font-weight:500;">' + folder.dateLabel + '</span>'
+          + '<span style="font-size:0.72rem;padding:0.2rem 0.55rem;border-radius:8px;background:' + (allDone ? 'rgba(107,191,181,0.2)' : 'rgba(201,179,232,0.2)') + ';color:' + (allDone ? 'var(--teal-dark)' : 'var(--lilac-dark)') + ';">' + folder.summary + '</span>'
+          + '<span id="' + folderId + '-arrow" style="font-size:0.75rem;color:var(--text-soft);margin-left:0.3rem;">▼</span>'
+          + '</div>'
+          + '<div id="' + folderId + '" style="display:none;padding:0.5rem 1rem 0.75rem;">';
+        var inner = div.querySelector('#' + folderId);
+        if (inner) {
+          folder.goals.forEach(function(g) {
+            var whoLabel = g.who==='jai'?'💜':'g.who'==='shrey'?'🌊':'🤝';
+            whoLabel = g.who==='jai'?'💜':g.who==='shrey'?'🌊':'🤝';
+            var row = document.createElement('div');
+            row.style.cssText = 'display:flex;align-items:center;gap:0.5rem;padding:0.35rem 0;border-bottom:1px solid rgba(201,179,232,0.1);font-size:0.83rem;';
+            row.innerHTML = '<span style="font-size:0.9rem;">' + (g.done ? '✓' : '○') + '</span>'
+              + '<span style="flex:1;' + (g.done ? '' : 'opacity:0.55;') + '">' + g.text + '</span>'
+              + '<span style="font-size:0.75rem;">' + whoLabel + '</span>';
+            inner.appendChild(row);
+          });
+        }
+        flist.appendChild(div);
+      });
+    }
+  }
+
+  // Milestones
   const list = document.getElementById('archiveList'), empty = document.getElementById('archiveEmpty');
   list.innerHTML = '';
-  if (!state.archive.length) { empty.style.display = 'block'; return; }
-  empty.style.display = 'none';
-  state.archive.forEach(a => { const div = document.createElement('div'); div.className = 'archive-item'; div.innerHTML = `<span class="archive-date">${a.date}</span><span class="archive-title">${a.title}</span><span class="archive-type">${a.type}</span>`; list.appendChild(div); });
+  if (!state.archive.length) { empty.style.display = 'block'; }
+  else {
+    empty.style.display = 'none';
+    state.archive.forEach(a => { const div = document.createElement('div'); div.className = 'archive-item'; div.innerHTML = `<span class="archive-date">${a.date}</span><span class="archive-title">${a.title}</span><span class="archive-type">${a.type}</span>`; list.appendChild(div); });
+  }
   const today = new Date();
   if (!(today.getMonth()===2 && today.getDate()===5) && !(today.getMonth()===9 && today.getDate()===4) && state.birthdayCard) {
     const bdiv = document.createElement('div'); bdiv.className = 'archive-item'; bdiv.style.borderLeft = '3px solid #f9c0cb';
     bdiv.innerHTML = `<span class="archive-date">Mar 5</span><span class="archive-title">🎂 Shrey's Birthday Card & Memories</span><span class="archive-type" style="background:rgba(249,192,203,0.2);color:#c96080;">Birthday</span>`;
     bdiv.onclick = () => showPage('birthday'); list.appendChild(bdiv);
   }
+}
+
+function toggleDailyFolder(id) {
+  var el = document.getElementById(id);
+  var arrow = document.getElementById(id + '-arrow');
+  if (!el) return;
+  var open = el.style.display !== 'none';
+  el.style.display = open ? 'none' : 'block';
+  if (arrow) arrow.textContent = open ? '▼' : '▲';
 }
 
 // ===== HEARTS =====
@@ -2477,7 +2568,36 @@ function spawnHearts() {
   }
 }
 
-// ===== INIT =====
+// ===== DAILY GOAL END-OF-DAY ARCHIVE =====
+function checkDailyGoalReset() {
+  var today = new Date().toDateString();
+  var lastDate = localStorage.getItem('jas_lastDate');
+  if (lastDate && lastDate !== today) {
+    // New day — archive yesterday's daily goals if there were any
+    var goals = state.goals.daily || [];
+    if (goals.length > 0) {
+      var doneCount = goals.filter(function(g){ return g.done; }).length;
+      if (!state.dailyGoalFolders) state.dailyGoalFolders = [];
+      state.dailyGoalFolders.unshift({
+        date: lastDate,
+        dateLabel: new Date(lastDate).toLocaleDateString('en-GB', {weekday:'short', day:'numeric', month:'short', year:'numeric'}),
+        goals: goals.map(function(g){ return { text: g.text, done: g.done, who: g.who }; }),
+        summary: doneCount + '/' + goals.length + ' completed'
+      });
+      // Reset daily goals (clear done flags, keep the goals)
+      state.goals.daily = goals.map(function(g){ return Object.assign({}, g, { done: false }); });
+      saveToLocal();
+    }
+    // Auto-reset macros for new day
+    _fitness.j = {cal:0,pro:0,carb:0,fat:0,workouts:[]};
+    _fitness.s = {cal:0,pro:0,carb:0,fat:0,workouts:[]};
+    // Keep healthLog but it filters by today automatically
+    saveToLocal();
+  }
+  localStorage.setItem('jas_lastDate', today);
+}
+
+
 function checkBirthday() {
   var today = new Date();
   var m = today.getMonth(); // 0-indexed, March = 2
@@ -2509,6 +2629,7 @@ function checkBirthday() {
 }
 function init() {
   loadFromLocal();
+  checkDailyGoalReset();
   setDailyQuote();
   renderGoals();
   initCyclePanel();
@@ -2516,6 +2637,7 @@ function init() {
   checkBirthday();
   renderHome();
   renderFitnessCards();
+  renderCollatedLog();
   document.getElementById('eventDate').value = new Date().toISOString().split('T')[0];
   // Only set default date-based index if nothing was saved
   if (!state.currentChallengeIndex) {
@@ -2571,6 +2693,7 @@ function _fbSerialize() {
     birthdayCard: state.birthdayCard,
     birthdayOpened: state.birthdayOpened,
     archive: state.archive,
+    dailyGoalFolders: state.dailyGoalFolders || [],
     photoUrls: state.photos.map(function(p){ return p ? {url:p.url||null,caption:p.caption||''} : null; }),
     birthdayPhotoUrls: state.birthdayPhotos.map(function(p){ return p ? (typeof p==='string'?p:p.url||null) : null; })
   };
@@ -2615,6 +2738,7 @@ saveToLocal = function() { _origSaveToLocal(); if(window.fbSave) fbSave(); };
       if (s.birthdayCard !== undefined) state.birthdayCard = s.birthdayCard;
       if (s.birthdayOpened !== undefined) state.birthdayOpened = s.birthdayOpened;
       if (s.archive) state.archive = s.archive;
+      if (s.dailyGoalFolders) state.dailyGoalFolders = s.dailyGoalFolders;
       if (s.photoUrls) state.photos = s.photoUrls.map(function(p){ return p&&p.url?{src:p.url,url:p.url,caption:p.caption||''}:null; });
       if (s.birthdayPhotoUrls) state.birthdayPhotos = s.birthdayPhotoUrls.map(function(u){ return u||null; });
     }
@@ -2673,7 +2797,7 @@ saveToLocal = function() { _origSaveToLocal(); if(window.fbSave) fbSave(); };
       'page-photos':   function(){ try{renderPhotos();}catch(e){} },
       'page-ourplace': function(){ try{renderOP(); renderMusic(); renderRatings();}catch(e){} },
       'page-study':    function(){ try{renderStudyStats();renderStudyLog();}catch(e){} },
-      'page-health':   function(){ try{renderFitnessCards();}catch(e){} },
+      'page-health':   function(){ try{renderFitnessCards(); renderCollatedLog();}catch(e){} },
       'page-archive':  function(){ try{renderArchive();}catch(e){} }
     };
     if (pageRenders[pg]) pageRenders[pg]();
